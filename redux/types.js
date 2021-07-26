@@ -1,0 +1,4 @@
+//Action type
+export const SET_DETAIL_NISIT = 'SET_DETAIL_NISIT'
+export const SET_REGISTER_NISIT = 'SET_REGISTER_NISIT'
+export const SET_BANK_NISIT = 'SET_BANK_NISIT'
