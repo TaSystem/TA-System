@@ -5,6 +5,9 @@ import "../styles/globals.css";
 import { wrapper } from "../redux/store";
 
 function App({ Component, pageProps }) {
+
+
+
   return (
     <>
       <Head>

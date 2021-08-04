@@ -9,10 +9,11 @@ import { connect } from "react-redux";
 import { setRegisterNisit } from "../../redux/actions/nisitAction";
 import styles from "../../styles/registerNisit.module.css";
 
+
 function registerNisit(props) {
   const [session, loading] = useSession();
   const [content, setContent] = useState();
-
+  // const [path, setPath] = useState(0)
   const [id, setId] = useState();
   const [name, setName] = useState("");
   const [lastname, setLastname] = useState("");
@@ -20,19 +21,29 @@ function registerNisit(props) {
   const [level, setLevel] = useState("");
   const [department, setDepartment] = useState("");
   const [tel, setTel] = useState("");
+  const router = useRouter()
+
 
   // const router = useRouter()
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetch("http://localhost:3000/api/secret");
-      const json = await res.json();
-      if (json.content) {
-        setContent(json.content);
-        console.log("in useEffect");
-      }
-    };
-    fetchData();
-  }, [session]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const res = await fetch("http://localhost:3000/api/secret");
+  //     const json = await res.json();
+  //     if (json.content) {
+  //       setContent(json.content);
+  //       console.log("in useEffect");
+  //     }
+  //   };
+  //   fetchData();
+  // }, [session]);
+
+  
+  // useEffect(() => {
+    
+  //   return () => {
+      
+  //   }
+  // }, [loading])
 
   useEffect(() => {
     console.log("in useEffect level", level);
@@ -43,7 +54,7 @@ function registerNisit(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     const user = {
-      id: props.nisit.nisit.result[0].userID,
+      id: props.nisit.userID,
       name: name,
       lastname: lastname,
       idStudent: idStudent,
@@ -52,10 +63,8 @@ function registerNisit(props) {
       tel: tel,
     };
     console.log("handleSubmit ", user);
-    props.setRegisterNisit(user);
+    props.setRegisterNisit(user)
   };
-
-  
 
   if (typeof window !== "undefined" && loading) return null;
 
@@ -67,6 +76,7 @@ function registerNisit(props) {
       </div>
     );
   }
+  console.log('register Nisit ', props)
 
   return (
     <div className={styles.gridView}>
@@ -84,7 +94,7 @@ function registerNisit(props) {
           <h1 className={styles.registerH1}>กรอกข้อมูลนิสิต</h1>
         </figure>
         <figure className={`${styles.col8__item1} ${styles.col8__item2}`}>
-          <h2 className={styles.registerH2}>กรอกข้อมูลธนาคาร</h2>
+          <h2 className={styles.registerH2}>กรอกข้อมูลนิสิต</h2>
         </figure>
         <figure className={`${styles.col8__item} ${styles.col8__item3}`}>
           <h3 className={styles.registerH3}>ชื่อ</h3>
@@ -298,7 +308,7 @@ function registerNisit(props) {
             className={styles.registerButton}
             type="submit"
             id="submit"
-            onClick={handleSubmit}
+            onClick={()=>{if (window.confirm('ต้องการยืนยันวิชา: '+val.title))handleSubmit}}
           >
             ต่อไป
           </button>
@@ -310,7 +320,7 @@ function registerNisit(props) {
 }
 
 const mapStateToProps = (state) => ({
-  nisit: state.nisit,
+  nisit: state.nisit.nisit,
 });
 
 const mapDispathToProps = {

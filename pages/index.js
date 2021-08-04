@@ -5,10 +5,20 @@ import Navbar from "../components/Navbar";
 import Axios from "../config/Axios";
 import { connect } from "react-redux";
 import { setDetailNisit } from "../redux/actions/nisitAction";
+import { useRouter } from "next/router";
+
+function Redirect({ to }) {
+  const router = useRouter();
+  console.log("in useEffect");
+  useEffect(() => {
+    router.push(to);
+  }, [to]);
+  return null;
+}
 
 function Page(props) {
   const [session, loading] = useSession();
-
+  const router = useRouter();
   // useEffect(() => {
   //   session != undefined
   //     ? axios.post("http://localhost:3001/users/login", {
@@ -25,13 +35,14 @@ function Page(props) {
   //         })
   //     : null;
   // }, [session]);
-  
-   console.log('props in index',props , 'session is ',session)
+
+  console.log("props in index", props, "session is ", session);
   return (
     <>
       {!session && (
         <>
           {console.log("status case1 ", session)}
+          {/* <Redirect to='/nisit'/> */}
           Not signed in <br />
           <button onClick={() => signIn()}>Sign in</button>
         </>
@@ -41,12 +52,9 @@ function Page(props) {
           {/* <Navbar/> */}
           {console.log("status case2", session)}
           Signed in as {session.user.email} <br />
-          
-
           <button>
             <Link href="/nisit/registerNisit">To the Register</Link>
           </button>
-
           <button onClick={() => signOut()}>Sign out</button>
         </>
       )}
@@ -54,11 +62,11 @@ function Page(props) {
   );
 }
 const mapStateToProps = (state) => ({
-  nisit: state.nisit
-})
+  nisit: state.nisit,
+});
 
 const mapDispatchToProps = {
   setDetailNisit: setDetailNisit,
 };
 
-export default connect(mapStateToProps,mapDispatchToProps)(Page)
+export default connect(mapStateToProps, mapDispatchToProps)(Page);

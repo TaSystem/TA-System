@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
 import Axios from "../../config/Axios";
+import { signIn, signOut, useSession } from "next-auth/client";
+import { connect } from "react-redux";
+import {
+  getDetailNisit,
+  getCoursesNisit,
+} from "../../redux/actions/nisitAction";
 
-export default function requestTA() {
+function requestTA(props) {
   const [courseList, setCourseList] = useState([]);
   const [search, setSearch] = useState(null);
-  const [note,setNote] = useState(null);
+  const [note, setNote] = useState(null);
+  const [session, loading] = useSession();
 
   useEffect(() => {
     async function getCourses() {
@@ -14,17 +21,28 @@ export default function requestTA() {
     getCourses();
   }, []);
 
-  const applyTA = async (id) =>{
-    await Axios.post("/apply/student-apply",{
-      userID : 34,
-      courseID: id,
-      status:1,
-      note:note
-    }).then((res)=>{
-      console.log(res.data);
-    })
+  useEffect(() => {
+    // console.log("useEffect 2");
+    if (session && props.nisit.length == 0) {
+      console.log("useEffect get getDetailNisit");
+      props.getDetailNisit(session.user.email);
+    }
+    // if (session && props.courses.length == 0){
+    console.log("useEffect get getCoursesNisit");
+    // }
+  }, [loading]);
 
-  }
+  const applyTA = async (id) => {
+    console.log(id);
+    await Axios.post("/apply/student-apply", {
+      userID: props.nisit.userID,
+      courseID: id,
+      status: 1,
+      note: note,
+    }).then((res) => {
+      console.log(res.data);
+    });
+  };
 
   const secNumber = (D, P) => {
     if (P && D) {
@@ -34,9 +52,28 @@ export default function requestTA() {
     else if (D) return D;
   };
 
+  if (typeof window !== "undefined" && loading) return null;
+
+  if (!session) {
+    console.log("in that case");
+    return (
+      <div>
+        <h2>You aren't signed in, please sign in first</h2>
+      </div>
+    );
+  }
+
+  console.log("props in requestTA  >> ", props.nisit);
+  console.log("session in requestTA ", session);
+  // console.log("router in requestTA ", router.pathname);
+
+  // console.log("props Courses in requestTA ", props.courses);
+  // console.log("Courses in requestTA ", courses);
+
+//จำนวนชั่วโฒง
   return (
     <div className="container">
-      <h1>ลงทะเบียนTA</h1>
+      <h1>ลงทะเบียนTA จำนวนชั่วโมง</h1>
       <input
         type="text"
         className="form-control mb-3"
@@ -47,13 +84,15 @@ export default function requestTA() {
         {courseList
           .filter((val) => {
             if (!search) {
-              return null;
+              return val;
             } else if (val.title.toLowerCase().includes(search.toLowerCase())) {
               return val;
             } else if (
               val.courseID.toLowerCase().includes(search.toLowerCase())
             ) {
               return val;
+            } else {
+              return null;
             }
           })
           .map((val, key) => {
@@ -75,16 +114,29 @@ export default function requestTA() {
                   <p class="card-text">
                     คณะ:{val.major} อาจารย์:{val.teacher}
                   </p>
-                  <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                    ลงทะเบียน
-                  </a>
-                  <div class="collapse mt-2" id="collapseExample">
-                    <form className="form-floating"  >   
-                      <input type="text" class="form-control mb-3" name="note" placeholder="หมายเหตุ(ไม่กรอกก็ได้)" onChange={(e)=>setNote(e.target.value)} />
-                      <label htmlFor="note">หมายเหตุ(ไม่กรอกก็ได้)</label> 
-                      <button type="submit" class="btn btn-success" onClick={()=>applyTA(val.id)}>ส่งคำร้อง </button>
-                    </form>
-                  </div>
+
+                  <form>
+                    <div class="input-group mb-3">
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="note"
+                        id="button-addon1"
+                        placeholder="หมายเหตุ(ไม่กรอกก็ได้)"
+                        onChange={(e) => setNote(e.target.value)}
+                        key={key}
+                      />
+                      <button
+                        type="submit"
+                        class="btn btn-success"
+                        aria-label="Example text with button addon"
+                        aria-describedby="button-addon1"
+                        onClick={() => applyTA(val.id)}
+                      >
+                        ส่งคำร้อง{" "}
+                      </button>
+                    </div>
+                  </form>
                 </div>
               </div>
             );
@@ -93,3 +145,16 @@ export default function requestTA() {
     </div>
   );
 }
+
+const mapStateToProps = (state) => ({
+  nisit: state.nisit.nisit,
+  courses: state.nisit.courses,
+});
+
+const mapDispathToProps = {
+  // setRegisterNisit: setRegisterNisit,
+  getDetailNisit: getDetailNisit,
+  getCoursesNisit: getCoursesNisit,
+};
+
+export default connect(mapStateToProps, mapDispathToProps)(requestTA);

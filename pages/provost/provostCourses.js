@@ -1,10 +1,11 @@
 import Axios from "../../config/Axios";
 import React, { useState, useEffect } from "react";
 import Modal from "../../components/ModalTeacher";
+import { signIn, signOut, useSession } from "next-auth/client";
 
 
 export default function coursesTeacher() {
- 
+ //ขอเลือกระดับได้
   const [courseList, setCourseList] = useState([]);
   const [id,setID] = useState(null);
   const [title,setTitle] = useState(null);
@@ -18,7 +19,7 @@ export default function coursesTeacher() {
   const [number_P,setNumberP] = useState(null);
   const [numberTA,setNumberTA] = useState(null);
   const [search,setSearch] = useState(null);
-  
+  const [session, loading] = useSession();
   
   useEffect(() => {
     async function getCourses(){
@@ -43,6 +44,17 @@ export default function coursesTeacher() {
     setID(val.id);
    }
 
+   if (typeof window !== "undefined" && loading) return null;
+
+  if (!session) {
+    console.log("in that case");
+    return (
+      <div>
+        <h2>You aren't signed in, please sign in first</h2>
+      </div>
+    );
+  }
+
 
   return (
     <div className="container">
@@ -64,13 +76,12 @@ export default function coursesTeacher() {
               <th rowSpan="2">สถานะ</th>
               
             </tr>
+            
             <tr>
               <th>บรรยาย</th>
               <th>ปฎิบัติ</th>
               <th>รับ</th>
-              <th>ลง</th>
-              
-
+              <th>ลง</th>              
               
             </tr>
           </thead>

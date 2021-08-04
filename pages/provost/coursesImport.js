@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Axios from "../../config/Axios";
 import { useRouter } from "next/router";
+import { signIn, signOut, useSession } from "next-auth/client";
 
 export default function Courses() {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -11,6 +12,7 @@ export default function Courses() {
   const [year, setYear] = useState(null);
   const [term, setTerm] = useState(null);
   const router = useRouter();
+  const [session, loading] = useSession();
   const submitHandler = async (e) => {
     e.preventDefault(); //prevent the form from submitting
     let formData = new FormData();
@@ -45,12 +47,22 @@ export default function Courses() {
         }
       });
   };
-  function change(e){
-    setMajor(e.target.value);
-    console.log(major)
-    var lv = major.substring(major.lastIndexOf("(") );
-    
+  function change(e) {
+    console.log(major);
+    var lv = major.substring(major.lastIndexOf("("));
+
     console.log(lv);
+  }
+
+  if (typeof window !== "undefined" && loading) return null;
+
+  if (!session) {
+    console.log("in that case");
+    return (
+      <div>
+        <h2>You aren't signed in, please sign in first</h2>
+      </div>
+    );
   }
 
   return (
@@ -58,7 +70,7 @@ export default function Courses() {
       <h1>เพิ่มรายวิชาที่เปิดสอน</h1>
 
       <hr />
-      <h2>single upload</h2>
+      <h2>อัพโหลดเอกสาร</h2>
       <div className="information">
         <form encType="multipart/form-data" onSubmit={submitHandler}>
           <div className="input-group mb-3">
@@ -76,44 +88,67 @@ export default function Courses() {
             </select>
             <select
               name="major"
-              onChange={change
-              }
+              onChange={(e) => {
+                setMajor(e.target.value);
+              }}
             >
               <option value={null} disabled selected hidden>
-                เลือกสาขาของวิชา
+                {level ? "เลือกสาขาของวิชา" : "เลือกระดับก่อน"}
               </option>
-              <option value="วิศวกรรมอุตสาหการและระบบ(ป.ตรี)">
-                วิศวกรรมอุตสาหการและระบบ(ป.ตรี)
-              </option>
-              <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)">
-                วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)
-              </option>
-              <option value="วิศวกรรมโยธา(ป.ตรี)">วิศวกรรมโยธา(ป.ตรี)</option>
-              <option value="วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)">
-                วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)
-              </option>
-              <option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)">
-                วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)
-              </option>
-              <option value="วิศวกรรมเครื่องกลและระบบการผลิต(ป.ตรี)">
-                วิศวกรรมเครื่องกลและระบบการผลิต(ป.ตรี)
-              </option>
-              <option value="วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ(ป.ตรี)">
-                วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ(ป.ตรี)
-              </option>
+              {level == "ปริญญาตรี" && (
+                <option value="วิศวกรรมอุตสาหการและระบบ(ป.ตรี)">
+                  วิศวกรรมอุตสาหการและระบบ(ป.ตรี)
+                </option>
+              )}
+              {level == "ปริญญาตรี" && (
+                <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)">
+                  วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)
+                </option>
+              )}
+              {level == "ปริญญาตรี" && (
+                <option value="วิศวกรรมโยธา(ป.ตรี)">วิศวกรรมโยธา(ป.ตรี)</option>
+              )}
+              {level == "ปริญญาตรี" && (
+                <option value="วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)">
+                  วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)
+                </option>
+              )}
+              {level == "ปริญญาตรี" && (
+                <option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)">
+                  วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)
+                </option>
+              )}
+              {level == "ปริญญาตรี" && (
+                <option value="วิศวกรรมเครื่องกลและระบบการผลิต(ป.ตรี)">
+                  วิศวกรรมเครื่องกลและระบบการผลิต(ป.ตรี)
+                </option>
+              )}
+              {level == "ปริญญาตรี" && (
+                <option value="วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ(ป.ตรี)">
+                  วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ(ป.ตรี)
+                </option>
+              )}
 
-              <option value="วิศวกรรมความปลอดภัยและการจัดการสิ่งแวดล้อม(ป.โท)">
-                วิศวกรรมความปลอดภัยและการจัดการสิ่งแวดล้อม(ป.โท)
-              </option>
-              <option value="การจัดการวิศวกรรมและเทคโนโลยี(ป.โท)">
-                การจัดการวิศวกรรมและเทคโนโลยี(ป.โท)
-              </option>
-              <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.โท)">
-                วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.โท)
-              </option>
-              <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.โท)">
-                วิศวกรรมเครื่องกลและการออกแบบ(ป.โท)
-              </option>
+              {level == "ปริญญาโท" && (
+                <option value="วิศวกรรมความปลอดภัยและการจัดการสิ่งแวดล้อม(ป.โท)">
+                  วิศวกรรมความปลอดภัยและการจัดการสิ่งแวดล้อม(ป.โท)
+                </option>
+              )}
+              {level == "ปริญญาโท" && (
+                <option value="การจัดการวิศวกรรมและเทคโนโลยี(ป.โท)">
+                  การจัดการวิศวกรรมและเทคโนโลยี(ป.โท)
+                </option>
+              )}
+              {level == "ปริญญาโท" && (
+                <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.โท)">
+                  วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.โท)
+                </option>
+              )}
+              {level == "ปริญญาโท" && (
+                <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.โท)">
+                  วิศวกรรมเครื่องกลและการออกแบบ(ป.โท)
+                </option>
+              )}
             </select>
             <input
               type="number"

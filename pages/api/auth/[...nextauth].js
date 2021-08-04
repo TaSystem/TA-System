@@ -32,10 +32,11 @@ const options = {
       }
     },
   },
-  // pages: {
-  //   signIn: "/signin",
-  //   // newUser: "/register",
-  // },
+  pages: {
+    signIn: "/signin",
+    // signOut:'/registerNisit'
+    // newUser: "/register",
+  },
   // Optional SQL or MongoDB database to persist users
   // database: process.env.DATABASE_URL
   database: {

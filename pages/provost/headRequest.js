@@ -1,25 +1,40 @@
-import React, { useState, useEffect } from "react";
 import Axios from "../../config/Axios";
-import { signIn, signOut, useSession } from "next-auth/client";
+import React, { useState, useEffect } from "react";
 
-export default function index() {
-  const [courses, setCourses] = useState([]);
-  const [session, loading] = useSession();
+
+export default function HeadRequest() {
+  const [courseList, setCourseList] = useState([]);
   const [search, setSearch] = useState(null);
   const [major, setMajor] = useState("All");
   const [level, setLevel] = useState("All");
 
   useEffect(() => {
     async function getCourses() {
-      const response = await Axios.get("/courses");
-      setCourses(response.data);
+      const response = await Axios.post("/courses/teacher-reply", {
+        status: 2,
+      });
+      setCourseList(response.data);
     }
     getCourses();
   }, []);
 
-  function ChangeDuo(e) {
-    setLevel(e.target.value);
-    setMajor("All");
+  async function replyTAsuccess(course) {
+    await Axios.put("/reply/teacher-reply", {
+      userID: 13,
+      courseID: course,
+      status: 3,
+    }).then((response) => {
+      setCourseList(response.data);
+    });
+  }
+  async function replyTAfail(course) {
+    await Axios.put("/reply/teacher-reply", {
+      userID: 13,
+      courseID: course,
+      status: 5,
+    }).then((response) => {
+      setCourseList(response.data);
+    });
   }
 
   function Filter(courses) {
@@ -62,20 +77,17 @@ export default function index() {
     });
   }
 
-  if (typeof window !== "undefined" && loading) return null;
-
-  if (!session) {
-    console.log("in that case");
-    return (
-      <div>
-        <h2>You aren't signed in, please sign in first</h2>
-      </div>
-    );
+  function ChangeDuo(e) {
+    setLevel(e.target.value);
+    setMajor("All");
+  }
+  function action(params) {
+      
   }
 
   return (
     <div className="container">
-      <h1>รายวิชาของเจ้าหน้าที่</h1>
+      <h1>รายวิชาที่ยื่นขอเปิดรับ TA (หัวหน้าภาค)</h1>
       <div className="input-group mb-3">
         <input
           type="text"
@@ -172,91 +184,79 @@ export default function index() {
             <tr>
               <th rowSpan="2">ลำดับ</th>
               <th rowSpan="2">รหัสวิชา</th>
-              <th rowSpan="2">รหัสวิชา-พ.ศ.หลักสูตร</th>
               <th rowSpan="2">ชื่อวิชา</th>
-              <th colSpan="11">บรรยาย</th>
-              <th colSpan="10">ปฎิบัติ</th>
-              <th rowSpan="2">อาจารย์</th>
-              <th rowSpan="2">วิชาพื้นฐาน</th>
-              <th rowSpan="2">จำนวนชั่วโมงที่จัดสอบ</th>
-              <th colSpan="2">บรรยาย</th>
-              <th colSpan="2">ปฎิบัติ</th>
-              <th rowSpan="2">หมายเหตุ</th>
-              <th rowSpan="2">สาขา</th>
+              <th colSpan="2">หมู่เรียน</th>
+              <th rowSpan="2">ระดับ</th>
+              <th rowSpan="2">สาขาวิชา</th>
+              <th rowSpan="2">อาจารย์ผู้สอน</th>
+              <th rowSpan="2">ชื่อผู้ขอ</th>
+              <th rowSpan="2">จำนวนที่ขอ</th>
+              <th rowSpan="2">จำนวนชั่วโมง/สัปดาห์</th>
+              <th rowSpan="2">ค่าใช้จ่าย</th>
+              <th rowSpan="2">ตอบกลับ</th>
             </tr>
             <tr>
-              <th>หน่วยกิต</th>
-              <th>หน่วย</th>
-              <th>จำนวนชม.</th>
-              <th>หมู่</th>
-              <th>วัน</th>
-              <th>เริ่ม</th>
-              <th>-</th>
-              <th>สิ้นสุด</th>
-              <th>ห้อง</th>
-              <th>สาขา</th>
-              <th>จำนวน</th>
-
-              <th>หน่วย</th>
-              <th>จำนวนชม.</th>
-              <th>หมู่</th>
-              <th>วัน</th>
-              <th>เริ่ม</th>
-              <th>-</th>
-              <th>สิ้นสุด</th>
-              <th>ห้อง</th>
-              <th>สาขา</th>
-              <th>จำนวน</th>
-              <th>ส่วนกลางจัดสอบ</th>
-              <th>จัดสอบเองนอกตาราง</th>
-              <th>ส่วนกลางจัดสอบ</th>
-              <th>จัดสอบเองนอกตาราง</th>
+              <th>บรรยาย</th>
+              <th>ปฎิบัติ</th>
             </tr>
           </thead>
           <tbody>
-            {Filter(courses).map((val, key) => {
+            {Filter(courseList).map((val, key) => {
               return (
                 <tr key={key}>
-                  <td>{key + 1}</td>
+                  <td>
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      value=""
+                      id="flexCheckDefault"
+                    />{" "}
+                    {key + 1}
+                  </td>
                   <td>{val.courseID}</td>
-                  <td>{val.courseYear}</td>
                   <td>{val.title}</td>
-                  <td>{val.credit}</td>
-                  <td>{val.unit_D}</td>
-                  <td>{val.hr_D}</td>
-                  <td>{val.sec_D}</td>
-                  <td>{val.day_D}</td>
-                  <td>{val.start_D}</td>
-                  <td>{val.dat1}</td>
-                  <td>{val.end_D}</td>
-                  <td>{val.room_D}</td>
-                  <td>{val.major_D}</td>
-                  <td>{val.number_D}</td>
-
-                  <td>{val.unit_P}</td>
-                  <td>{val.hr_P}</td>
-                  <td>{val.sec_P}</td>
-                  <td>{val.day_P}</td>
-                  <td>{val.start_P}</td>
-                  <td>{val.dat2}</td>
-                  <td>{val.end_P}</td>
-                  <td>{val.room_P}</td>
-                  <td>{val.major_P}</td>
-                  <td>{val.number_P}</td>
-                  <td>{val.teacher}</td>
-                  <td>{val.subjectBefore}</td>
-                  <td>{val.testTime}</td>
-                  <td>{val.central_M}</td>
-                  <td>{val.decentral_M}</td>
-                  <td>{val.central_F}</td>
-                  <td>{val.decentral_F}</td>
-                  <td>{val.note}</td>
+                  <td>{val.sec_D ? val.sec_D : "-"}</td>
+                  <td>{val.sec_P ? val.sec_P : "-"}</td>
+                  <td>{val.level}</td>
                   <td>{val.major}</td>
+                  <td>{val.teacher}</td>
+                  <td>{val.name_email} </td>
+                  <td>{val.number}</td>
+                  {val.sec_D && val.sec_P && <td>5</td>}
+                  {val.sec_D && !val.sec_P && <td>2</td>}
+                  {!val.sec_D && val.sec_P && <td>3</td>}
+                  {val.sec_D && val.sec_P && (
+                    <td>{val.number * 5 * 30 * 15}</td>
+                  )}
+                  {val.sec_D && !val.sec_P && (
+                    <td>{val.number * 2 * 30 * 15}</td>
+                  )}
+                  {!val.sec_D && val.sec_P && (
+                    <td>{val.number * 3 * 30 * 15}</td>
+                  )}
+                  <td>
+                    <button
+                      type="button"
+                      class="btn btn-success"
+                      onClick={()=>{if (window.confirm('ต้องการยืนยันวิชา: '+val.title))replyTAsuccess(val.id)}}
+                      
+                    >
+                      ยืนยัน
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-danger"
+                      onClick={()=>{if (window.confirm('ต้องการยกเลิกวิชา: '+val.title))replyTAfail(val.id)}}
+                    >
+                      ยกเลิก
+                    </button>
+                  </td>
                 </tr>
               );
             })}
           </tbody>
         </table>
+        
       </div>
     </div>
   );

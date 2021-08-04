@@ -54,11 +54,14 @@ function SignIn({ providers, csrfToken, data, setDetailNisit }) {
   //{...} in each props
   console.log(providers);
   const router = useRouter();
+
+  console.log("route in sign ", router.pathname);
+
   useEffect(() => {
     // Always do navigations after the first render
     if (data != null) {
-      setDetailNisit(data);
-      console.log("data in Signin useEffect= ", data);
+      setDetailNisit(data.result[0]);
+      console.log("data in Signin useEffect= ", data.result[0]);
       // return <Redirect to="/" />;
       return router.push(data.path);
     } else {
@@ -69,25 +72,25 @@ function SignIn({ providers, csrfToken, data, setDetailNisit }) {
   const classes = useStyles();
   return (
     <Container maxWidth="100vh" disableGutters style={{ paddingTop: "10vh" }}>
-      <Box display="flex" flexDirection="row" justifyContent="center">
+      <Box style={{ textAlign: "center" }}>
         <Image
           src={logo}
           style={{ width: "40%", height: "40%", margin: "10px auto" }}
           alt="Logo"
         />
       </Box>
-      <Box style={{ textAlign: "center", width: "100%" }}>
+      <Box style={{ textAlign: "center", width: "100%", margin: "10px auto" }}>
         <h3 style={{ color: "#77879C" }}>
           ระบบคำร้องรับสมัครนิสิตช่วยปฎิบิติงานออนไลน์(SA)
         </h3>
       </Box>
       <Box display="flex" flexDirection="row" justifyContent="center">
-        <h2 style={{ color: "#77879C" }}>
+        <h2 style={{ color: "#77879C", textAlign: "center" }}>
           <LockOutlinedIcon /> เข้าสู่ระบบด้วยอีเมล
         </h2>
       </Box>
       <Box display="flex" flexDirection="row" justifyContent="center">
-        <Card className={classes.root}>
+        <card className={classes.root}>
           <CardContent>
             <Typography
               className={classes.title}
@@ -114,7 +117,7 @@ function SignIn({ providers, csrfToken, data, setDetailNisit }) {
                 }}
               >
                 <Button
-                  style={{ border: "2px solid #2ec068", width: "80%" }}
+                  style={{ border: "2px solid #2ec068", width: "25%" }}
                   variant="outline"
                   onClick={() => signIn(provider.id)}
                 >
@@ -134,17 +137,29 @@ function SignIn({ providers, csrfToken, data, setDetailNisit }) {
               </Box>
             );
           })}
-        </Card>
+        </card>
       </Box>
       <Box display="flex" flexDirection="row" justifyContent="center">
-        <Typography color="textSecondary" gutterBottom>
+        <Typography
+          color="textSecondary"
+          gutterBottom
+          style={{ textAlign: "center", margin: "10px auto" }}
+        >
           หากท่านไม่ทราบ email@ku.th หรือจำพาสเวิร์ดไม่ได้
         </Typography>
       </Box>
       <Box display="flex" flexDirection="row" justifyContent="center">
-        <Link color="textSecondary" href="https://accounts.ku.ac.th">
-          https://accounts.ku.ac.th
-        </Link>
+        
+          <Typography
+            color="textSecondary"
+            gutterBottom
+            style={{ textAlign: "center" }}
+          >
+            <Link color="textSecondary" href="https://accounts.ku.ac.th">
+              https://accounts.ku.ac.th
+             </Link>
+            </Typography>
+        
       </Box>
     </Container>
   );

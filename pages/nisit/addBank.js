@@ -66,7 +66,7 @@ function addBank(props) {
       </div>
     );
   }
-
+  
   return (
     <div className={styles.gridView}>
       <div className={styles.col4} style={{ backgroundColor: "#7a0117" }}>
