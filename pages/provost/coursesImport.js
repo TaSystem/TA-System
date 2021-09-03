@@ -7,19 +7,34 @@ export default function Courses() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [progress, setProgress] = useState(null);
   const [error, setError] = useState(null);
-  const [major, setMajor] = useState(null);
-  const [level, setLevel] = useState(null);
-  const [year, setYear] = useState(null);
-  const [term, setTerm] = useState(null);
+  const [major,setMajor] = useState(null);
+  // const [level,setLevel] =  useState(null);
+  const [year,setYear] = useState(null);
+  const [term,setTerm] =useState(null);
+  const today = new Date();
   const router = useRouter();
   const [session, loading] = useSession();
+
+  const download = async () =>{
+    Axios({
+      url: '/download', //your url
+      method: 'GET',
+      responseType: 'blob', // important
+    }).then((response) => {
+       const url = window.URL.createObjectURL(new Blob([response.data]));
+       const link = document.createElement('a');
+       link.href = url;
+       link.setAttribute('download', 'Header.csv'); //or any other extension
+       document.body.appendChild(link);
+       link.click();
+    }); 
+  }
+
   const submitHandler = async (e) => {
     e.preventDefault(); //prevent the form from submitting
     let formData = new FormData();
     //
-    console.log("check: ", level, selectedFiles[0]);
 
-    formData.append("level", level);
     formData.append("major", major);
     formData.append("year", year);
     formData.append("term", term);
@@ -47,12 +62,7 @@ export default function Courses() {
         }
       });
   };
-  function change(e) {
-    console.log(major);
-    var lv = major.substring(major.lastIndexOf("("));
 
-    console.log(lv);
-  }
 
   if (typeof window !== "undefined" && loading) return null;
 
@@ -70,90 +80,25 @@ export default function Courses() {
       <h1>เพิ่มรายวิชาที่เปิดสอน</h1>
 
       <hr />
+      
+      <button class="btn btn-secondary" onClick={download} >ดาวน์โหลดฟอร์ม</button>
       <h2>อัพโหลดเอกสาร</h2>
       <div className="information">
         <form encType="multipart/form-data" onSubmit={submitHandler}>
           <div className="input-group mb-3">
-            <select
-              name="year"
-              onChange={(e) => {
-                setLevel(e.target.value);
-              }}
-            >
-              <option value={null} disabled selected hidden>
-                ระดับ
-              </option>
-              <option value="ปริญญาตรี">ปริญญาตรี</option>
-              <option value="ปริญญาโท">ปริญญาโท</option>
-            </select>
-            <select
-              name="major"
-              onChange={(e) => {
-                setMajor(e.target.value);
-              }}
-            >
-              <option value={null} disabled selected hidden>
-                {level ? "เลือกสาขาของวิชา" : "เลือกระดับก่อน"}
-              </option>
-              {level == "ปริญญาตรี" && (
-                <option value="วิศวกรรมอุตสาหการและระบบ(ป.ตรี)">
-                  วิศวกรรมอุตสาหการและระบบ(ป.ตรี)
-                </option>
-              )}
-              {level == "ปริญญาตรี" && (
-                <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)">
-                  วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)
-                </option>
-              )}
-              {level == "ปริญญาตรี" && (
+          <select  name="major" onChange={(e)=>{setMajor(e.target.value)}}>
+                <option value={null} disabled selected hidden>{"เลือกสาขาของวิชา"}</option>
+                <option value="วิศวกรรมอุตสาหการและระบบ(ป.ตรี)">วิศวกรรมอุตสาหการและระบบ(ป.ตรี)</option>
+                <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)">วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)</option>
                 <option value="วิศวกรรมโยธา(ป.ตรี)">วิศวกรรมโยธา(ป.ตรี)</option>
-              )}
-              {level == "ปริญญาตรี" && (
-                <option value="วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)">
-                  วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)
-                </option>
-              )}
-              {level == "ปริญญาตรี" && (
-                <option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)">
-                  วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)
-                </option>
-              )}
-              {level == "ปริญญาตรี" && (
-                <option value="วิศวกรรมเครื่องกลและระบบการผลิต(ป.ตรี)">
-                  วิศวกรรมเครื่องกลและระบบการผลิต(ป.ตรี)
-                </option>
-              )}
-              {level == "ปริญญาตรี" && (
-                <option value="วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ(ป.ตรี)">
-                  วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ(ป.ตรี)
-                </option>
-              )}
-
-              {level == "ปริญญาโท" && (
-                <option value="วิศวกรรมความปลอดภัยและการจัดการสิ่งแวดล้อม(ป.โท)">
-                  วิศวกรรมความปลอดภัยและการจัดการสิ่งแวดล้อม(ป.โท)
-                </option>
-              )}
-              {level == "ปริญญาโท" && (
-                <option value="การจัดการวิศวกรรมและเทคโนโลยี(ป.โท)">
-                  การจัดการวิศวกรรมและเทคโนโลยี(ป.โท)
-                </option>
-              )}
-              {level == "ปริญญาโท" && (
-                <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.โท)">
-                  วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.โท)
-                </option>
-              )}
-              {level == "ปริญญาโท" && (
-                <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.โท)">
-                  วิศวกรรมเครื่องกลและการออกแบบ(ป.โท)
-                </option>
-              )}
+                <option value="วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)">วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)</option>
+                <option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)">วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)</option>
+                <option value="โครงการพิเศษคณะฯ(ป.ตรี)">โครงการพิเศษคณะฯ(ป.ตรี)</option>
+                
             </select>
             <input
-              type="number"
-              min={2564}
-              max={9999}
+              type="text"
+              defaultValue={today.getFullYear()+543}
               className="form-control"
               name="year"
               placeholder="ปีการศึกษา"
@@ -187,7 +132,7 @@ export default function Courses() {
 
           <div className="mb-3">
             <button type="submit" className="btn btn-success">
-              import excel
+              เพิ่มรายวิชา
             </button>
           </div>
           {error && (
