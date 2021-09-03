@@ -1,9 +1,7 @@
 import { Provider } from "next-auth/client";
 import Head from "next/head";
 import Layout from "../components/Layout";
-import "../styles/globals.css";
 import { wrapper } from "../redux/store";
-
 function App({ Component, pageProps }) {
 
 
