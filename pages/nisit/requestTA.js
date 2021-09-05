@@ -73,7 +73,8 @@ function requestTA(props) {
 //จำนวนชั่วโฒง
   return (
     <div className="container">
-      <h1>ลงทะเบียนTA จำนวนชั่วโมง</h1>
+      <h1>ลงทะเบียนTA (จำนวนชั่วโมง กี่ชม.)</h1>
+      <h2>ปี 2564 เทอม ปลาย</h2>
       <input
         type="text"
         className="form-control mb-3"
