@@ -1,0 +1,8 @@
+﻿courseID,courseYear,title,credit,unit_D,hr_D,sec_D,day_D,start_D,dat1,end_D,room_D,major_D,number_D,unit_P,hr_P,sec_P,day_P,start_P,dat2,end_P,room_P,major_P,number_P,teacher,subjectBefore,testTime,central_M,decentral_M,central_F,decentral_F,note
+03600012,03600012-60,Green Technology,3(3-0-6),3,3,800,Tu,13.00,-,16.00,,T17/2,55,,,,,,,,,,,ผศ.ดร.อุมารินทร์ แสงพานิช,-,-,3,-,-,-,/,
+03600013,03600013-60,Essential Computer Tools and Skills,1(0-3-2),,,,,,,,,,,1,3,830,Tu,9.00,-,12.00,Lab Com 1,T05/1,30,อ.บุราฉัตร และอ.พลพันธ์ ,-,-,3,-,-,-,/,
+03600014,03600014-60,Creative Problem Solving and Critical Thinking Skills,3(3-0-6),3,3,800,Th,9.00,-,12.00,23624,T05/1,30,,,,,,,,,,,อ.ดร.ดาราพร ผุสิงห์,-,-,3,-,-,-,/,
+03603112,03603112-60,Programming Fundamentals II,3(2-3-6),2,3,800,Th,13.00,-,15.00,Lab Com 2,T12/1,55,1,3,830,Th,15.00,-,18.00,Lab Com 2,T12/1,55,อ.ปุณณะ ยศปัญญา,,03603111,3,/,-,-,-,
+03603213,03603213-60,Algorithm Design and Analysis,3(3-0-6),3,3,800,Tu,9.00,-,12.00,,"T12/2,3",50,,,,,,,,,,,อ.ดร.อดิศักดิ์ สุภีสุน,,03603211 และ 03603212,3,/,-,/,-,
+03603213,03603213-55,Algorithm Design and Analysis,3(3-0-6),3,3,800,Tu,9.00,-,12.00,,T12/4,10,,,,,,,,,,,อ.ดร.อดิศักดิ์ สุภีสุน,,03603211 และ 03603212,3,/,-,/,-,
+03603499,03603499-55,Computer Engineering and Informatics Project,2(0-6-3),,,,,,,,,,,2,6,830,F,13.00,-,19.00,,T12/4,8,อ.กาญจนา เอี่ยมสอาด,,03603495,-,-,-,-,-,
