@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Axios from "../../config/Axios";
-
+import { useSession } from "next-auth/client";
 
 export default function officerSetDate() {
 
@@ -16,6 +16,7 @@ export default function officerSetDate() {
   const [err2,setErr2] = useState(null);
   const [success1,setSuccess1] = useState(null);
   const [success2,setSuccess2] = useState(null);
+  const [session, loading] = useSession();
   
 
 

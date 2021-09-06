@@ -7,17 +7,7 @@ import { signIn, signOut, useSession } from "next-auth/client";
 export default function coursesTeacher() {
  //ขอเลือกระดับได้
   const [courseList, setCourseList] = useState([]);
-  const [id,setID] = useState(null);
-  const [title,setTitle] = useState(null);
-  const [courseID,setCourseID] = useState(null);
-  const [sec_D,setSecD] = useState(null);
-  const [sec_P,setSecP] = useState(null);
-  const [level,setLevel] = useState(null);
-  const [major,setMajor] = useState(null);
-  const [teacher,setTeacher] = useState(null);
-  const [number_D,setNumberD] = useState(null);
-  const [number_P,setNumberP] = useState(null);
-  const [numberTA,setNumberTA] = useState(null);
+  const [value,setValue] = useState([]);
   const [search,setSearch] = useState(null);
   const [session, loading] = useSession();
   
@@ -31,17 +21,7 @@ export default function coursesTeacher() {
 
 
   const showModal=(val)=>{
-    setTitle(val.title);
-    setCourseID(val.courseID);
-    setSecD(val.sec_D);
-    setSecP(val.sec_P);
-    setLevel(val.level);
-    setMajor(val.major);
-    setTeacher(val.teacher);
-    setNumberD(val.number_D);
-    setNumberP(val.number_P);
-    setNumberTA(val.numberTA);
-    setID(val.id);
+    setValue(val);
    }
 
    if (typeof window !== "undefined" && loading) return null;
@@ -110,7 +90,7 @@ export default function coursesTeacher() {
                   <td>{val.number_P?val.number_P:val.number_D}</td>
                   <td>{val.numberReal?val.numberReal:0}</td>
                   <td>
-                    <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>showModal(val)} value={id} >
+                    <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>showModal(val)} >
                       ดูข้อมูล
                     </button>
                   </td>
@@ -120,8 +100,7 @@ export default function coursesTeacher() {
             })}
           </tbody>
         </table>
-        <Modal title={title} courseID={courseID} sec_D={sec_D} sec_P={sec_P} level={level} major={major} 
-        teacher={teacher} number_D={number_D} number_P={number_P} numberTA={numberTA} id={id} />
+        <Modal val={value} />
       </div>
       
     

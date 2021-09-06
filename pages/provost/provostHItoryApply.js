@@ -1,8 +1,9 @@
 import Axios from "../../config/Axios";
 import React, { useState, useEffect } from "react";
+import { useSession } from "next-auth/client";
 
 export default function provostHItoryApply() {
- 
+  const [session, loading] = useSession();
   const [courses, setCourses] = useState([]);
   useEffect(() => {
     async function getCourses(){

@@ -308,7 +308,7 @@ function registerNisit(props) {
             className={styles.registerButton}
             type="submit"
             id="submit"
-            onClick={()=>{if (window.confirm('ต้องการยืนยันวิชา: '+val.title))handleSubmit}}
+            onClick={()=>{if (window.confirm('บันทึกข้อมูล'))handleSubmit}}
           >
             ต่อไป
           </button>

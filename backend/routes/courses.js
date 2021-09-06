@@ -14,9 +14,19 @@ router.get('/',(req,res)=>{
         }
         else{
             res.send(result);
+            console.log("course all");
         }
     });
 })
+router.get('/year',(req, res) => {
+  db.query("SELECT DISTINCT year FROM courses ORDER BY year", (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
 
 router.get('/student',(req,res)=>{
   db.query("SELECT * FROM courses WHERE status=true ORDER BY courseID", (err,result)=>{
@@ -25,9 +35,22 @@ router.get('/student',(req,res)=>{
       }
       else{
           res.send(result);
+          
       }
   });
 })
+
+router.get("/request/:id",async (req, res) => {
+  const id = req.params.id;
+  await db.query("SELECT * FROM courses WHERE id = ?", id, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+      console.log("requestTA id:"+id);
+    }
+  });
+});
 
 router.post("/student-apply-success",(req,res)=>{
   const email = req.body.email;

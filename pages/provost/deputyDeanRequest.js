@@ -1,12 +1,15 @@
 import Axios from "../../config/Axios";
 import React, { useState, useEffect } from "react";
+import { useSession } from "next-auth/client";
 
 export default function DeputyDeanRequest() {
   const [courseList, setCourseList] = useState([]);
   const [search, setSearch] = useState(null);
   const [major, setMajor] = useState("All");
   const [level, setLevel] = useState("All");
+  const [session, loading] = useSession();
 
+  
   useEffect(() => {
     async function getCourses() {
       const response = await Axios.post("/courses/teacher-reply", {

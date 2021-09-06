@@ -3,17 +3,25 @@ import Axios from "../../config/Axios";
 import { signIn, signOut, useSession } from "next-auth/client";
 
 export default function index() {
+  const today = new Date();
   const [courses, setCourses] = useState([]);
   const [session, loading] = useSession();
   const [search, setSearch] = useState(null);
-  const [major, setMajor] = useState("All");
-  const [level, setLevel] = useState("All");
+  const [yearSearch, setYearSearch] = useState([]);
+  const [year, setYear] = useState(null);
+  const [term, setTerm] = useState(null);
+  const [major, setMajor] = useState(null);
 
   useEffect(() => {
     async function getCourses() {
       const response = await Axios.get("/courses");
       setCourses(response.data);
     }
+    async function getYear() {
+      const response = await Axios.get("/courses/year");
+      setYearSearch(response.data);
+    }
+    getYear();
     getCourses();
   }, []);
 
@@ -24,10 +32,9 @@ export default function index() {
 
   function Filter(courses) {
     return courses.filter((course) => {
-      if (course.level == level) {
-        if (course.level == "ปริญญาตรี") {
-          if (major == "All") return course;
-          else if (course.major == major) {
+      if (major == "All") {
+        if (year == "All") {
+          if (term == "All") {
             if (!search) {
               return course;
             } else if (
@@ -40,9 +47,35 @@ export default function index() {
               return course;
             }
           }
-        } else if (course.level == "ปริญญาโท") {
-          if (major == "All") return course;
-          else if (course.major == major) {
+          else if(course.term == term){
+            if (!search) {
+              return course;
+            } else if (
+              course.title.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            } else if (
+              course.courseID.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            }
+          }
+          
+        } else if (course.year == year) {
+          if (term == "All") {
+            if (!search) {
+              return course;
+            } else if (
+              course.title.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            } else if (
+              course.courseID.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            }
+          }
+          else if(course.term == term){
             if (!search) {
               return course;
             } else if (
@@ -56,8 +89,63 @@ export default function index() {
             }
           }
         }
-      } else if (level == "All") {
-        return course;
+      } else if (course.major == major) {
+        if (year == "All") {
+          if (term == "All") {
+            if (!search) {
+              return course;
+            } else if (
+              course.title.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            } else if (
+              course.courseID.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            }
+          }
+          else if(course.term == term){
+            if (!search) {
+              return course;
+            } else if (
+              course.title.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            } else if (
+              course.courseID.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            }
+          }
+          
+        } else if (course.year == year) {
+          if (term == "All") {
+            if (!search) {
+              return course;
+            } else if (
+              course.title.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            } else if (
+              course.courseID.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            }
+          }
+          else if(course.term == term){
+            if (!search) {
+              return course;
+            } else if (
+              course.title.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            } else if (
+              course.courseID.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            }
+          }
+        }
       }
     });
   }
@@ -83,12 +171,34 @@ export default function index() {
           placeholder="ค้นหาข้อมูล..."
           onChange={(e) => setSearch(e.target.value)}
         />
-        <select name="year" onChange={ChangeDuo}>
+
+        <select
+          name="year"
+          onChange={(e) => {
+            setYear(e.target.value);
+          }}
+        >
           <option value="All" disabled selected hidden>
-            ระดับ
+            ปีการศึกษา
           </option>
-          <option value="ปริญญาตรี">ปริญญาตรี</option>
-          <option value="ปริญญาโท">ปริญญาโท</option>
+
+          {yearSearch.map((val, key) => {
+            return <option value={val.year}>{val.year}</option>;
+          })}
+        </select>
+
+        <select
+          name="term"
+          onChange={(e) => {
+            setTerm(e.target.value);
+          }}
+        >
+          <option value="All" disabled selected hidden>
+            {year?"ภาคเรียน":"เลือกปีการศึกษาก่อน"}
+          </option>
+          <option value="ฤดูร้อน">ฤดูร้อน</option>
+          <option value="ต้น">ต้น</option>
+          <option value="ปลาย">ปลาย</option>
         </select>
 
         <select
@@ -97,73 +207,28 @@ export default function index() {
             setMajor(e.target.value);
           }}
         >
-          <option value={null} disabled selected hidden>
-            {level == "All" ? "เลือกระดับก่อน" : "เลือกสาขาของวิชา"}
+          <option value="All" disabled selected hidden>
+          {term?"สาขาของวิชา":"เลือกภาคเรียนก่อน"}
+            
           </option>
-          {level === "ปริญญาตรี" && (
-            <option value="All" disabled selected hidden>
-              เลือกสาขาของวิชา
-            </option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมอุตสาหการและระบบ">
-              วิศวกรรมอุตสาหการและระบบ(ป.ตรี)
-            </option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์">
-              วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)
-            </option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมโยธา">วิศวกรรมโยธา(ป.ตรี)</option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมเครื่องกลและการออกแบบ">
-              วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)
-            </option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์">
-              วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)
-            </option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมเครื่องกลและระบบการผลิต">
-              วิศวกรรมเครื่องกลและระบบการผลิต(ป.ตรี)
-            </option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ">
-              วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ(ป.ตรี)
-            </option>
-          )}
 
-          {level === "ปริญญาโท" && (
-            <option value="ALl" disabled selected hidden>
-              เลือกสาขาของวิชา
-            </option>
-          )}
-          {level === "ปริญญาโท" && (
-            <option value="วิศวกรรมความปลอดภัยและการจัดการสิ่งแวดล้อม">
-              วิศวกรรมความปลอดภัยและการจัดการสิ่งแวดล้อม(ป.โท)
-            </option>
-          )}
-          {level === "ปริญญาโท" && (
-            <option value="การจัดการวิศวกรรมและเทคโนโลยี">
-              การจัดการวิศวกรรมและเทคโนโลยี(ป.โท)
-            </option>
-          )}
-          {level === "ปริญญาโท" && (
-            <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์">
-              วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.โท)
-            </option>
-          )}
-          {level === "ปริญญาโท" && (
-            <option value="วิศวกรรมเครื่องกลและการออกแบบ">
-              วิศวกรรมเครื่องกลและการออกแบบ(ป.โท)
-            </option>
-          )}
+          <option value="วิศวกรรมอุตสาหการและระบบ">
+            วิศวกรรมอุตสาหการและระบบ(ป.ตรี)
+          </option>
+
+          <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์">
+            วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)
+          </option>
+
+          <option value="วิศวกรรมโยธา">วิศวกรรมโยธา(ป.ตรี)</option>
+
+          <option value="วิศวกรรมเครื่องกลและการออกแบบ">
+            วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)
+          </option>
+          <option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์">
+            วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)
+          </option>
+          <option value="โครงการพิเศษคณะฯ">โครงการพิเศษคณะฯ(ป.ตรี)</option>
         </select>
       </div>
       <div className="information">

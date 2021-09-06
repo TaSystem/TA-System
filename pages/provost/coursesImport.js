@@ -4,14 +4,14 @@ import { useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/client";
 
 export default function Courses() {
+  const today = new Date();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [progress, setProgress] = useState(null);
   const [error, setError] = useState(null);
   const [major,setMajor] = useState(null);
   // const [level,setLevel] =  useState(null);
-  const [year,setYear] = useState(null);
+  const [year,setYear] = useState(today.getFullYear()+543);
   const [term,setTerm] =useState(null);
-  const today = new Date();
   const router = useRouter();
   const [session, loading] = useSession();
 
