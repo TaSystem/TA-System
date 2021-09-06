@@ -27,15 +27,11 @@ app.use('/system',system);
 app.use('/setdate',setdate);
 
 
-
 app.get("/download",(req,res)=>{
   const file = `${__dirname}/uploads/download/Header-form.csv`;
   res.download(file);
   console.log("File downloaded!!!");
 })
-
-
-
 
 
 app.listen(port, () => {

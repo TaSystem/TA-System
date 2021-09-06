@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import { setBankNisit } from "../../redux/actions/nisitAction";
 import styles from "../../styles/addBank.module.css";
 import pwit from "../../img/pwit.png";
+import Redirect from '../../components/Redirect'
 
 function addBank(props) {
   const [session, loading] = useSession();
@@ -22,7 +23,7 @@ function addBank(props) {
   // const [department, setDepartment] = useState("");
   // const [tel, setTel] = useState("");
 
-  // const router = useRouter()
+  const router = useRouter()
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch("http://localhost:3000/api/secret");
@@ -56,8 +57,19 @@ function addBank(props) {
     props.setRegisterNisit(user);
   };
 
+  if(session){
+    var domain = String(session.user.email).substring(
+    String(session.user.email).lastIndexOf("@") + 1
+  );
+    if(!domain.includes("ku.th")){
+      return router.push('/provost')
+    }
+    
+  }
+  
   if (typeof window !== "undefined" && loading) return null;
 
+  
   if (!session) {
     console.log("in that case");
     return (

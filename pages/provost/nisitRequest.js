@@ -81,7 +81,7 @@ export default function historyReqest() {
                   <td>{val.sec_P ? val.sec_P : "-"}</td>
                   <td>{val.major}</td>
                   <td>{val.name_email}</td>
-                  <td>{val.note}</td>
+                  <td>{val.noteapply}</td>
                   <td>
                     <button
                       type="button"

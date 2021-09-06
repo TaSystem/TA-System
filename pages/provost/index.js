@@ -25,16 +25,24 @@ export default function index() {
     getCourses();
   }, []);
 
-  function ChangeDuo(e) {
-    setLevel(e.target.value);
-    setMajor("All");
+  const deleteCourse = async (id) =>{
+    await Axios.delete(`/courses/delete/${id}`).then((response) => {
+      setCourses(response.data);
+    });
+  }
+  const deleteCourseList = async () =>{
+    await Axios.post("/courses/delete",{
+      year:year,
+      term:term,
+      major:major
+    })
   }
 
   function Filter(courses) {
     return courses.filter((course) => {
-      if (major == "All") {
-        if (year == "All") {
-          if (term == "All") {
+      if (year == null) {
+        if (term == null) {
+          if (major == null) {
             if (!search) {
               return course;
             } else if (
@@ -45,53 +53,32 @@ export default function index() {
               course.courseID.toLowerCase().includes(search.toLowerCase())
             ) {
               return course;
-            }
-          }
-          else if(course.term == term){
-            if (!search) {
-              return course;
             } else if (
-              course.title.toLowerCase().includes(search.toLowerCase())
-            ) {
-              return course;
-            } else if (
-              course.courseID.toLowerCase().includes(search.toLowerCase())
-            ) {
-              return course;
-            }
-          }
-          
-        } else if (course.year == year) {
-          if (term == "All") {
-            if (!search) {
-              return course;
-            } else if (
-              course.title.toLowerCase().includes(search.toLowerCase())
-            ) {
-              return course;
-            } else if (
-              course.courseID.toLowerCase().includes(search.toLowerCase())
-            ) {
-              return course;
-            }
-          }
-          else if(course.term == term){
-            if (!search) {
-              return course;
-            } else if (
-              course.title.toLowerCase().includes(search.toLowerCase())
-            ) {
-              return course;
-            } else if (
-              course.courseID.toLowerCase().includes(search.toLowerCase())
+              course.teacher.toLowerCase().includes(search.toLowerCase())
             ) {
               return course;
             }
           }
         }
-      } else if (course.major == major) {
-        if (year == "All") {
-          if (term == "All") {
+      } else if (year == course.year) {
+        if (term == null) {
+          if (!search) {
+            return course;
+          } else if (
+            course.title.toLowerCase().includes(search.toLowerCase())
+          ) {
+            return course;
+          } else if (
+            course.courseID.toLowerCase().includes(search.toLowerCase())
+          ) {
+            return course;
+          } else if (
+            course.teacher.toLowerCase().includes(search.toLowerCase())
+          ) {
+            return course;
+          }
+        } else if (term == course.term) {
+          if (major == course.major) {
             if (!search) {
               return course;
             } else if (
@@ -100,11 +87,14 @@ export default function index() {
               return course;
             } else if (
               course.courseID.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            } else if (
+              course.teacher.toLowerCase().includes(search.toLowerCase())
             ) {
               return course;
             }
-          }
-          else if(course.term == term){
+          } else if (major == null) {
             if (!search) {
               return course;
             } else if (
@@ -115,32 +105,8 @@ export default function index() {
               course.courseID.toLowerCase().includes(search.toLowerCase())
             ) {
               return course;
-            }
-          }
-          
-        } else if (course.year == year) {
-          if (term == "All") {
-            if (!search) {
-              return course;
             } else if (
-              course.title.toLowerCase().includes(search.toLowerCase())
-            ) {
-              return course;
-            } else if (
-              course.courseID.toLowerCase().includes(search.toLowerCase())
-            ) {
-              return course;
-            }
-          }
-          else if(course.term == term){
-            if (!search) {
-              return course;
-            } else if (
-              course.title.toLowerCase().includes(search.toLowerCase())
-            ) {
-              return course;
-            } else if (
-              course.courseID.toLowerCase().includes(search.toLowerCase())
+              course.teacher.toLowerCase().includes(search.toLowerCase())
             ) {
               return course;
             }
@@ -168,7 +134,7 @@ export default function index() {
         <input
           type="text"
           className="form-control"
-          placeholder="ค้นหาข้อมูล..."
+          placeholder="ชื่อวิชา/รหัสวิชา/อาจารย์"
           onChange={(e) => setSearch(e.target.value)}
         />
 
@@ -194,7 +160,7 @@ export default function index() {
           }}
         >
           <option value="All" disabled selected hidden>
-            {year?"ภาคเรียน":"เลือกปีการศึกษาก่อน"}
+            {year ? "ภาคเรียน" : "เลือกปีการศึกษาก่อน"}
           </option>
           <option value="ฤดูร้อน">ฤดูร้อน</option>
           <option value="ต้น">ต้น</option>
@@ -208,8 +174,7 @@ export default function index() {
           }}
         >
           <option value="All" disabled selected hidden>
-          {term?"สาขาของวิชา":"เลือกภาคเรียนก่อน"}
-            
+            {term ? "สาขาของวิชา" : "เลือกภาคเรียนก่อน"}
           </option>
 
           <option value="วิศวกรรมอุตสาหการและระบบ">
@@ -230,6 +195,11 @@ export default function index() {
           </option>
           <option value="โครงการพิเศษคณะฯ">โครงการพิเศษคณะฯ(ป.ตรี)</option>
         </select>
+      </div>
+      <div>
+        <button type="submit" className="btn btn-danger" onClick={()=>{if (window.confirm('ลบวิชาที่ ปีการศึกษา '+year+" ภาคเรียน "+term+" สาขา "+major))deleteCourseList()}}>
+          ลบวิชารายวิชา
+        </button>
       </div>
       <div className="information">
         <table className="table table-bordered">
@@ -282,7 +252,12 @@ export default function index() {
             {Filter(courses).map((val, key) => {
               return (
                 <tr key={key}>
-                  <td>{key + 1}</td>
+                  <td>
+                    {key + 1}
+                    <button type="button" className="btn btn-danger" onClick={()=>{if (window.confirm('ต้องการลบวิชา: '+val.title))deleteCourse(val.id)}}>
+                      ลบ
+                    </button>
+                  </td>
                   <td>{val.courseID}</td>
                   <td>{val.courseYear}</td>
                   <td>{val.title}</td>

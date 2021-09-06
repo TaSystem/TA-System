@@ -2,15 +2,14 @@ import Axios from "../../config/Axios";
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/client";
 
-
 export default function OfficerRequest() {
   const [courseList, setCourseList] = useState([]);
   const [search, setSearch] = useState(null);
   const [major, setMajor] = useState("All");
   const [level, setLevel] = useState("All");
+  const [numberReal, setNumberReal] = useState(null);
   const [session, loading] = useSession();
 
-  
   useEffect(() => {
     async function getCourses() {
       const response = await Axios.post("/courses/teacher-reply", {
@@ -61,10 +60,42 @@ export default function OfficerRequest() {
     });
   }
 
+  const interfaceNumberReal =(number)=>{
+    let checkNull = number?true:false;
+    return(
+      <div>
+        {checkNull ? (
+                      number
+                    ) : (
+                      <input
+                        className="form-control"
+                        type="text"
+                        placeholder="จำนวนนิสิต"
+                        onChange={(e) => {
+                          setNumberReal(e.target.value);
+                        }}
+                      />
+                    )}
+                    {checkNull ? (
+                      <a class="nav-item nav-link">แก้ไข</a>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn btn-success"
+                        onClick={() => updateNumberReal(val.CID)}
+                      >
+                        ยืนยัน
+                      </button>
+                    )}
+      </div>
+    )
+  }
+
   function ChangeDuo(e) {
     setLevel(e.target.value);
     setMajor("All");
   }
+
   async function replyTAsuccess(course) {
     await Axios.put("/reply/teacher-reply", {
       userID: 13,
@@ -83,6 +114,16 @@ export default function OfficerRequest() {
       setCourseList(response.data);
     });
   }
+  const updateNumberReal = async (id) => {
+    await Axios.put("/courses/updateNumber", {
+      id: id,
+      numberReal: numberReal,
+    }).then((response) => {
+      setCourseList(response.data);
+    });
+  };
+
+
   //จำนวนที่ลงใส่หน้านี้
 
   return (
@@ -183,70 +224,82 @@ export default function OfficerRequest() {
           <thead>
             <tr>
               <th rowSpan="2">ลำดับ</th>
+              <th rowSpan="2">รหัสคำขอ</th>
               <th rowSpan="2">รหัสวิชา</th>
               <th rowSpan="2">ชื่อวิชา</th>
               <th colSpan="2">หมู่เรียน</th>
-              <th rowSpan="2">ระดับ</th>
               <th rowSpan="2">สาขาวิชา</th>
+              <th rowSpan="2">จำนวนที่รับ</th>
+              <th rowSpan="2">จำนวนที่ลง</th>
               <th rowSpan="2">อาจารย์ผู้สอน</th>
-              <th rowSpan="2">ชื่อผู้ขอ</th>
-              <th rowSpan="2">จำนวนที่ขอ</th>
+              <th rowSpan="2">อาจารย์ผู้ขอ</th>
+              <th colSpan="2">จำนวนที่ขอ</th>
               <th rowSpan="2">จำนวนชั่วโมง/สัปดาห์</th>
               <th rowSpan="2">ค่าใช้จ่าย</th>
               <th rowSpan="2">ตอบกลับ</th>
-              
             </tr>
             <tr>
               <th>บรรยาย</th>
               <th>ปฎิบัติ</th>
+              <th>ป.ตรี</th>
+              <th>ป.โท</th>
             </tr>
           </thead>
           <tbody>
             {Filter(courseList).map((val, key) => {
               return (
                 <tr key={key}>
-                  <td>
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      value=""
-                      id="flexCheckDefault"
-                    />{" "}
-                    {key + 1}
-                  </td>
+                  <td>{key + 1}</td>
+                  <td>{val.AID}</td>
                   <td>{val.courseID}</td>
                   <td>{val.title}</td>
                   <td>{val.sec_D ? val.sec_D : "-"}</td>
                   <td>{val.sec_P ? val.sec_P : "-"}</td>
-                  <td>{val.level}</td>
                   <td>{val.major}</td>
+                  <td>{val.number_D ? val.number_D : val.number_P}</td>
+                  <td>
+                    {interfaceNumberReal(val.numberReal)}
+                  </td>
                   <td>{val.teacher}</td>
                   <td>{val.name_email} </td>
-                  <td>{val.number}</td>
+                  <td>{val.number1}</td>
+                  <td>{val.number2}</td>
                   {val.sec_D && val.sec_P && <td>5</td>}
                   {val.sec_D && !val.sec_P && <td>2</td>}
                   {!val.sec_D && val.sec_P && <td>3</td>}
                   {val.sec_D && val.sec_P && (
-                    <td>{val.number * 5 * 30 * 15}</td>
+                    <td>
+                      {val.number1 * 5 * 30 * 15 + val.number2 * 5 * 40 * 15}
+                    </td>
                   )}
                   {val.sec_D && !val.sec_P && (
-                    <td>{val.number * 2 * 30 * 15}</td>
+                    <td>
+                      {val.number1 * 2 * 30 * 15 + val.number2 * 2 * 40 * 15}
+                    </td>
                   )}
                   {!val.sec_D && val.sec_P && (
-                    <td>{val.number * 3 * 30 * 15}</td>
+                    <td>
+                      {val.number1 * 3 * 30 * 15 + val.number2 * 3 * 40 * 15}
+                    </td>
                   )}
                   <td>
                     <button
                       type="button"
-                      class="btn btn-success"
-                      onClick={()=>{if (window.confirm('ต้องการยืนยันวิชา: '+val.title))replyTAsuccess(val.id)}}
+                      className="btn btn-success"
+                      onClick={() => {
+                        if (window.confirm("ต้องการยืนยันวิชา: " + val.title))
+                          replyTAsuccess(val.CID);
+                      }}
                     >
                       ยืนยัน
                     </button>
                     <button
                       type="button"
-                      class="btn btn-danger"
-                      onClick={()=>{if (window.confirm('ต้องการยืนยันวิชา: '+val.title))replyTAfail(val.id)}}
+                      className="btn btn-danger"
+                      onClick={() => {
+                        if (window.confirm("ต้องการยืนยันวิชา: " + val.title))
+                          replyTAfail(val.CID);
+                      }}
                     >
                       ยกเลิก
                     </button>

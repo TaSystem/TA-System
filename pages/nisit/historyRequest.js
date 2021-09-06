@@ -14,15 +14,17 @@ function historyReqest(props) {
   const [session, loading] = useSession();
   const router = useRouter();
 
-  // useEffect(() => {
-  //   console.log("useEffect 1");
-  //   async function getCourses() {
-  //     const response = await Axios.get("/courses/student-apply");
-  //     setCourses(response.data);
-  //     session ? props.getCoursesNisit(session.user.email) : null
-  //   }
-  //   getCourses();
-  // }, [loading]);
+  useEffect(() => {
+    console.log("useEffect 1");
+    async function getCourses() {
+      const response = await Axios.post("/courses/student-apply",{
+        email:props.nisit.email
+      });
+      setCourses(response.data);
+      session ? props.getCoursesNisit(session.user.email) : null
+    }
+    getCourses();
+  }, [loading]);
 
   useEffect(() => {
     // console.log("useEffect 2");

@@ -54,7 +54,7 @@ const Navbar = () => {
                 <a class="nav-item nav-link">กรอกข้อมูลธนาคาร </a>
               </Link>
               <Link href="/nisit">
-                <a class="nav-item nav-link">รายวิชาที่เปิดรับTA </a>
+                <a class="nav-item nav-link">รายวิชาที่เป็น TA </a>
               </Link>
               <Link href="/nisit/requestTA">
                 <a class="nav-item nav-link">ลงทะเบียนTA </a>
@@ -134,7 +134,7 @@ const Navbar = () => {
                 <a class="nav-item nav-link">คำขอนิสิตของหัวหน้าภาค </a>
               </Link>
               <Link href="/provost/officerRequest">
-                <a class="nav-item nav-link">คำขอนิสิตของเจ้าหน้าที่ </a>
+                <a class="nav-item nav-link">คำขออาจารย์ของเจ้าหน้าที่ </a>
               </Link>
               <Link href="/provost/provostHItoryApply">
                 <a class="nav-item nav-link">รายวิชาที่ยื่นขอTA </a>

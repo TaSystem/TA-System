@@ -37,8 +37,9 @@ function requestTA(props) {
     await Axios.post("/apply/student-apply", {
       userID: props.nisit.userID,
       courseID: id,
+      hrperweek:5,
       status: 1,
-      note: note,
+      noteapply: note,
     }).then((res) => {
       console.log(res.data);
     });
@@ -65,15 +66,17 @@ function requestTA(props) {
 
   console.log("props in requestTA  >> ", props.nisit);
   console.log("session in requestTA ", session);
-  // console.log("router in requestTA ", router.pathname);
-
-  // console.log("props Courses in requestTA ", props.courses);
-  // console.log("Courses in requestTA ", courses);
+  
+  const hourTA =(d,p)=>{
+    if(d&&p) return 5
+    else if(d)  return 2
+    else if(p)  return 3
+  }
 
 //จำนวนชั่วโฒง
   return (
     <div className="container">
-      <h1>ลงทะเบียนTA (จำนวนชั่วโมง กี่ชม.)</h1>
+      <h1>ลงทะเบียนTA {props.nisit.level=="ปริญญาตรี"?"(ขอได้ไม่เกิน 10 ชั่วโมง)":"(ขอได้ไม่จำกัดชั่วโมง)"}</h1>
       <h2>ปี 2564 เทอม ปลาย</h2>
       <input
         type="text"
@@ -132,7 +135,7 @@ function requestTA(props) {
                         class="btn btn-success"
                         aria-label="Example text with button addon"
                         aria-describedby="button-addon1"
-                        onClick={() => applyTA(val.id)}
+                        onClick={() => applyTA(val.id,hourTA(val.sec_D,val.sec_P))}
                       >
                         ส่งคำร้อง{" "}
                       </button>
