@@ -19,21 +19,22 @@ export default function HeadRequest() {
     getCourses();
   }, []);
 
-  async function replyTAsuccess(course) {
-    await Axios.put("/reply/teacher-reply", {
-      userID: 13,
+  async function replyTAsuccess(course,AID) {
+    await Axios.post("/reply/teacher-reply", {
+      email:session.user.email,
+      applyTaId:AID,
       courseID: course,
       status: 3,
     }).then((response) => {
       setCourseList(response.data);
     });
   }
-
-  async function replyTAfail(course) {
-    await Axios.put("/reply/teacher-reply", {
-      userID: 13,
+  async function replyTAfail(course,AID) {
+    await Axios.post("/reply/teacher-reply", {
+      email:session.user.email,
+      applyTaId:AID,
       courseID: course,
-      status: 5,
+      status: 0,
     }).then((response) => {
       setCourseList(response.data);
     });
@@ -41,40 +42,35 @@ export default function HeadRequest() {
 
   function Filter(courses) {
     return courses.filter((course) => {
-      if (course.level == level) {
-        if (course.level == "ปริญญาตรี") {
-          if (major == "All") return course;
-          else if (course.major == major) {
-            if (!search) {
-              return course;
-            } else if (
-              course.title.toLowerCase().includes(search.toLowerCase())
-            ) {
-              return course;
-            } else if (
-              course.courseID.toLowerCase().includes(search.toLowerCase())
-            ) {
-              return course;
-            }
-          }
-        } else if (course.level == "ปริญญาโท") {
-          if (major == "All") return course;
-          else if (course.major == major) {
-            if (!search) {
-              return course;
-            } else if (
-              course.title.toLowerCase().includes(search.toLowerCase())
-            ) {
-              return course;
-            } else if (
-              course.courseID.toLowerCase().includes(search.toLowerCase())
-            ) {
-              return course;
-            }
-          }
+      if (major == "All") {
+        if (!search) {
+          return course;
+        } else if (course.title.toLowerCase().includes(search.toLowerCase())) {
+          return course;
+        } else if (
+          course.courseID.toLowerCase().includes(search.toLowerCase())
+        ) {
+          return course;
+        } else if (
+          course.teacher.toLowerCase().includes(search.toLowerCase())
+        ) {
+          return course;
         }
-      } else if (level == "All") {
-        return course;
+      }
+      else if (course.major == major) {
+        if (!search) {
+          return course;
+        } else if (course.title.toLowerCase().includes(search.toLowerCase())) {
+          return course;
+        } else if (
+          course.courseID.toLowerCase().includes(search.toLowerCase())
+        ) {
+          return course;
+        } else if (
+          course.teacher.toLowerCase().includes(search.toLowerCase())
+        ) {
+          return course;
+        }
       }
     });
   }
@@ -94,17 +90,9 @@ export default function HeadRequest() {
         <input
           type="text"
           className="form-control"
-          placeholder="ค้นหาข้อมูล..."
+          placeholder="รหัสวิชา/ชื่อวิชา/อาจารย์"
           onChange={(e) => setSearch(e.target.value)}
         />
-        <select name="year" onChange={ChangeDuo}>
-          <option value="All" disabled selected hidden>
-            ระดับ
-          </option>
-          <option value="ปริญญาตรี">ปริญญาตรี</option>
-          <option value="ปริญญาโท">ปริญญาโท</option>
-        </select>
-
         <select
           name="major"
           onChange={(e) => {
@@ -114,70 +102,29 @@ export default function HeadRequest() {
           <option value={null} disabled selected hidden>
             {level == "All" ? "เลือกระดับก่อน" : "เลือกสาขาของวิชา"}
           </option>
-          {level === "ปริญญาตรี" && (
-            <option value="All" disabled selected hidden>
-              เลือกสาขาของวิชา
-            </option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมอุตสาหการและระบบ">
-              วิศวกรรมอุตสาหการและระบบ(ป.ตรี)
-            </option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์">
-              วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)
-            </option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมโยธา">วิศวกรรมโยธา(ป.ตรี)</option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมเครื่องกลและการออกแบบ">
-              วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)
-            </option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์">
-              วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)
-            </option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมเครื่องกลและระบบการผลิต">
-              วิศวกรรมเครื่องกลและระบบการผลิต(ป.ตรี)
-            </option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ">
-              วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ(ป.ตรี)
-            </option>
-          )}
+          <option value="All" disabled selected hidden>
+            เลือกสาขาของวิชา
+          </option>
 
-          {level === "ปริญญาโท" && (
-            <option value="ALl" disabled selected hidden>
-              เลือกสาขาของวิชา
-            </option>
-          )}
-          {level === "ปริญญาโท" && (
-            <option value="วิศวกรรมความปลอดภัยและการจัดการสิ่งแวดล้อม">
-              วิศวกรรมความปลอดภัยและการจัดการสิ่งแวดล้อม(ป.โท)
-            </option>
-          )}
-          {level === "ปริญญาโท" && (
-            <option value="การจัดการวิศวกรรมและเทคโนโลยี">
-              การจัดการวิศวกรรมและเทคโนโลยี(ป.โท)
-            </option>
-          )}
-          {level === "ปริญญาโท" && (
-            <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์">
-              วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.โท)
-            </option>
-          )}
-          {level === "ปริญญาโท" && (
-            <option value="วิศวกรรมเครื่องกลและการออกแบบ">
-              วิศวกรรมเครื่องกลและการออกแบบ(ป.โท)
-            </option>
-          )}
+          <option value="วิศวกรรมอุตสาหการและระบบ">
+            วิศวกรรมอุตสาหการและระบบ(ป.ตรี)
+          </option>
+
+          <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์">
+            วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)
+          </option>
+
+          <option value="วิศวกรรมโยธา">วิศวกรรมโยธา(ป.ตรี)</option>
+
+          <option value="วิศวกรรมเครื่องกลและการออกแบบ">
+            วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)
+          </option>
+
+          <option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์">
+            วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)
+          </option>
+
+          <option value="โครงการพิเศษคณะฯ">โครงการพิเศษคณะฯ(ป.ตรี)</option>
         </select>
       </div>
       <div className="information">
@@ -192,14 +139,15 @@ export default function HeadRequest() {
               <th rowSpan="2">สาขาวิชา</th>
               <th rowSpan="2">อาจารย์ผู้สอน</th>
               <th rowSpan="2">ชื่อผู้ขอ</th>
-              <th rowSpan="2">จำนวนที่ขอ</th>
-              <th rowSpan="2">จำนวนชั่วโมง/สัปดาห์</th>
-              <th rowSpan="2">ค่าใช้จ่าย</th>
+              <th colSpan="2">จำนวนที่ขอ</th>
+              <th rowSpan="2">เหตุผล</th>
               <th rowSpan="2">ตอบกลับ</th>
             </tr>
             <tr>
               <th>บรรยาย</th>
               <th>ปฎิบัติ</th>
+              <th>ป.ตรี</th>
+              <th>ป.โท</th>
             </tr>
           </thead>
           <tbody>
@@ -223,24 +171,15 @@ export default function HeadRequest() {
                   <td>{val.major}</td>
                   <td>{val.teacher}</td>
                   <td>{val.name_email} </td>
-                  <td>{val.number}</td>
-                  {val.sec_D && val.sec_P && <td>5</td>}
-                  {val.sec_D && !val.sec_P && <td>2</td>}
-                  {!val.sec_D && val.sec_P && <td>3</td>}
-                  {val.sec_D && val.sec_P && (
-                    <td>{val.number * 5 * 30 * 15}</td>
-                  )}
-                  {val.sec_D && !val.sec_P && (
-                    <td>{val.number * 2 * 30 * 15}</td>
-                  )}
-                  {!val.sec_D && val.sec_P && (
-                    <td>{val.number * 3 * 30 * 15}</td>
-                  )}
+                  <td>{val.number1}</td>
+                  <td>{val.number2}</td>
+                  <td>{val.noteapply}</td>
+                  
                   <td>
                     <button
                       type="button"
                       class="btn btn-success"
-                      onClick={()=>{if (window.confirm('ต้องการยืนยันวิชา: '+val.title))replyTAsuccess(val.id)}}
+                      onClick={()=>{if (window.confirm('ต้องการยืนยันวิชา: '+val.title))replyTAsuccess(val.CID,val.AID)}}
                       
                     >
                       ยืนยัน
@@ -248,7 +187,7 @@ export default function HeadRequest() {
                     <button
                       type="button"
                       class="btn btn-danger"
-                      onClick={()=>{if (window.confirm('ต้องการยกเลิกวิชา: '+val.title))replyTAfail(val.id)}}
+                      onClick={()=>{if (window.confirm('ต้องการยกเลิกวิชา: '+val.title))replyTAfail(val.CID,val.AID)}}
                     >
                       ยกเลิก
                     </button>

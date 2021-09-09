@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Axios from "../../config/Axios";
 import { signIn, signOut, useSession } from "next-auth/client";
+import { connect } from "react-redux";
+import { getDetailNisit } from "../../redux/actions/nisitAction";
+import Navbar from '../../components/Navbar'
 
-export default function index() {
+function index(props) {
   const today = new Date();
   const [courses, setCourses] = useState([]);
   const [session, loading] = useSession();
@@ -23,7 +26,16 @@ export default function index() {
     }
     getYear();
     getCourses();
+
+    
   }, []);
+
+  useEffect(() => {
+    if (session) {
+      props.getDetailNisit(session.user.email)
+    }
+
+  }, [loading]);
 
   const deleteCourse = async (id) =>{
     await Axios.delete(`/courses/delete/${id}`).then((response) => {
@@ -127,8 +139,11 @@ export default function index() {
     );
   }
 
+  console.log("props in provost ",props.nisit)
+
   return (
     <div className="container">
+      {/* <Navbar roleID={props.nisit.roleID} /> */}
       <h1>รายวิชาของเจ้าหน้าที่</h1>
       <div className="input-group mb-3">
         <input
@@ -301,3 +316,13 @@ export default function index() {
     </div>
   );
 }
+
+const mapStateToProps = (state) => ({
+  nisit: state.nisit.nisit,
+});
+
+const mapDispatchToProps = {
+  getDetailNisit: getDetailNisit,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(index);

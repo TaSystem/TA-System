@@ -4,7 +4,7 @@ import Link from "next/link";
 import Axios from "../../config/Axios";
 import { useRouter } from "next/router";
 
-export default function index() {
+export default function index(props) {
   const [courseList, setCourseList] = useState([]);
   const [search, setSearch] = useState(null);
   const [session, loading] = useSession();
@@ -19,6 +19,8 @@ export default function index() {
         console.log("index Nisit : ", res.data , 'my email is ',session.user.email);
         setCourseList(res.data);
       });
+
+
     }
     // }
     // getCourses();

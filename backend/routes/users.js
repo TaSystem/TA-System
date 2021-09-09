@@ -92,7 +92,7 @@ router.post("/login",async (req, res) => {
               let ansStudent ={"path":"/nisit",
                         "result":result}
 
-             if(role==7){
+             if(role==5){
               res.send(ansStudent);
              }else{
               res.send(ansTeacher);

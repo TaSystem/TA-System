@@ -7,16 +7,30 @@ import { signIn, signOut, useSession } from "next-auth/client";
 export default function coursesTeacher() {
  //ขอเลือกระดับได้
   const [courseList, setCourseList] = useState([]);
+  const [system,setSystem] = useState([]);
   const [value,setValue] = useState([]);
   const [search,setSearch] = useState(null);
+  const [yearNow,setYearNow] = useState([]);
   const [session, loading] = useSession();
+  var syStatus = system != null && system.length != 0 ? system[0].status : "loading...";
   
   useEffect(() => {
     async function getCourses(){
         const response = await Axios.get("/courses");
         setCourseList(response.data)
     }
-    getCourses(); 
+    async function getSystem() {
+      const response = await Axios.get("/system/1");
+      setSystem(response.data);
+      
+    }
+    async function getYear() {
+      const response = await Axios.get("/setdate/getNow");
+      setYearNow(response.data);
+    }
+    getYear();
+    getSystem();
+    getCourses();
   },[]);
 
 
@@ -34,11 +48,20 @@ export default function coursesTeacher() {
       </div>
     );
   }
+  else if (!syStatus) {
+    return (
+      <div>
+        <h2>ระบบรับสมัครวิชาเปิดรับนิสิตช่วยงานถูกปิด</h2>
+      </div>
+    );
+  }
+  
 
 
   return (
     <div className="container">
-      <h1>รายวิชาที่เปิดสอน</h1>
+      <h1>รายวิชาที่เปิดสอน  </h1>
+      <h2>ปี {yearNow != null && yearNow.length != 0 ? yearNow[0].year : "loading..."} เทอม {yearNow != null && yearNow.length != 0 ? yearNow[0].term : "loading..."} ระบบ {syStatus?"เปิด":"ปิด"} </h2>
       <input type="text" className="form-control mb-3" placeholder="ค้นหาข้อมูล..." onChange={(e)=>setSearch(e.target.value)} />
       <div className="information">
         <table className="table table-bordered">
@@ -87,7 +110,7 @@ export default function coursesTeacher() {
                   <td>{val.level}</td>
                   <td>{val.major}</td>
                   <td>{val.teacher}</td>
-                  <td>{val.number_P?val.number_P:val.number_D}</td>
+                  <td>{val.number_D?val.number_D:val.number_P}</td>
                   <td>{val.numberReal?val.numberReal:0}</td>
                   <td>
                     <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>showModal(val)} >

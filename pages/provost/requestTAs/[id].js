@@ -28,7 +28,7 @@ const requestTAs = () => {
     console.log("click",id);
     await Axios.post("/apply/teacher-apply", {
       email:session.user.email ,
-      userID: 12,
+      
       courseID: id,
       number1:number1,
       number2:number2,

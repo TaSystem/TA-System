@@ -11,13 +11,27 @@ function requestTA(props) {
   const [courseList, setCourseList] = useState([]);
   const [search, setSearch] = useState(null);
   const [note, setNote] = useState(null);
+  const [yearNow,setYearNow] = useState([]);
+  const [system,setSystem] = useState([]);
   const [session, loading] = useSession();
+  var syStatus = system != null && system.length != 0 ? system[0].status : "loading...";
 
   useEffect(() => {
     async function getCourses() {
       const response = await Axios.get("/courses/student");
       setCourseList(response.data);
     }
+    async function getYear() {
+      const response = await Axios.get("/setdate/getNow");
+      setYearNow(response.data);
+    }
+    async function getSystem() {
+      const response = await Axios.get("/system/2");
+      setSystem(response.data);
+      
+    }
+    getYear();
+    getSystem();
     getCourses();
   }, []);
 
@@ -32,19 +46,6 @@ function requestTA(props) {
     // }
   }, [loading]);
 
-  const applyTA = async (id) => {
-    console.log(id);
-    await Axios.post("/apply/student-apply", {
-      userID: props.nisit.userID,
-      courseID: id,
-      hrperweek:5,
-      status: 1,
-      noteapply: note,
-    }).then((res) => {
-      console.log(res.data);
-    });
-  };
-
   const secNumber = (D, P) => {
     if (P && D) {
       const sec = D + "," + P;
@@ -52,6 +53,27 @@ function requestTA(props) {
     } else if (P) return P;
     else if (D) return D;
   };
+  const hourTA =(d,p)=>{
+    if(d&&p) return 5
+    else if(d && !p)  return 2
+    else if(p && !d)  return 3
+  }
+
+  const applyTA = async (id,hr) => {
+    console.log("id: ",id);
+    console.log("hr: ",hr);
+    await Axios.post("/apply/student-apply", {
+      userID: props.nisit.userID,
+      courseID: id,
+      hrperweek:hr,
+      status: 1,
+      noteapply: note,
+    }).then((res) => {
+      console.log(res.data);
+    });
+  };
+
+  
 
   if (typeof window !== "undefined" && loading) return null;
 
@@ -64,20 +86,25 @@ function requestTA(props) {
     );
   }
 
+  else if (!syStatus) {
+    return (
+      <div>
+        <h2>ระบบรับสมัครนิสิตช่วยงานถูกปิด</h2>
+      </div>
+    );
+  }
+  
+
   console.log("props in requestTA  >> ", props.nisit);
   console.log("session in requestTA ", session);
   
-  const hourTA =(d,p)=>{
-    if(d&&p) return 5
-    else if(d)  return 2
-    else if(p)  return 3
-  }
+  
 
 //จำนวนชั่วโฒง
   return (
     <div className="container">
       <h1>ลงทะเบียนTA {props.nisit.level=="ปริญญาตรี"?"(ขอได้ไม่เกิน 10 ชั่วโมง)":"(ขอได้ไม่จำกัดชั่วโมง)"}</h1>
-      <h2>ปี 2564 เทอม ปลาย</h2>
+      <h2>ปี {yearNow != null && yearNow.length != 0 ? yearNow[0].year : "loading..."} เทอม {yearNow != null && yearNow.length != 0 ? yearNow[0].term : "loading..."} ระบบ {syStatus?"เปิด":"ปิด"} </h2>
       <input
         type="text"
         className="form-control mb-3"
@@ -124,14 +151,14 @@ function requestTA(props) {
                       <input
                         type="text"
                         class="form-control"
-                        name="note"
-                        id="button-addon1"
+                        name={key}
+                        id={key}
                         placeholder="หมายเหตุ(ไม่กรอกก็ได้)"
                         onChange={(e) => setNote(e.target.value)}
                         key={key}
                       />
                       <button
-                        type="submit"
+                        type="button"
                         class="btn btn-success"
                         aria-label="Example text with button addon"
                         aria-describedby="button-addon1"

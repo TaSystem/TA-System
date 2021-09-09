@@ -7,7 +7,8 @@ import {
   getCoursesNisit,
 } from "../../redux/actions/nisitAction";
 import { useRouter } from "next/router";
-import { PortraitSharp } from "@material-ui/icons";
+
+
 
 function historyReqest(props) {
   const [courses, setCourses] = useState([]);
@@ -18,7 +19,7 @@ function historyReqest(props) {
     console.log("useEffect 1");
     async function getCourses() {
       const response = await Axios.post("/courses/student-apply",{
-        email:props.nisit.email
+        email:session.user.email
       });
       setCourses(response.data);
       session ? props.getCoursesNisit(session.user.email) : null
@@ -99,7 +100,7 @@ function historyReqest(props) {
             </tr>
           </thead>
           <tbody>
-            {props.courses.map((val, key) => {
+            {courses.map((val, key) => {
               return (
                 <tr>
                   <td>

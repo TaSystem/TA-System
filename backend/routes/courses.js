@@ -28,6 +28,16 @@ router.get('/year',(req, res) => {
   });
 });
 
+router.get('/term',(req, res) => {
+  db.query("SELECT DISTINCT term FROM courses", (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
 router.get('/student',(req,res)=>{
   db.query("SELECT * FROM courses WHERE status=true ORDER BY courseID", (err,result)=>{
       if(err){
@@ -39,18 +49,6 @@ router.get('/student',(req,res)=>{
       }
   });
 })
-
-router.get("/request/:id",async (req, res) => {
-  const id = req.params.id;
-  await db.query("SELECT * FROM courses WHERE id = ?", id, (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      res.send(result);
-      console.log("requestTA id:"+id);
-    }
-  });
-});
 
 router.get('/student-reply',(req,res)=>{
     
@@ -73,21 +71,9 @@ router.get('/test',(req,res)=>{
   res.sendFile(__dirname+'/index.html');   
 })
 
-router.get('/:id',(req,res)=>{
-    const id = req.params.id;
-    db.query("SELECT * FROM courses WHERE id = ?", id,(err,result)=>{
-        if(err){
-            console.log(err);
-        }
-        else{
-            res.send(result);
-        }
-    });
-});
-
 router.get("/teacher-apply",(req,res)=>{
   
-  db.query("SELECT C.courseID,C.title,C.level,C.major,C.teacher,A.number,A.status FROM courses AS C,teacherapplyta AS A WHERE C.id = A.courseID",(err,result)=>{
+  db.query("SELECT C.courseID,C.title,C.level,C.major,C.teacher,A.number1,A.number2,A.status FROM courses AS C,teacherapplyta AS A WHERE C.id = A.courseID",(err,result)=>{
     if(err){
       console.log(err);
     }
@@ -95,6 +81,29 @@ router.get("/teacher-apply",(req,res)=>{
       res.send(result);
     }
   })
+});
+
+router.get('/:id',(req,res)=>{
+  const id = req.params.id;
+  db.query("SELECT * FROM courses WHERE id = ?", id,(err,result)=>{
+      if(err){
+          console.log(err);
+      }
+      else{
+          res.send(result);
+      }
+  });
+});
+router.get("/request/:id",async (req, res) => {
+  const id = req.params.id;
+  await db.query("SELECT * FROM courses WHERE id = ?", id, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+      console.log("requestTA id:"+id);
+    }
+  });
 });
 
 router.post("/student-apply-success",(req,res)=>{
@@ -202,7 +211,9 @@ router.post('/single-upload',(req,res)=>{
                 // res.send(source);
                 // console.log(source.length);
                 let success=0;
-                let unsucess=0
+                let unsucess=0;
+                let preSec,preDay,preStart,perEnd,preRoom,preMajor,preNUmber,preTeacher;
+
                 for (let i = 0; i < source.length; i++) {
                     let courseID = source[i]["courseID"],
                         courseYear = source[i]["courseYear"],
@@ -240,6 +251,21 @@ router.post('/single-upload',(req,res)=>{
                         status = true,
                         numberTa = 0
 
+                        // if(!courseID){
+                          
+                        // }
+                        // else  if( !number_D && !number_P && number_D - number_P!=0 ){
+                        //    preSec = sec_P
+                        //    preDay
+                        //    preStart
+                        //    perEnd
+                        //    preRoom
+                        //    preMajor
+                        //    preNUmber=number_P;
+                        //    preTeacher
+                        //    console.log("preNUmber: ",preNUmber);
+                        //  }
+
                         console.log(teacher);
                         
                         if(courseID=="03602312"){ //03602312 วิศวกรรมอุสาหการและระบบเบื้องต้น 1 คน 2ชม.
@@ -268,13 +294,13 @@ router.post('/single-upload',(req,res)=>{
                           status = false;
                         }
                         else if(number_P && number_D){//เงื่อนไขบรรยายและปฎิบัติ
-                            if(number_P < 40){
+                            if(number_D < 40){
                               console.log(courseID +" "+ sec_D +" "+ sec_P +"บรรยายและปฎิบัติมีน้อยกว่า 40 คน");
                               unsucess++;
                               status = false;
                               
                             }
-                            else if(number_P >= 40 && number_P <= 60 && hr_D+hr_P >= 5){
+                            else if(number_D >= 40 && number_D <= 60 ){
                               console.log(courseID +" "+ sec_D +" "+ sec_P +"บรรยายและปฎิบัติมี 40-60  คน");
                               success++;
                               numberTa = 1;
@@ -451,7 +477,7 @@ router.put('/updateNumber',(req,res)=>{
   db.query("UPDATE courses SET numberReal = ? WHERE id = ?",[numberReal,id],(err,result)=>{
     if(err) throw(err);
     else{
-      db.query("SELECT C.id as CID,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.number_D,C.sec_P,C.number_P,C.day_D,C.day_P,C.start_D,C.end_D,C.start_P,C.end_P,C.numberReal,A.id as AID,A.number1,A.number2,A.status,A.noteapply,U.name_email FROM courses AS C,teacherapplyta AS A,users AS U WHERE C.id = A.courseID AND A.userID=U.id AND A.status = 1",(err,result)=>{
+      db.query("SELECT C.id as CID,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.number_D,C.sec_P,C.number_P,C.day_D,C.day_P,C.start_D,C.end_D,C.start_P,C.end_P,C.numberReal,A.id as AID,A.number1,A.number2,A.status,A.noteapply,U.name_email FROM courses AS C,teacherapplyta AS A,users AS U WHERE C.id = A.courseID AND A.userID=U.id AND A.status = 4",(err,result)=>{
         if(err) throw(err);
         else{
           res.send(result);

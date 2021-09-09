@@ -24,8 +24,11 @@ export default function provostHItoryApply() {
         return <td><p style={{backgroundColor:"#E3E726",color:"white"}}>รอดำเนินการจากรองคณบดี</p> </td>
     }
     else if(status === 4){
-        return <td><p style={{backgroundColor:"#0E7ADD",color:"white"}}>ขอTAสำเร็จ</p> </td>
+        return <td><p style={{backgroundColor:"#0E7ADD",color:"white"}}>รอดำเนินทำเอกสารการจากเจ้าหน้าที</p> </td>
     }
+    else if(status === 5){
+      return <td><p style={{backgroundColor:"#0E7ADD",color:"white"}}>ขอTAสำเร็จ</p> </td>
+  }
     else{
       return <td><p style={{backgroundColor:"#DD0E0E",color:"white"}}>ขอTAไม่ผ่าน</p> </td>
     }
@@ -57,7 +60,7 @@ export default function provostHItoryApply() {
                   <td>{val.title}</td>
                   <td>{val.level}</td>
                   <td>{val.major}</td>
-                  <td>{val.number}</td>
+                  <td>{val.number1+val.number2}</td>
                   <td>{condition(val.status)}</td>
                   
 

@@ -64,6 +64,7 @@ function SignIn({ providers, csrfToken, data, setDetailNisit }) {
       console.log("data in Signin useEffect= ", data.result[0]);
       // return <Redirect to="/" />;
       return router.push(data.path);
+      
     } else {
       console.log("data = ", data);
     }
@@ -186,7 +187,7 @@ SignIn.getInitialProps = async (context) => {
       email: session.user.email,
       name_email: session.user.name,
       imgURL: session.user.image,
-      role: domain.includes("ku.th") ? 7 : 6,
+      role: domain.includes("ku.th") ? 5 : 6,
     })
       .then((res) => {
         path = res.data.path;

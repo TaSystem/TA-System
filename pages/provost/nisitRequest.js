@@ -49,7 +49,7 @@ export default function historyReqest() {
 
   return (
     <div className="container">
-      <h1>รายวิชาที่ยื่นขอ</h1>
+      <h1>รายชื่อนิสิตที่ยื่นขอ</h1>
       <div className="information">
         <table className="table table-bordered">
           <thead>
@@ -102,7 +102,7 @@ export default function historyReqest() {
                       ยกเลิก
                     </button>
                   </td>
-                  <td>{val.userID}</td>
+                  
                 </tr>
               );
             })}
