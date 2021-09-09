@@ -5,12 +5,11 @@ var upload = require("../config/multer.config");
 
 router.get("/",async (req, res) => {
   await db.query(
-    "SELECT  email, name_email,imgURL,title FROM users,roles,users_roles WHERE users.id = users_roles.userID AND roles.id = users_roles.roleID",
+    "SELECT U.id as UID,U.email,U.name_email,U.name,U.lastname,U.level,U.department,U.tel,R.id as RID,R.title FROM users as U,users_roles as US,roles as R WHERE U.id = US.userID AND R.id = US.roleID AND US.roleID !=5",
     (err, result) => {
       if (err) {
         console.log(err);
       } else {
-        // res.render("user",{result})
         res.send(result);
       }
     }
@@ -266,8 +265,6 @@ router.put("/update-banking", (req, res) => {
   );
 });
 
-
-
 router.put("/edit-profile", (req, res) => {
   const id = req.body.id;
   const email = req.body.email;
@@ -311,9 +308,33 @@ router.put("/edit-profile", (req, res) => {
   );
 });
 
-router.delete("/delete/:id", (req, res) => {
-  const id = req.params.id;
-  db.query("DELETE FROM users WHERE id = ?", id, (err, result) => {
+router.put("/edit-profile-teacher", (req, res) => {
+  const email = req.body.email;
+  const name_email = req.body.name_email;
+  const name = req.body.name;
+  const lastname = req.body.lastname;
+  const level = req.body.level;
+  const department = req.body.department;
+  const tel = req.body.tel;
+  const role  = req.body.role;
+
+  let sqlcommand = `UPDATE users SET email = ?,name_email = ?,name = ?,lastname = ?,level = ?,department = ?,tel = ?,nameBank = ?,updated_at=? WHERE email = ?`;
+  let userItem = [email,name_email,imgURL, name,lastname,idStudent,level,department,tel,nameBank,idBank,fileBookBank,updated_at,id];
+  
+  const updated_at = new Date();
+  db.query(sqlcommand,userItem,(err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send("User Updated");
+      }
+    }
+  );
+});
+
+router.delete("/delete/:email", (req, res) => {
+  const email = req.params.email;
+  db.query("DELETE FROM users WHERE email = ?", email, (err, result) => {
     if (err) {
       console.log(err);
     } else {

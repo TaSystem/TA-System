@@ -305,10 +305,10 @@ const Navbar = (props) => {
                 Sign Out
               </a>
               <a class="nav-item nav-link" style={{color:"red"}}>
-                  ตำแหน่ง: {props.nisit.title}
+                  ตำแหน่ง: {props.nisit.title?props.nisit.title:"loading..."}
               </a>
               <a class="nav-item nav-link" style={{color:"red"}}>
-                  ชื่อ: {props.nisit.name_email} 
+                  ชื่อ: {props.nisit.name_email?props.nisit.name_email:"loading..."} 
                 </a>
             </div>
           </div>
