@@ -68,6 +68,7 @@ function officerSetDate(props) {
       });
     }
   };
+  
   const setDateStop = async () => {
     if (!titleDay) {
       setErr2("กรุณากรอกหัวข้อวันหยุด");
@@ -86,6 +87,7 @@ function officerSetDate(props) {
       });
     }
   };
+
   const setYearAndTermNow = async () => {
     await Axios.post("/setdate/setNow", {
       year: yearNow,
@@ -176,6 +178,16 @@ function officerSetDate(props) {
               } date={closeDate}/>
           </div>
 
+          <div className="col-auto">
+            <button
+              type="button"
+              className="btn btn-success"
+              onClick={setDateStudy}
+            >
+              บันทึก
+            </button>
+          </div>
+
           {err1 && (
             <div className="alert alert-danger" role="alert">
               {" "}
@@ -189,15 +201,6 @@ function officerSetDate(props) {
             </div>
           )}
 
-          <div className="mb-3">
-            <button
-              type="button"
-              className="btn btn-success"
-              onClick={setDateStudy}
-            >
-              บันทึก
-            </button>
-          </div>
         </form>
       </div>
 
