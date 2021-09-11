@@ -2,9 +2,10 @@ import Axios from "../../config/Axios";
 import React, { useState, useEffect } from "react";
 import Modal from "../../components/ModalTeacher";
 import { signIn, signOut, useSession } from "next-auth/client";
+import { connect } from "react-redux";
+import { getDetailNisit } from "../../redux/actions/nisitAction";
 
-
-export default function coursesTeacher() {
+function coursesTeacher(props) {
  //ขอเลือกระดับได้
   const [courseList, setCourseList] = useState([]);
   const [system,setSystem] = useState([]);
@@ -33,6 +34,12 @@ export default function coursesTeacher() {
     getCourses();
   },[]);
 
+  useEffect(() => {
+    if (session) {
+      props.getDetailNisit(session.user.email)
+    }
+
+  }, [loading]);
 
   const showModal=(val)=>{
     setValue(val);
@@ -130,5 +137,14 @@ export default function coursesTeacher() {
     </div>
   );
 }
+const mapStateToProps = (state) => ({
+  nisit: state.nisit.nisit,
+});
+
+const mapDispatchToProps = {
+  getDetailNisit: getDetailNisit,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(coursesTeacher);
 
 

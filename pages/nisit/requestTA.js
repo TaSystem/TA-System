@@ -182,10 +182,10 @@ const mapStateToProps = (state) => ({
   courses: state.nisit.courses,
 });
 
-const mapDispathToProps = {
+const mapDispatchToProps  = {
   // setRegisterNisit: setRegisterNisit,
   getDetailNisit: getDetailNisit,
   getCoursesNisit: getCoursesNisit,
 };
 
-export default connect(mapStateToProps, mapDispathToProps)(requestTA);
+export default connect(mapStateToProps, mapDispatchToProps )(requestTA);

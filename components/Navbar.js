@@ -9,6 +9,8 @@ const Navbar = (props) => {
   const [session, loading] = useSession();
   const router = useRouter();
 
+
+
   if (session) {
     var domain = String(session.user.email).substring(
       String(session.user.email).lastIndexOf("@") + 1
@@ -261,8 +263,8 @@ const Navbar = (props) => {
 
           <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-            <Link href="/provost/dashBoard">
-                <a class="nav-item nav-link">dashBoard</a>
+            <Link href="/provost/dashboard">
+                <a class="nav-item nav-link">dashboard</a>
               </Link>
               <Link href="/provost/coursesImport">
                 <a class="nav-item nav-link">เพิ่มรายวิชาที่เปิดสอน </a>
@@ -364,6 +366,13 @@ const Navbar = (props) => {
             </div>
           </nav>
         );
+      }
+      else{
+        return(
+          <div>
+            loading...
+          </div>
+        )
       }
       
     }

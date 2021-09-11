@@ -6,7 +6,7 @@ import { useSession } from "next-auth/client";
 import { AtmSharp } from "@material-ui/icons";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
-import { setRegisterNisit } from "../../redux/actions/nisitAction";
+import { setRegisterNisit ,getDetailNisit} from "../../redux/actions/nisitAction";
 import styles from "../../styles/registerProvost.module.css";
 
 function registerProvost(props) {
@@ -39,10 +39,17 @@ function registerProvost(props) {
     console.log("in useEffect major", department);
   }, [level, department]);
 
+  useEffect(() => {
+    if (session) {
+      props.getDetailNisit(session.user.email)
+    }
+
+  }, [loading]);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const user = {
-      id: props.nisit.nisit.result[0].userID,
+      id: props.nisit.result[0].userID,
       name: name,
       lastname: lastname,
       idStudent: idStudent,
@@ -187,12 +194,22 @@ function registerProvost(props) {
   );
 }
 
+// const mapStateToProps = (state) => ({
+//   nisit: state.nisit,
+// });
+
+// const mapDispathToProps = {
+//   setRegisterNisit: setRegisterNisit,
+// };
+
 const mapStateToProps = (state) => ({
-  nisit: state.nisit,
+  nisit: state.nisit.nisit,
 });
 
-const mapDispathToProps = {
+const mapDispatchToProps = {
+  getDetailNisit: getDetailNisit,
   setRegisterNisit: setRegisterNisit,
 };
 
-export default connect(mapStateToProps, mapDispathToProps)(registerProvost);
+
+export default connect(mapStateToProps, mapDispatchToProps)(registerProvost);

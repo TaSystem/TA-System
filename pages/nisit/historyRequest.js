@@ -16,7 +16,8 @@ function historyReqest(props) {
   const router = useRouter();
 
   useEffect(() => {
-    console.log("useEffect 1");
+    if(session){
+      console.log("useEffect 1");
     async function getCourses() {
       const response = await Axios.post("/courses/student-apply",{
         email:session.user.email
@@ -25,6 +26,8 @@ function historyReqest(props) {
       session ? props.getCoursesNisit(session.user.email) : null
     }
     getCourses();
+    }
+    
   }, [loading]);
 
   useEffect(() => {
@@ -133,10 +136,10 @@ const mapStateToProps = (state) => ({
   courses: state.nisit.courses,
 });
 
-const mapDispathToProps = {
+const mapDispatchToProps  = {
   // setRegisterNisit: setRegisterNisit,
   getDetailNisit: getDetailNisit,
   getCoursesNisit: getCoursesNisit,
 };
 
-export default connect(mapStateToProps, mapDispathToProps)(historyReqest);
+export default connect(mapStateToProps, mapDispatchToProps )(historyReqest);

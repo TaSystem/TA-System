@@ -1,8 +1,10 @@
 import Axios from "../../config/Axios";
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/client";
+import { connect } from "react-redux";
+import { getDetailNisit } from "../../redux/actions/nisitAction";
 
-export default function OfficerRequest() {
+function OfficerRequest(props) {
   const [courseList, setCourseList] = useState([]);
   const [search, setSearch] = useState(null);
   const [major, setMajor] = useState("All");
@@ -18,6 +20,14 @@ export default function OfficerRequest() {
     }
     getCourses();
   }, []);
+
+  useEffect(() => {
+    if (session) {
+      props.getDetailNisit(session.user.email)
+    }
+
+  }, [loading]);
+
 
   function Filter(courses) {
     return courses.filter((course) => {
@@ -215,3 +225,13 @@ export default function OfficerRequest() {
     </div>
   );
 }
+const mapStateToProps = (state) => ({
+  nisit: state.nisit.nisit,
+});
+
+const mapDispatchToProps = {
+  getDetailNisit: getDetailNisit,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(OfficerRequest);
+

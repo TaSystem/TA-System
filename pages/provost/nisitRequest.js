@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Axios from "../../config/Axios";
 import { signIn, signOut, useSession } from "next-auth/client";
+import { connect } from "react-redux";
+import { getDetailNisit } from "../../redux/actions/nisitAction";
 
-export default function historyReqest() {
+function historyReqest(props) {
   const [courses, setCourses] = useState([]);
   const [session, loading] = useSession();
 
@@ -13,6 +15,13 @@ export default function historyReqest() {
     }
     getCourses();
   }, []);
+
+  useEffect(() => {
+    if (session) {
+      props.getDetailNisit(session.user.email)
+    }
+
+  }, [loading]);
 
   const replyTAsuccess = async (userID,courseID) => {
     await Axios.put("/reply/student-reply", {
@@ -112,3 +121,13 @@ export default function historyReqest() {
     </div>
   );
 }
+
+const mapStateToProps = (state) => ({
+  nisit: state.nisit.nisit,
+});
+
+const mapDispatchToProps = {
+  getDetailNisit: getDetailNisit,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(historyReqest);

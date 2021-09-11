@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import Axios from "../../config/Axios";
 import { useSession } from "next-auth/client";
 import DatePicker from '../../components/DatePickers'
+import { connect } from "react-redux";
+import { getDetailNisit } from "../../redux/actions/nisitAction";
 
-
-export default function officerSetDate() {
+function officerSetDate(props) {
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear() + 543);
   const [term, setTerm] = useState(null);
@@ -38,6 +39,13 @@ export default function officerSetDate() {
     getYear();
     getTerm();
   }, []);
+
+  useEffect(() => {
+    if (session) {
+      props.getDetailNisit(session.user.email)
+    }
+
+  }, [loading]);
 
   const setDateStudy = async () => {
     if (!year) {
@@ -341,3 +349,14 @@ export default function officerSetDate() {
     </div>
   );
 }
+
+const mapStateToProps = (state) => ({
+  nisit: state.nisit.nisit,
+});
+
+const mapDispatchToProps = {
+  getDetailNisit: getDetailNisit,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(officerSetDate);
+

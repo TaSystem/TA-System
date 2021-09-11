@@ -6,7 +6,7 @@ import { useSession } from "next-auth/client";
 import { AtmSharp } from "@material-ui/icons";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
-import { setRegisterNisit } from "../../redux/actions/nisitAction";
+import { setRegisterNisit ,getDetailNisit } from "../../redux/actions/nisitAction";
 import styles from "../../styles/registerNisit.module.css";
 
 
@@ -23,33 +23,19 @@ function registerNisit(props) {
   const [tel, setTel] = useState("");
   const router = useRouter()
 
-
-  // const router = useRouter()
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const res = await fetch("http://localhost:3000/api/secret");
-  //     const json = await res.json();
-  //     if (json.content) {
-  //       setContent(json.content);
-  //       console.log("in useEffect");
-  //     }
-  //   };
-  //   fetchData();
-  // }, [session]);
-
-  
-  // useEffect(() => {
-    
-  //   return () => {
-      
-  //   }
-  // }, [loading])
-
   useEffect(() => {
     console.log("in useEffect level", level);
     console.log("in useEffect major", department);
 
   }, [level,department]);
+
+  useEffect(() => {
+    if (session) {
+      props.getDetailNisit(session.user.email)
+    }
+
+  }, [loading]);
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -323,8 +309,9 @@ const mapStateToProps = (state) => ({
   nisit: state.nisit.nisit,
 });
 
-const mapDispathToProps = {
+const mapDispatchToProps  = {
   setRegisterNisit: setRegisterNisit,
+  getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispathToProps)(registerNisit);
+export default connect(mapStateToProps, mapDispatchToProps )(registerNisit);

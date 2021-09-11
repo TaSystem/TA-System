@@ -1,8 +1,11 @@
 import Axios from "../../config/Axios";
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/client";
+import { connect } from "react-redux";
+import { getDetailNisit } from "../../redux/actions/nisitAction";
 
-export default function provostHItoryApply() {
+
+function provostHItoryApply(props) {
   const [session, loading] = useSession();
   const [courses, setCourses] = useState([]);
   useEffect(() => {
@@ -12,6 +15,13 @@ export default function provostHItoryApply() {
     }
     getCourses(); 
   },[]);
+
+  useEffect(() => {
+    if (session) {
+      props.getDetailNisit(session.user.email)
+    }
+
+  }, [loading]);
 
   const condition=(status)=>{
     if(status === 1){
@@ -74,4 +84,14 @@ export default function provostHItoryApply() {
     </div>
   );
 }
+
+const mapStateToProps = (state) => ({
+  nisit: state.nisit.nisit,
+});
+
+const mapDispatchToProps = {
+  getDetailNisit: getDetailNisit,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(provostHItoryApply);
 
