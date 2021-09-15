@@ -1,33 +1,60 @@
 import React, { useState, useEffect } from "react";
 import Axios from "../../config/Axios";
 import { signIn, signOut, useSession } from "next-auth/client";
+import { connect } from "react-redux";
+import { getDetailNisit } from "../../redux/actions/nisitAction";
+import Navbar from '../../components/Navbar'
 
-export default function index() {
+function index(props) {
+  const today = new Date();
   const [courses, setCourses] = useState([]);
   const [session, loading] = useSession();
   const [search, setSearch] = useState(null);
-  const [major, setMajor] = useState("All");
-  const [level, setLevel] = useState("All");
+  const [yearSearch, setYearSearch] = useState([]);
+  const [year, setYear] = useState(null);
+  const [term, setTerm] = useState(null);
+  const [major, setMajor] = useState(null);
 
   useEffect(() => {
     async function getCourses() {
       const response = await Axios.get("/courses");
       setCourses(response.data);
     }
+    async function getYear() {
+      const response = await Axios.get("/courses/year");
+      setYearSearch(response.data);
+    }
+    getYear();
     getCourses();
+
+    
   }, []);
 
-  function ChangeDuo(e) {
-    setLevel(e.target.value);
-    setMajor("All");
+  useEffect(() => {
+    if (session) {
+      props.getDetailNisit(session.user.email)
+    }
+
+  }, [loading]);
+
+  const deleteCourse = async (id) =>{
+    await Axios.delete(`/courses/delete/${id}`).then((response) => {
+      setCourses(response.data);
+    });
+  }
+  const deleteCourseList = async () =>{
+    await Axios.post("/courses/delete",{
+      year:year,
+      term:term,
+      major:major
+    })
   }
 
   function Filter(courses) {
     return courses.filter((course) => {
-      if (course.level == level) {
-        if (course.level == "ปริญญาตรี") {
-          if (major == "All") return course;
-          else if (course.major == major) {
+      if (year == null) {
+        if (term == null) {
+          if (major == null) {
             if (!search) {
               return course;
             } else if (
@@ -38,26 +65,65 @@ export default function index() {
               course.courseID.toLowerCase().includes(search.toLowerCase())
             ) {
               return course;
-            }
-          }
-        } else if (course.level == "ปริญญาโท") {
-          if (major == "All") return course;
-          else if (course.major == major) {
-            if (!search) {
-              return course;
             } else if (
-              course.title.toLowerCase().includes(search.toLowerCase())
-            ) {
-              return course;
-            } else if (
-              course.courseID.toLowerCase().includes(search.toLowerCase())
+              course.teacher.toLowerCase().includes(search.toLowerCase())
             ) {
               return course;
             }
           }
         }
-      } else if (level == "All") {
-        return course;
+      } else if (year == course.year) {
+        if (term == null) {
+          if (!search) {
+            return course;
+          } else if (
+            course.title.toLowerCase().includes(search.toLowerCase())
+          ) {
+            return course;
+          } else if (
+            course.courseID.toLowerCase().includes(search.toLowerCase())
+          ) {
+            return course;
+          } else if (
+            course.teacher.toLowerCase().includes(search.toLowerCase())
+          ) {
+            return course;
+          }
+        } else if (term == course.term) {
+          if (major == course.major) {
+            if (!search) {
+              return course;
+            } else if (
+              course.title.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            } else if (
+              course.courseID.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            } else if (
+              course.teacher.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            }
+          } else if (major == null) {
+            if (!search) {
+              return course;
+            } else if (
+              course.title.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            } else if (
+              course.courseID.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            } else if (
+              course.teacher.toLowerCase().includes(search.toLowerCase())
+            ) {
+              return course;
+            }
+          }
+        }
       }
     });
   }
@@ -73,22 +139,47 @@ export default function index() {
     );
   }
 
+  console.log("props in provost ",props.nisit)
+
   return (
     <div className="container">
+      {/* <Navbar roleID={props.nisit.roleID} /> */}
       <h1>รายวิชาของเจ้าหน้าที่</h1>
       <div className="input-group mb-3">
         <input
           type="text"
           className="form-control"
-          placeholder="ค้นหาข้อมูล..."
+          placeholder="ชื่อวิชา/รหัสวิชา/อาจารย์"
           onChange={(e) => setSearch(e.target.value)}
         />
-        <select name="year" onChange={ChangeDuo}>
+
+        <select
+          name="year"
+          onChange={(e) => {
+            setYear(e.target.value);
+          }}
+        >
           <option value="All" disabled selected hidden>
-            ระดับ
+            ปีการศึกษา
           </option>
-          <option value="ปริญญาตรี">ปริญญาตรี</option>
-          <option value="ปริญญาโท">ปริญญาโท</option>
+
+          {yearSearch.map((val, key) => {
+            return <option value={val.year}>{val.year}</option>;
+          })}
+        </select>
+
+        <select
+          name="term"
+          onChange={(e) => {
+            setTerm(e.target.value);
+          }}
+        >
+          <option value="All" disabled selected hidden>
+            {year ? "ภาคเรียน" : "เลือกปีการศึกษาก่อน"}
+          </option>
+          <option value="ฤดูร้อน">ฤดูร้อน</option>
+          <option value="ต้น">ต้น</option>
+          <option value="ปลาย">ปลาย</option>
         </select>
 
         <select
@@ -97,74 +188,33 @@ export default function index() {
             setMajor(e.target.value);
           }}
         >
-          <option value={null} disabled selected hidden>
-            {level == "All" ? "เลือกระดับก่อน" : "เลือกสาขาของวิชา"}
+          <option value="All" disabled selected hidden>
+            {term ? "สาขาของวิชา" : "เลือกภาคเรียนก่อน"}
           </option>
-          {level === "ปริญญาตรี" && (
-            <option value="All" disabled selected hidden>
-              เลือกสาขาของวิชา
-            </option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมอุตสาหการและระบบ">
-              วิศวกรรมอุตสาหการและระบบ(ป.ตรี)
-            </option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์">
-              วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)
-            </option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมโยธา">วิศวกรรมโยธา(ป.ตรี)</option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมเครื่องกลและการออกแบบ">
-              วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)
-            </option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์">
-              วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)
-            </option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมเครื่องกลและระบบการผลิต">
-              วิศวกรรมเครื่องกลและระบบการผลิต(ป.ตรี)
-            </option>
-          )}
-          {level === "ปริญญาตรี" && (
-            <option value="วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ">
-              วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ(ป.ตรี)
-            </option>
-          )}
 
-          {level === "ปริญญาโท" && (
-            <option value="ALl" disabled selected hidden>
-              เลือกสาขาของวิชา
-            </option>
-          )}
-          {level === "ปริญญาโท" && (
-            <option value="วิศวกรรมความปลอดภัยและการจัดการสิ่งแวดล้อม">
-              วิศวกรรมความปลอดภัยและการจัดการสิ่งแวดล้อม(ป.โท)
-            </option>
-          )}
-          {level === "ปริญญาโท" && (
-            <option value="การจัดการวิศวกรรมและเทคโนโลยี">
-              การจัดการวิศวกรรมและเทคโนโลยี(ป.โท)
-            </option>
-          )}
-          {level === "ปริญญาโท" && (
-            <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์">
-              วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.โท)
-            </option>
-          )}
-          {level === "ปริญญาโท" && (
-            <option value="วิศวกรรมเครื่องกลและการออกแบบ">
-              วิศวกรรมเครื่องกลและการออกแบบ(ป.โท)
-            </option>
-          )}
+          <option value="วิศวกรรมอุตสาหการและระบบ">
+            วิศวกรรมอุตสาหการและระบบ(ป.ตรี)
+          </option>
+
+          <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์">
+            วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)
+          </option>
+
+          <option value="วิศวกรรมโยธา">วิศวกรรมโยธา(ป.ตรี)</option>
+
+          <option value="วิศวกรรมเครื่องกลและการออกแบบ">
+            วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)
+          </option>
+          <option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์">
+            วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)
+          </option>
+          <option value="โครงการพิเศษคณะฯ">โครงการพิเศษคณะฯ(ป.ตรี)</option>
         </select>
+      </div>
+      <div>
+        <button type="submit" className="btn btn-danger" onClick={()=>{if (window.confirm('ลบวิชาที่ ปีการศึกษา '+year+" ภาคเรียน "+term+" สาขา "+major))deleteCourseList()}}>
+          ลบวิชารายวิชา
+        </button>
       </div>
       <div className="information">
         <table className="table table-bordered">
@@ -217,7 +267,12 @@ export default function index() {
             {Filter(courses).map((val, key) => {
               return (
                 <tr key={key}>
-                  <td>{key + 1}</td>
+                  <td>
+                    {key + 1}
+                    <button type="button" className="btn btn-danger" onClick={()=>{if (window.confirm('ต้องการลบวิชา: '+val.title))deleteCourse(val.id)}}>
+                      ลบ
+                    </button>
+                  </td>
                   <td>{val.courseID}</td>
                   <td>{val.courseYear}</td>
                   <td>{val.title}</td>
@@ -261,3 +316,13 @@ export default function index() {
     </div>
   );
 }
+
+const mapStateToProps = (state) => ({
+  nisit: state.nisit.nisit,
+});
+
+const mapDispatchToProps = {
+  getDetailNisit: getDetailNisit,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(index);

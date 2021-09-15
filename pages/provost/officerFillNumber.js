@@ -4,12 +4,23 @@ import { useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
 
-function DeputyDeanRequest(props) {
+function officerFillNumber(props) {
   const [courseList, setCourseList] = useState([]);
   const [search, setSearch] = useState(null);
   const [major, setMajor] = useState("All");
   const [level, setLevel] = useState("All");
+  const [numberReal, setNumberReal] = useState(null);
   const [session, loading] = useSession();
+
+  useEffect(() => {
+    async function getCourses() {
+      const response = await Axios.post("/courses/teacher-reply", {
+        status: 4,
+      });
+      setCourseList(response.data);
+    }
+    getCourses();
+  }, []);
 
   useEffect(() => {
     if (session) {
@@ -17,37 +28,6 @@ function DeputyDeanRequest(props) {
     }
 
   }, [loading]);
-  
-  useEffect(() => {
-    async function getCourses() {
-      const response = await Axios.post("/courses/teacher-reply", {
-        status: 3,
-      });
-      setCourseList(response.data);
-    }
-    getCourses();
-  }, []);
-
-  async function replyTAsuccess(course,AID) {
-    await Axios.post("/reply/teacher-reply", {
-      email:session.user.email,
-      applyTaId:AID,
-      courseID: course,
-      status: 4,
-    }).then((response) => {
-      setCourseList(response.data);
-    });
-  }
-  async function replyTAfail(course,AID) {
-    await Axios.post("/reply/teacher-reply", {
-      email:session.user.email,
-      applyTaId:AID,
-      courseID: course,
-      status: 0,
-    }).then((response) => {
-      setCourseList(response.data);
-    });
-  }
 
   function Filter(courses) {
     return courses.filter((course) => {
@@ -84,17 +64,40 @@ function DeputyDeanRequest(props) {
     });
   }
 
-  function ChangeDuo(e) {
-    setLevel(e.target.value);
-    setMajor("All");
+  
+
+  async function replyTAsuccess(course) {
+    await Axios.put("/reply/teacher-reply", {
+      userID: 13,
+      courseID: course,
+      status: 5,
+    }).then((response) => {
+      setCourseList(response.data);
+    });
   }
-  function action(params) {
-      
+  async function replyTAfail(course) {
+    await Axios.put("/reply/teacher-reply", {
+      userID: 13,
+      courseID: course,
+      status: 0,
+    }).then((response) => {
+      setCourseList(response.data);
+    });
   }
+  const updateNumberReal = async (id) => {
+    await Axios.put("/courses/updateNumber", {
+      id: id,
+      numberReal: numberReal,
+    }).then((response) => {
+      setCourseList(response.data);
+    });
+  };
+
+  //จำนวนที่ลงใส่หน้านี้
 
   return (
     <div className="container">
-      <h1>รายวิชาที่ยื่นขอเปิดรับ TA (รองอธิการบดี)</h1>
+      <h1>กรอกจำนวนนิสิตที่ลงทะเบียน (เจ้าหน้าที่)</h1>
       <div className="input-group mb-3">
         <input
           type="text"
@@ -136,20 +139,23 @@ function DeputyDeanRequest(props) {
           <option value="โครงการพิเศษคณะฯ">โครงการพิเศษคณะฯ(ป.ตรี)</option>
         </select>
       </div>
+        
       <div className="information">
         <table className="table table-bordered">
           <thead>
             <tr>
               <th rowSpan="2">ลำดับ</th>
+              <th rowSpan="2">รหัสคำขอ</th>
               <th rowSpan="2">รหัสวิชา</th>
               <th rowSpan="2">ชื่อวิชา</th>
               <th colSpan="2">หมู่เรียน</th>
-              <th rowSpan="2">ระดับ</th>
               <th rowSpan="2">สาขาวิชา</th>
+              <th rowSpan="2">จำนวนที่รับ</th>
+              <th rowSpan="2">จำนวนที่ลง</th>
+              <th rowSpan="2">กรอกจำนวนที่ลง</th>
               <th rowSpan="2">อาจารย์ผู้สอน</th>
-              <th rowSpan="2">ชื่อผู้ขอ</th>
+              <th rowSpan="2">อาจารย์ผู้ขอ</th>
               <th colSpan="2">จำนวนที่ขอ</th>
-              <th rowSpan="2">เหตุผล</th>
               <th rowSpan="2">ตอบกลับ</th>
             </tr>
             <tr>
@@ -163,40 +169,55 @@ function DeputyDeanRequest(props) {
             {Filter(courseList).map((val, key) => {
               return (
                 <tr key={key}>
-                  <td>
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      value=""
-                      id="flexCheckDefault"
-                    />{" "}
-                    {key + 1}
-                  </td>
+                  <td>{key + 1}</td>
+                  <td>{val.AID}</td>
                   <td>{val.courseID}</td>
                   <td>{val.title}</td>
                   <td>{val.sec_D ? val.sec_D : "-"}</td>
                   <td>{val.sec_P ? val.sec_P : "-"}</td>
-                  <td>{val.level}</td>
                   <td>{val.major}</td>
+                  <td>{val.number_D ? val.number_D : val.number_P}</td>
+                  <td>{val.numberReal ? val.numberReal : "ยังไม่กรอก"}</td>
+                  <td>
+                    <input
+                      className="form-control"
+                      type="text"
+                      placeholder="จำนวนนิสิต"
+                      onChange={(e) => {
+                        setNumberReal(e.target.value);
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-success"
+                      onClick={() => updateNumberReal(val.CID)}
+                    >
+                      ยืนยัน
+                    </button>
+                  </td>
                   <td>{val.teacher}</td>
                   <td>{val.name_email} </td>
                   <td>{val.number1}</td>
                   <td>{val.number2}</td>
-                  <td>{val.noteapply}</td>
                   
                   <td>
                     <button
                       type="button"
-                      class="btn btn-success"
-                      onClick={()=>{if (window.confirm('ต้องการยืนยันวิชา: '+val.title))replyTAsuccess(val.CID,val.AID)}}
-                      
+                      className="btn btn-success"
+                      onClick={() => {
+                        if (window.confirm("ต้องการยืนยันวิชา: " + val.title))
+                          replyTAsuccess(val.CID);
+                      }}
                     >
                       ยืนยัน
                     </button>
                     <button
                       type="button"
-                      class="btn btn-danger"
-                      onClick={()=>{if (window.confirm('ต้องการยกเลิกวิชา: '+val.title))replyTAfail(val.CID,val.AID)}}
+                      className="btn btn-danger"
+                      onClick={() => {
+                        if (window.confirm("ต้องการยืนยันวิชา: " + val.title))
+                          replyTAfail(val.CID);
+                      }}
                     >
                       ยกเลิก
                     </button>
@@ -206,7 +227,6 @@ function DeputyDeanRequest(props) {
             })}
           </tbody>
         </table>
-        
       </div>
     </div>
   );
@@ -219,4 +239,6 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DeputyDeanRequest);
+export default connect(mapStateToProps, mapDispatchToProps)(officerFillNumber);
+
+

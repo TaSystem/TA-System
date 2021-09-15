@@ -1,19 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Axios from "../../config/Axios";
 import { useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/client";
+import { connect } from "react-redux";
+import { getDetailNisit } from "../../redux/actions/nisitAction";
 
-export default function Courses() {
+function Courses(props) {
+  const today = new Date();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [progress, setProgress] = useState(null);
   const [error, setError] = useState(null);
   const [major,setMajor] = useState(null);
   // const [level,setLevel] =  useState(null);
-  const [year,setYear] = useState(null);
+  const [year,setYear] = useState(today.getFullYear()+543);
   const [term,setTerm] =useState(null);
-  const today = new Date();
   const router = useRouter();
   const [session, loading] = useSession();
+
+  useEffect(() => {
+    if (session) {
+      props.getDetailNisit(session.user.email)
+    }
+
+  }, [loading]);
 
   const download = async () =>{
     Axios({
@@ -158,3 +167,13 @@ export default function Courses() {
     </div>
   );
 }
+
+const mapStateToProps = (state) => ({
+  nisit: state.nisit.nisit,
+});
+
+const mapDispatchToProps = {
+  getDetailNisit: getDetailNisit,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Courses);

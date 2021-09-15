@@ -1,18 +1,27 @@
 import React, { useState, useEffect } from "react";
 import Axios from "../../config/Axios";
 import { signIn, signOut, useSession } from "next-auth/client";
+import { connect } from "react-redux";
+import { getDetailNisit } from "../../redux/actions/nisitAction";
 
-export default function historyReqest() {
+function historyReqest(props) {
   const [courses, setCourses] = useState([]);
   const [session, loading] = useSession();
 
   useEffect(() => {
     async function getCourses() {
       const response = await Axios.get("/courses/student-reply");
-      setCourses(response.data);
+      setCourses(response.data);  
     }
     getCourses();
   }, []);
+
+  useEffect(() => {
+    if (session) {
+      props.getDetailNisit(session.user.email)
+    }
+
+  }, [loading]);
 
   const replyTAsuccess = async (userID,courseID) => {
     await Axios.put("/reply/student-reply", {
@@ -49,7 +58,7 @@ export default function historyReqest() {
 
   return (
     <div className="container">
-      <h1>รายวิชาที่ยื่นขอ</h1>
+      <h1>รายชื่อนิสิตที่ยื่นขอ(อาจารย์ผู้สอน)</h1>
       <div className="information">
         <table className="table table-bordered">
           <thead>
@@ -81,7 +90,7 @@ export default function historyReqest() {
                   <td>{val.sec_P ? val.sec_P : "-"}</td>
                   <td>{val.major}</td>
                   <td>{val.name_email}</td>
-                  <td>{val.note}</td>
+                  <td>{val.noteapply}</td>
                   <td>
                     <button
                       type="button"
@@ -102,7 +111,7 @@ export default function historyReqest() {
                       ยกเลิก
                     </button>
                   </td>
-                  <td>{val.userID}</td>
+                  
                 </tr>
               );
             })}
@@ -112,3 +121,13 @@ export default function historyReqest() {
     </div>
   );
 }
+
+const mapStateToProps = (state) => ({
+  nisit: state.nisit.nisit,
+});
+
+const mapDispatchToProps = {
+  getDetailNisit: getDetailNisit,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(historyReqest);

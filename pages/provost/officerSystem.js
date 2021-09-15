@@ -1,10 +1,13 @@
 import Axios from "../../config/Axios";
 import React, { useState, useEffect } from "react";
+import { useSession } from "next-auth/client";
+import { connect } from "react-redux";
+import { getDetailNisit } from "../../redux/actions/nisitAction";
 
-export default function officerSystem() {
+function officerSystem(props) {
   const [systemTeacher, setSystemTeacher] = useState(null);
   const [systemStudent, setSystemStudent] = useState(null);
-  
+  const [session, loading] = useSession();
 
   useEffect(() => {
     async function getSystems() {
@@ -16,6 +19,12 @@ export default function officerSystem() {
     getSystems();
   }, []);
 
+  useEffect(() => {
+    if (session) {
+      props.getDetailNisit(session.user.email)
+    }
+
+  }, [loading]);
   
 
   
@@ -71,3 +80,13 @@ export default function officerSystem() {
     </div>
   );
 }
+const mapStateToProps = (state) => ({
+  nisit: state.nisit.nisit,
+});
+
+const mapDispatchToProps = {
+  getDetailNisit: getDetailNisit,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(officerSystem);
+

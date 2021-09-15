@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var db = require('../config/db');
 
+
+
 router.get('/:id',(req,res)=>{
 
     let id = req.params.id;
@@ -11,12 +13,12 @@ router.get('/:id',(req,res)=>{
         if(err) console.log(err)
         else{
             res.send(result);
-            // if(id == 1){
-            //     console.log("ระบบอาจารย์: ",result[0].status?"เปิด":"ปิด");
-            // }
-            // else{
-            //     console.log("ระบบนิสิต: ",result[0].status?"เปิด":"ปิด");
-            // }
+            if(id == 1){
+                console.log("ระบบอาจารย์: ",result[0].status?"เปิด":"ปิด");
+            }
+            else{
+                console.log("ระบบนิสิต: ",result[0].status?"เปิด":"ปิด");
+            }
         }
     })
     

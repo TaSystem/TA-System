@@ -7,22 +7,28 @@ import {
   getCoursesNisit,
 } from "../../redux/actions/nisitAction";
 import { useRouter } from "next/router";
-import { PortraitSharp } from "@material-ui/icons";
+
+
 
 function historyReqest(props) {
   const [courses, setCourses] = useState([]);
   const [session, loading] = useSession();
   const router = useRouter();
 
-  // useEffect(() => {
-  //   console.log("useEffect 1");
-  //   async function getCourses() {
-  //     const response = await Axios.get("/courses/student-apply");
-  //     setCourses(response.data);
-  //     session ? props.getCoursesNisit(session.user.email) : null
-  //   }
-  //   getCourses();
-  // }, [loading]);
+  useEffect(() => {
+    if(session){
+      console.log("useEffect 1");
+    async function getCourses() {
+      const response = await Axios.post("/courses/student-apply",{
+        email:session.user.email
+      });
+      setCourses(response.data);
+      session ? props.getCoursesNisit(session.user.email) : null
+    }
+    getCourses();
+    }
+    
+  }, [loading]);
 
   useEffect(() => {
     // console.log("useEffect 2");
@@ -97,7 +103,7 @@ function historyReqest(props) {
             </tr>
           </thead>
           <tbody>
-            {props.courses.map((val, key) => {
+            {courses.map((val, key) => {
               return (
                 <tr>
                   <td>
@@ -130,10 +136,10 @@ const mapStateToProps = (state) => ({
   courses: state.nisit.courses,
 });
 
-const mapDispathToProps = {
+const mapDispatchToProps  = {
   // setRegisterNisit: setRegisterNisit,
   getDetailNisit: getDetailNisit,
   getCoursesNisit: getCoursesNisit,
 };
 
-export default connect(mapStateToProps, mapDispathToProps)(historyReqest);
+export default connect(mapStateToProps, mapDispatchToProps )(historyReqest);

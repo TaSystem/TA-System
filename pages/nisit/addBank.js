@@ -6,9 +6,10 @@ import { useSession } from "next-auth/client";
 import { AtmSharp } from "@material-ui/icons";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
-import { setBankNisit } from "../../redux/actions/nisitAction";
+import { setBankNisit ,getDetailNisit} from "../../redux/actions/nisitAction";
 import styles from "../../styles/addBank.module.css";
 import pwit from "../../img/pwit.png";
+import Redirect from '../../components/Redirect'
 
 function addBank(props) {
   const [session, loading] = useSession();
@@ -22,7 +23,7 @@ function addBank(props) {
   // const [department, setDepartment] = useState("");
   // const [tel, setTel] = useState("");
 
-  // const router = useRouter()
+  const router = useRouter()
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch("http://localhost:3000/api/secret");
@@ -35,6 +36,13 @@ function addBank(props) {
     fetchData();
   }, [session]);
 
+  useEffect(() => {
+    if (session) {
+      props.getDetailNisit(session.user.email)
+    }
+
+  }, [loading]);
+
   //   useEffect(() => {
   //     console.log("in useEffect level", level);
   //     console.log("in useEffect major", department);
@@ -44,7 +52,7 @@ function addBank(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     const user = {
-      id: props.nisit.nisit.result[0].userID,
+      id: props.nisit.result[0].userID,
       name: name,
       lastname: lastname,
       idStudent: idStudent,
@@ -56,8 +64,19 @@ function addBank(props) {
     props.setRegisterNisit(user);
   };
 
+  if(session){
+    var domain = String(session.user.email).substring(
+    String(session.user.email).lastIndexOf("@") + 1
+  );
+    if(!domain.includes("ku.th")){
+      return router.push('/provost')
+    }
+    
+  }
+  
   if (typeof window !== "undefined" && loading) return null;
 
+  
   if (!session) {
     console.log("in that case");
     return (
@@ -225,12 +244,21 @@ function addBank(props) {
   );
 }
 
+// const mapStateToProps = (state) => ({
+//   nisit: state.nisit,
+// });
+
+// const mapDispathToProps = {
+//   setBankNisit: setBankNisit,
+// };
+
 const mapStateToProps = (state) => ({
-  nisit: state.nisit,
+  nisit: state.nisit.nisit,
 });
 
-const mapDispathToProps = {
+const mapDispatchToProps = {
+  getDetailNisit: getDetailNisit,
   setBankNisit: setBankNisit,
 };
 
-export default connect(mapStateToProps, mapDispathToProps)(addBank);
+export default connect(mapStateToProps, mapDispatchToProps)(addBank);

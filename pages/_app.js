@@ -4,8 +4,6 @@ import Layout from "../components/Layout";
 import { wrapper } from "../redux/store";
 function App({ Component, pageProps }) {
 
-
-
   return (
     <>
       <Head>

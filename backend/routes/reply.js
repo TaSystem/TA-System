@@ -3,25 +3,38 @@ var router = express.Router();
 var db = require('../config/db');
 
 
-router.put('/teacher-reply',(req,res)=>{
-  let id = req.body.id;
+router.post('/teacher-reply',(req,res)=>{
+
+  let email = req.body.email;
+  let applyTaId = req.body.applyTaId;
   let status = req.body.status;
   // let notereply = req.body.notereply;
-  let userID = req.body.userID;
+  let userID ;
 
   let sqlcommand = `UPDATE teacherapplyta SET status = ? WHERE id = ?`;
-  let applyItem = [status,id];
+  let applyItem = [status,applyTaId];
+
+  console.log("email: ",email);
+  
   db.query(sqlcommand,applyItem,(err,result)=>{
       if(err){console.log(err)}
       else{
-          db.query("INSERT INTO userreplyteacher value (?,?,?)",[id,userID,status],(err,result)=>{
+          db.query("SELECT id FROM users WHERE email= ?",email,(err,result)=>{
             if(err) console.log(err)
             else{
-            db.query("SELECT C.id,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.sec_P,A.number1,A.number2,A.status,A.noteapply,U.name_email FROM courses AS C,Teacherapplyta AS A,users AS U WHERE C.id = A.courseID AND A.userID=U.id AND A.status = ?",(status-1),(err,result)=>{
+            userID = result[0].id;
+            console.log("userID: ",userID)
+            db.query("INSERT INTO userreplyteacher value (?,?,?)",[applyTaId,userID,status],(err,result)=>{
                 if(err) console.log(err);
                 else{
-                  res.send(result);
-                  console.log("success reply!!!")
+                  db.query("SELECT C.id,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.sec_P,C.number_D,C.number_P,A.id as AID,A.number1,A.number2,A.status,A.noteapply,U.name_email FROM courses AS C,Teacherapplyta AS A,users AS U WHERE C.id = A.courseID AND A.userID=U.id AND A.status = ?",(status-1),(err,result)=>{
+                    if(err) console.log(err);
+                    else{
+                      res.send(result);
+                      console.log("success reply!!!")
+                    }
+                }
+                )
                 }
             }
             )}

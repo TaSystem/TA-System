@@ -6,6 +6,7 @@ import Axios from "../config/Axios";
 import { connect } from "react-redux";
 import { setDetailNisit } from "../redux/actions/nisitAction";
 import { useRouter } from "next/router";
+import Date from '../components/DatePickers'
 
 function Redirect({ to }) {
   const router = useRouter();
@@ -44,7 +45,9 @@ function Page(props) {
           {console.log("status case1 ", session)}
           {/* <Redirect to='/nisit'/> */}
           Not signed in <br />
+
           <button onClick={() => signIn()}>Sign in</button>
+          {/* <Date/> */}
         </>
       )}
       {session && (

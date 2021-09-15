@@ -3,8 +3,10 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Axios from "../../config/Axios";
 import { useRouter } from "next/router";
+import { connect } from "react-redux";
+import { getDetailNisit } from "../../redux/actions/nisitAction";
 
-export default function index() {
+function index(props) {
   const [courseList, setCourseList] = useState([]);
   const [search, setSearch] = useState(null);
   const [session, loading] = useSession();
@@ -22,6 +24,12 @@ export default function index() {
     }
     // }
     // getCourses();
+  }, [loading]);
+
+  useEffect(() => {
+    if (session) {
+      props.getDetailNisit(session.user.email)
+    }
   }, [loading]);
 
   if (typeof window !== "undefined" && loading) return null;
@@ -113,3 +121,12 @@ export default function index() {
     </div>
   );
 }
+const mapStateToProps = (state) => ({
+  nisit: state.nisit.nisit,
+});
+
+const mapDispatchToProps = {
+  getDetailNisit: getDetailNisit,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(index);
