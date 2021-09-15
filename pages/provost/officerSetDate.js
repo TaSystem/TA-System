@@ -1,43 +1,36 @@
 import React, { useState, useEffect } from "react";
 import Axios from "../../config/Axios";
+import Dateformat from "../../components/DateFormat";
+import DatePicker from '../../components/DatePickers';
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
-import DatePicker from '../../components/DatePickers'
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
 
+
 function officerSetDate(props) {
+
+  const [dates,setDate] = useState([]);
+  const router = useRouter();
+  const [session, loading] = useSession();
   const today = new Date();
+  const [termNow, setTermNow] = useState([]);
   const [year, setYear] = useState(today.getFullYear() + 543);
   const [term, setTerm] = useState(null);
   const [openDate, setOpenDate] = useState(new Date());
   const [closeDate, setCloseDate] = useState(new Date());
-  const [titleDay, setTitleDay] = useState(null);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [yearSelect, setYearSelect] = useState([]);
-  const [termSelect, setTermSelect] = useState([]);
-  const [yearNow, setYearNow] = useState(null);
-  const [termNow, setTermNow] = useState(null);
-  const [err1, setErr1] = useState(null);
-  const [err2, setErr2] = useState(null);
-  const [success1, setSuccess1] = useState(null);
-  const [success2, setSuccess2] = useState(null);
-  const [err3, setErr3] = useState(null);
-  const [success3, setSuccess3] = useState(null);
-  const [session, loading] = useSession();
-
+  const [err, setErr] = useState(null);
+  const [success, setSuccess] = useState(null);
+  
   useEffect(() => {
-    async function getYear() {
-      const response = await Axios.get("/setdate/year");
-      setYearSelect(response.data);
-      console.log("yearSelect: ", response.data);
+    async function getDates() {
+      const response = await Axios.get("/setdate");
+      const responseNow = await Axios.get("/setdate/getNow");
+      setDate(response.data);
+      setTermNow(responseNow.data);
     }
-    async function getTerm() {
-      const response = await Axios.get("/setdate/term");
-      setTermSelect(response.data);
-    }
-    getYear();
-    getTerm();
+    getDates();
+    
   }, []);
 
   useEffect(() => {
@@ -49,13 +42,13 @@ function officerSetDate(props) {
 
   const setDateStudy = async () => {
     if (!year) {
-      setErr1("กรุณากรอกปีการศึกษา");
+      setErr("กรุณากรอกปีการศึกษา");
     } else if (!term) {
-      setErr1("กรุณาเลือกภาคเรียน");
+      setErr("กรุณาเลือกภาคเรียน");
     } else if (!openDate) {
-      setErr1("กรุณาเลือกวันที่เริ่ม");
+      setErr("กรุณาเลือกวันที่เริ่ม");
     } else if (!closeDate) {
-      setErr1("กรุณาเลือกวันสุดท้าย");
+      setErr("กรุณาเลือกวันสุดท้าย");
     } else {
       await Axios.post("/setdate/setDateStudy", {
         year: year,
@@ -63,50 +56,94 @@ function officerSetDate(props) {
         openDate: openDate,
         closeDate: closeDate,
       }).then((response) => {
-        setErr1(null);
-        setSuccess1(response.data);
-      });
-    }
-  };
-  
-  const setDateStop = async () => {
-    if (!titleDay) {
-      setErr2("กรุณากรอกหัวข้อวันหยุด");
-    } else if (!startDate) {
-      setErr2("กรุณาเลือกวันที่เริ่มหยุด");
-    } else if (!endDate) {
-      setErr2("วันกรุณาเลือกสุดท้ายที่หยุด");
-    } else {
-      await Axios.post("/setdate/setDateStop", {
-        title: titleDay,
-        startDate: startDate,
-        endDate: endDate,
-      }).then((response) => {
-        setErr2(null);
-        setSuccess2(response.data);
+        setErr(null);
+        setSuccess(response.data.message);
+        setDate(response.data.data);
+        setYear(today.getFullYear() + 543)
+        setTerm(null);
+        setOpenDate(new Date());
+        setCloseDate(new Date());
       });
     }
   };
 
-  const setYearAndTermNow = async () => {
-    await Axios.post("/setdate/setNow", {
-      year: yearNow,
-      term: termNow,
+  const setYearAndTermNow = async (value) => {
+    await Axios.put("/setdate/setNow", {
+      id: value.id,
     }).then((response) => {
-      setErr3(null);
-      setSuccess3(response.data);
+      console.log("value: ",value);
+      setErr(null);
+      setSuccess(response.data.message);
+      setTermNow(response.data.data);
     });
   };
 
-  console.log(startDate)
+  const edit = (id) => {
+    return router.push(`/provost/setDatestop/${id}`);
+  };
 
+  const del = async (id) =>{
+    await Axios.delete(`/setdate/delete-datestudy/${id}`)
+    .then((response) => {
+      setErr(null);
+      setSuccess(response.data.message);
+      setDate(response.data.data);
+    });
+  }
+
+
+  
   return (
     <div className="container">
-      <h1>ตั้งค่าวันที่</h1>
-
-      <hr />
-      <h2>ตั้งค่าวันเรียน</h2>
-      <div class="information">
+      <h2>ตั้งค่าวันที่เรียน</h2>
+      <h3>ปัจจุบัน ปี:{termNow != null && termNow.length != 0 ? termNow[0].year : "loading..."} เทอม: {termNow != null && termNow.length != 0 ? termNow[0].term : "loading..."}</h3>
+      <div className="table-responsive">
+      {success && (
+            <div className="alert alert-success" role="alert">
+              {" "}
+              {success}{" "}
+            </div>
+      )}
+      <table className="table table-bordered">
+          <thead>
+            <tr>
+              <th rowSpan="2">#</th>
+              <th rowSpan="2">ปีการศึกษา</th>
+              <th rowSpan="2">ภาคเรียน</th>
+              <th rowSpan="2">วันที่เปิดเรียน</th>
+              <th rowSpan="2">วันสุดท้ายของการเรียน</th>
+              <th rowSpan="2">การกระทำ</th>
+              
+            </tr>
+          </thead>
+          <tbody>
+            {dates.map((val, key) => {
+                return (
+                  <tr key={key}>
+                    <td>{key + 1} </td>
+                    <td>{val.year}</td>
+                    <td>{val.term}</td>
+                    <td>   <Dateformat date={val.openDate}/> </td>
+                    <td>   <Dateformat date={val.closeDate}/> </td>
+                    <td>
+                    <button type="button" className="btn btn-success" onClick={()=>{
+                        if (window.confirm("ยืนยันตั้งค่าปีการศึกษา " + val.year + "เทอม " + val.term+" เป็นเทอมปัจจุบัน"))
+                        setYearAndTermNow(val);
+                      }}>เทอมปัจจุบัน</button>
+                      <button type="button" className="btn btn-primary" onClick={()=>edit(val.id)} >เพิ่มวันหยุด</button>
+                      <button type="button" className="btn btn-danger" onClick={() => {
+                        if (window.confirm("ยืนยันการลบปีการศึกษา " + val.year + "เทอม " + val.term))
+                          del(val.id);
+                      }}>ลบ</button>
+                    </td>
+                    
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+        </div>
+        <div class="information">
         <form className="row gy-2 gx-3 align-items-center">
           <div class="col-auto">
             <label for="closeDate" class="form-label">
@@ -146,15 +183,6 @@ function officerSetDate(props) {
             <label for="openDate" class="form-label">
               เริ่ม
             </label>
-            {/* <input
-              type="date"
-              className="form-control"
-              name="openDate"
-              id="openDate"
-              onChange={(e) => {
-                setOpenDate(e.target.value);
-              }}
-            /> */}
             <DatePicker onChange={(date) => 
                 setOpenDate(date)
               } date={openDate}/>
@@ -164,15 +192,6 @@ function officerSetDate(props) {
             <label for="closeDate" class="form-label">
               สุดท้าย
             </label>
-            {/* <input
-              type="date"
-              className="form-control"
-              name="closeDate"
-              id="closeDate"
-              onChange={(e) => {
-                setCloseDate(e.target.value);
-              }}
-            /> */}
             <DatePicker onChange={(date) => 
                 setCloseDate(date)
               } date={closeDate}/>
@@ -188,167 +207,16 @@ function officerSetDate(props) {
             </button>
           </div>
 
-          {err1 && (
+          {err && (
             <div className="alert alert-danger" role="alert">
               {" "}
-              {err1}{" "}
-            </div>
-          )}
-          {success1 && (
-            <div className="alert alert-success" role="alert">
-              {" "}
-              {success1}{" "}
+              {err}{" "}
             </div>
           )}
 
         </form>
       </div>
-
-      <h2>ตั้งค่าวันหยุด</h2>
-      <div class="information">
-        <form
-          class="row gy-2 gx-3 align-items-center"
-          encType="multipart/form-data"
-        >
-          <div class="col-auto">
-            <label for="closeDate" class="form-label">
-              หัวข้อวันหยุด
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              name="year"
-              placeholder="หยุดเนื่องในวัน"
-              onChange={(e) => {
-                setTitleDay(e.target.value);
-              }}
-            />
-          </div>
-
-          <div class="col-auto">
-            <label for="startDate" class="form-label">
-              ตั้งแต่
-            </label>
-            {/* <input
-              type="date"
-              className="form-control"
-              name="startDate"
-              id="startDate"
-              onChange={(e) => {
-                setStartDate(e.target.value);
-              }}
-            /> */}
-            <DatePicker onChange={(date) => 
-                setStartDate(date)
-              } date={startDate}/>
-            
-          </div>
-          <div class="col-auto">
-            <label for="endDate" class="form-label">
-              ถึง
-            </label>
-            {/* <input
-              type="date"
-              className="form-control"
-              name="endDate"
-              id="endDate"
-              onChange={(e) => {
-                setEndDate(e.target.value);
-              }}
-            /> */}
-            <DatePicker onChange={(date) => 
-                setEndDate(date)
-              } date={endDate}/>
-          </div>
-          {err2 && (
-            <div className="alert alert-danger" role="alert">
-              {" "}
-              {err2}{" "}
-            </div>
-          )}
-          {success2 && (
-            <div className="alert alert-success" role="alert">
-              {" "}
-              {success2}{" "}
-            </div>
-          )}
-          <div className="mb-3">
-            <button
-              type="button"
-              className="btn btn-success"
-              onClick={setDateStop}
-            >
-              บันทึก
-            </button>
-          </div>
-        </form>
-      </div>
-      <h2>ตั้งค่าปีการศึกษาและภาคเรียนปัจจุบัน</h2>
-      <div className="information">
-        <form class="row gy-2 gx-3 align-items-center">
-          <div class="col-auto">
-            <label for="yearSelect" class="form-label">
-              ปีการศึกษา
-            </label>
-
-            <select
-              class="form-select"
-              name="yearSelect"
-              onChange={(e) => {
-                setYearNow(e.target.value);
-              }}
-            >
-              <option value={null} disabled selected hidden>
-                ปีการศึกษา
-              </option>
-
-              {yearSelect.map((val, key) => {
-                return <option value={val.year}>{val.year}</option>;
-              })}
-            </select>
-          </div>
-          <div class="col-auto">
-            <label for="closeDate" class="form-label">
-              ภาคเรียน
-            </label>
-            <select
-              name="term"
-              class="form-select"
-              onChange={(e) => {
-                setTermNow(e.target.value);
-              }}
-            >
-              <option value={null} disabled selected hidden>
-                ภาคเรียน
-              </option>
-              {termSelect.map((val, key) => {
-                return <option value={val.term}>{val.term}</option>;
-              })}
-            </select>
-          </div>
-          {err3 && (
-            <div className="alert alert-danger" role="alert">
-              {" "}
-              {err3}{" "}
-            </div>
-          )}
-          {success3 && (
-            <div className="alert alert-success" role="alert">
-              {" "}
-              {success3}{" "}
-            </div>
-          )}
-          <div className="mb-3">
-            <button
-              type="button"
-              className="btn btn-success"
-              onClick={setYearAndTermNow}
-            >
-              บันทึก
-            </button>
-          </div>
-        </form>
-      </div>
+      
     </div>
   );
 }

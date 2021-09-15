@@ -57,7 +57,7 @@ const data = [
 
   const dataBar = [
     {
-      "country": "AD(680)",
+      "country": "2546(ภาคต้น)",
       "hot dog": 100,
       "hot dogColor": "hsl(224, 70%, 50%)",
       "burger": 161,

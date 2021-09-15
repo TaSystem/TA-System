@@ -4,6 +4,7 @@ import Dateformat from "../../../components/DateFormat";
 import DatePicker from '../../../components/DatePickers';
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
+import { red } from "@material-ui/core/colors";
 
 const setDatestop = () => {
   
@@ -15,9 +16,9 @@ const setDatestop = () => {
   const [endDate, setEndDate] = useState(new Date());
   const [err, setErr] = useState(null);
   const [success, setSuccess] = useState(null);
-  var year = dates != null && dates.length != 0 ?dates[0].year:"loading...";
-  var term = dates != null && dates.length != 0 ?dates[0].term:"loading...";
-  var dateStudyID = dates != null && dates.length != 0 ?dates[0].SID:"loading...";
+  const [dateSelect,setDateSelect] = useState([]);
+  
+  var dateStudyID = dateSelect != null && dateSelect.length != 0 ?dateSelect[0].id:"loading...";
   const router = useRouter();
   const {id} = router.query;
   const [session, loading] = useSession();
@@ -27,9 +28,10 @@ const setDatestop = () => {
   useEffect(() => {
   
     async function getDate(){
-        const response = await Axios.get(`/setdate/${id}`);
+        const response = await Axios.get(`/setdate/date-study/${id}`);
+        const responseSelect = await Axios.get(`/setdate/date-select/${id}`);
+        setDateSelect(responseSelect.data);
         setDate(response.data);
-        
     }
     getDate(); 
     
@@ -56,11 +58,24 @@ const setDatestop = () => {
     }
   };
 
+  const del = async (sid,stid) =>{
+    await Axios.post(`/setdate/delete-datestop`,{
+      SID:sid,
+      STID:stid
+    })
+    .then((response) => {
+      setErr(null);
+      setSuccess(response.data.message);
+      setDate(response.data.data);
+    });
+  }
+
 
   return (
     <div className="container">
       <h2>ตั้งค่าวันหยุด</h2>
-      <h3>ปี:{year}  เทอม:{term} </h3>
+      <h3>ปี:{dateSelect&& dateSelect.length != 0 ?dateSelect[0].year:"loading..."}  เทอม:{dateSelect&& dateSelect.length != 0 ?dateSelect[0].term:"loading..."} </h3>
+      <h4>วันที่เปิดเรียน: {dateSelect&& dateSelect.length != 0 ?<Dateformat date={dateSelect[0].openDate}/>:"loading..."} วันที่ปิดเรียน: {dateSelect&& dateSelect.length != 0 ?<Dateformat date={dateSelect[0].closeDate}/>:"loading..."}</h4>
       <div className="table-responsive">
       {success && (
             <div className="alert alert-success" role="alert">
@@ -80,7 +95,7 @@ const setDatestop = () => {
             </tr>
           </thead>
           <tbody>
-            {dates != null && dates.length != 0 ? dates.map((val, key) => {
+            {dates && dates.length != 0 && dates.map((val, key) => {
                 return (
                   <tr key={key}>
                     <td>{key + 1} </td>
@@ -88,13 +103,16 @@ const setDatestop = () => {
                     <td>   <Dateformat date={val.startDate}/> </td>
                     <td>   <Dateformat date={val.endDate}/> </td>
                     <td>
-                      <button type="button" className="btn btn-primary" >แก้ไข</button>
-                      <button type="button" className="btn btn-danger">ลบ</button>
+                      <button type="button" className="btn btn-danger" onClick={() => {
+                        if (window.confirm("ยืนยันการลบวัน " + val.title))
+                          del(val.SID,val.STID);
+                      }}>ลบ</button>
                     </td>
                     
                   </tr>
                 );
-              }):"loading..."}
+              })}
+              {dates && !dates.length && <h2 style={{color:"red"}}>ยังไม่มีการเพิ่มวันหยุด</h2> }
           </tbody>
         </table>
         </div>

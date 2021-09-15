@@ -3,7 +3,7 @@ var router = express.Router();
 var db = require("../config/db");
 
 router.get("/", (req, res) => {
-  db.query("SELECT * FROM datestudy ORDER BY year", (err, result) => {
+  db.query("SELECT * FROM datestudy ORDER BY openDate", (err, result) => {
     if (err) throw err;
     else {
       res.send(result);
@@ -45,10 +45,25 @@ router.get("/term", (req, res) => {
   });
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/date-study/:id", async (req, res) => {
   const id = req.params.id;
   await db.query(
     "SELECT S.id as SID,S.year,S.term,S.openDate,S.closeDate,ST.id as STID,ST.title,ST.startDate,ST.endDate FROM datestudy as S,datestop as ST WHERE S.id = ST.datestudyID AND ST.datestudyID = ? ORDER BY ST.startDate",
+    id,
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+router.get("/date-select/:id", async (req, res) => {
+  const id = req.params.id;
+  await db.query(
+    "SELECT * FROM `datestudy` WHERE id = ?",
     id,
     (err, result) => {
       if (err) {
@@ -82,6 +97,7 @@ router.post("/setDateStudy", (req, res) => {
   let sqlcommand = `INSERT INTO datestudy (year,term,opendate,closedate,status) VALUE (?,?,?,?,?)`;
   let dateItems = [year, term, NewOpenDate, NewCloseDate, status];
   console.log("date item: ", dateItems);
+
   db.query(sqlcommand, dateItems, (err, result) => {
     if (err) throw err;
     else {
@@ -94,6 +110,7 @@ router.post("/setDateStudy", (req, res) => {
       });
     }
   });
+  
 });
 
 router.post("/setDateStop", (req, res) => {
@@ -133,6 +150,22 @@ router.post("/setDateStop", (req, res) => {
   });
 });
 
+router.post("/delete-datestop", (req, res) => {
+  const SID = req.body.SID;
+  const STID = req.body.STID;
+  db.query("DELETE FROM datestop WHERE id = ?", STID, (err, result) => {
+    if (err) throw err;
+    else {
+      db.query("SELECT S.id as SID,S.year,S.term,S.openDate,S.closeDate,ST.id as STID,ST.title,ST.startDate,ST.endDate FROM datestudy as S,datestop as ST WHERE S.id = ST.datestudyID AND ST.datestudyID = ? ORDER BY ST.startDate",SID,(err, result) => {
+        if (err) throw err;
+        else {
+          respose = { message: "ลบวันหยุดสำเร็จ", data: result };
+          res.send(respose);
+        }
+      });
+    }
+  });
+});
 
 router.put("/setNow", (req, res) => {
   let id = req.body.id;
@@ -182,12 +215,12 @@ router.put("/setNow", (req, res) => {
   });
 });
 
-router.delete("/delete/:id", (req, res) => {
+router.delete("/delete-datestudy/:id", (req, res) => {
   const id = req.params.id;
   db.query("DELETE FROM datestudy WHERE id = ?", id, (err, result) => {
     if (err) throw err;
     else {
-      db.query("SELECT * FROM datestudy ORDER BY year", (err, result) => {
+      db.query("SELECT * FROM datestudy ORDER BY openDate", (err, result) => {
         if (err) throw err;
         else {
           respose = { message: "ลบวันที่เรียนสำเร็จ", data: result };
@@ -197,5 +230,7 @@ router.delete("/delete/:id", (req, res) => {
     }
   });
 });
+
+
 
 module.exports = router;

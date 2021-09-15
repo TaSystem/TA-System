@@ -68,8 +68,8 @@ export default function DateFormat(props) { //รูปแบบตัวอย�
       }
 
     return(
-        <div>
+        <>
             วัน{day(new Date(props.date).getDay())}ที่ {new Date(props.date).getDate()} {mount(new Date(props.date).getMonth())} พ.ศ.{new Date(props.date).getFullYear()+543}
-        </div>
+        </>
     )
 }

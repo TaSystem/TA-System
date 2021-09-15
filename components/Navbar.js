@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../redux/actions/nisitAction";
 
+
 const Navbar = (props) => {
   const [session, loading] = useSession();
   const router = useRouter();
@@ -285,7 +286,7 @@ const Navbar = (props) => {
                 <a class="nav-item nav-link">จัดทำเอกสารอนุมัติหลักการ</a>
               </Link>
               <Link href="/provost/provostHItoryApply">
-                <a class="nav-item nav-link">รายวิชาที่ยื่นขอTA </a>
+                <a class="nav-item nav-link">รายวิชาที่ยื่นขอSA </a>
               </Link>
               <Link href="/provost/nisitRequest">
                 <a class="nav-item nav-link">รายชื่อนิสิตที่ขอ </a>

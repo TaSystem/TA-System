@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/get-role", async (req, res) => {
-  await db.query("SELECT title FROM roles WHERE id !=5", (err, result) => {
+  await db.query("SELECT * FROM roles WHERE id !=5", (err, result) => {
     if (err) {
       console.log(err);
     } else {
@@ -105,7 +105,7 @@ router.post("/login", async (req, res) => {
                 console.log(result[0].title);
                 console.log("welcome back");
 
-                let ansTeacher = { path: "/provost", result: result };
+                let ansTeacher = { path: "/provost/provostCourses", result: result };
 
                 let ansStudent = { path: "/nisit", result: result };
 
@@ -234,6 +234,41 @@ router.post(
     );
   }
 );
+
+router.post("/set-role", (req, res) => {
+  let email = req.body.email;
+  let name = req.body.name;
+  let lastname = req.body.lastname;
+  let department = req.body.department;
+  let tel = req.body.tel;
+  let roleID = req.body.roleID; 
+  
+  let items =[email, name, lastname,department,tel];
+  console.log("items: ",items);
+
+  db.query(
+    "INSERT INTO users (email,name,lastname,department,tel) VALUES(?,?,?,?,?)",
+    items,
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        db.query(
+          "INSERT INTO users_roles(userID,roleID) VALUES (?,?)",
+          [result.insertId,roleID],
+          (err, result) => {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log(result);
+            }
+          }
+        );
+      }
+    }
+  );
+});
+
 
 router.put("/update-profile", (req, res) => {
   const id = req.body.id;

@@ -11,7 +11,7 @@ function historyReqest(props) {
   useEffect(() => {
     async function getCourses() {
       const response = await Axios.get("/courses/student-reply");
-      setCourses(response.data);
+      setCourses(response.data);  
     }
     getCourses();
   }, []);
@@ -58,7 +58,7 @@ function historyReqest(props) {
 
   return (
     <div className="container">
-      <h1>รายชื่อนิสิตที่ยื่นขอ</h1>
+      <h1>รายชื่อนิสิตที่ยื่นขอ(อาจารย์ผู้สอน)</h1>
       <div className="information">
         <table className="table table-bordered">
           <thead>

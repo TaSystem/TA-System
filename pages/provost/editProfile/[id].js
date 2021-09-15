@@ -4,14 +4,14 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 
 const requestTAs = () => {
-  const [user, setUser] = useState(null);
-  const [roles, setRoles] = useState([]);  
-  const [name, setName] = useState(user != null && user.length != 0? user[0].name: "loading...");
-  const [lastname, setLastname] = useState(user != null && user.length != 0? user[0].lastname: "loading...");
-  const [level, setLevel] = useState(user != null && user.length != 0? user[0].level: "loading...");
-  const [major, setMajor] = useState(user != null && user.length != 0? user[0].major: "loading...");
-  const [tel, setTel] = useState(user != null && user.length != 0? user[0].tel: "loading...");
-  const [roleID, setRoleID] = useState(user != null && user.length != 0? user[0].RID: "loading...");
+  const [user, setUser] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [name, setName] = useState(null);
+  const [lastname, setLastname] = useState(null);
+  const [level, setLevel] = useState(null);
+  const [major, setMajor] = useState(null);
+  const [tel, setTel] = useState(null);
+  const [roleID, setRoleID] = useState(null);
 
   const router = useRouter();
   const { id } = router.query;
@@ -30,28 +30,30 @@ const requestTAs = () => {
     getUser();
   }, [router]);
 
-  const userUpdate = async () =>{
+  const userUpdate = async () => {
     await Axios.put("/users/edit-profile-teacher", {
-        userID:id,
-        name: name,
-        lastname:lastname,
-        level:level,
-        department: major,
-        tel:tel,
-        rolesID:roleID
-      })
-      
+      userID: id,
+      name: name,
+      lastname: lastname,
+      level: level,
+      department: major,
+      tel: tel,
+      rolesID: roleID,
+    });
+  };
+
+  if(user == null && user.length > 0){
+    setName(user[0].name);
   }
 
   return (
     <div className="container">
       <h2>
-        อีเมลล์ :
-        {user != null && user.length != 0 ? user[0].email : "loading..."}
+        อีเมลล์ :{user && user.length != 0 ? user[0].email : "loading..."}
       </h2>
       <h3>
         ชื่ออีเมลล์:
-        {user != null && user.length != 0 ? user[0].name_email : "loading..."}
+        {user && user.length != 0 ? user[0].name_email : "loading..."}
       </h3>
       <div className="information">
         <form>
@@ -62,11 +64,7 @@ const requestTAs = () => {
                   type="text"
                   id="form6Example1"
                   className="form-control"
-                  defaultValue={
-                    user != null && user.length != 0
-                      ? user[0].name
-                      : "loading..."
-                  }
+                  defaultValue={user && user.length != 0 ? user[0].name:"loading..."}
                   onChange={(e) => {
                     setName(e.target.value);
                   }}
@@ -82,11 +80,7 @@ const requestTAs = () => {
                   type="text"
                   id="form6Example2"
                   className="form-control"
-                  defaultValue={
-                    user != null && user.length != 0
-                      ? user[0].lastname
-                      : "loading..."
-                  }
+                  defaultValue={user && user.length != 0 && user[0].lastname}
                   onChange={(e) => {
                     setLastname(e.target.value);
                   }}
@@ -103,15 +97,13 @@ const requestTAs = () => {
               type="text"
               id="form6Example4"
               className="form-control"
-              defaultValue={
-                user != null && user.length != 0 ? user[0].level : "loading..."
-              }
+              defaultValue={user && user.length != 0 && user[0].level}
               onChange={(e) => {
                 setLevel(e.target.value);
               }}
             />
             <label className="form-label" for="form6Example4">
-              อาจารย์รับผิดชอบระดับการศึกษา   
+              อาจารย์รับผิดชอบระดับการศึกษา
             </label>
           </div>
 
@@ -122,21 +114,9 @@ const requestTAs = () => {
               onChange={(e) => {
                 setMajor(e.target.value);
               }}
-              
             >
-              <option
-                value={
-                  user != null && user.length != 0
-                    ? user[0].department
-                    : "loading..."
-                }
-                disabled
-                selected
-                hidden
-              >
-                {user != null && user.length != 0
-                  ? user[0].department
-                  : "loading..."}
+              <option value={user && user.length != 0 && user[0].department} disabled selected hidden>
+                {user && user.length != 0 && user[0].department}
               </option>
 
               <option value="วิศวกรรมอุตสาหการและระบบ">
@@ -157,7 +137,12 @@ const requestTAs = () => {
                 วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)
               </option>
 
-              <option value="โครงการพิเศษคณะฯ">โครงการพิเศษคณะฯ(ป.ตรี)</option>
+              <option value="วิศวกรรมเครื่องกลและระบบการผลิต">
+                วิศวกรรมเครื่องกลและระบบการผลิต(ป.ตรี)
+              </option>
+              <option value="วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ">
+                วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ(ป.ตรี)
+              </option>
             </select>
             <label className="form-label" for="form6Example3">
               ภาควิชา
@@ -166,12 +151,10 @@ const requestTAs = () => {
 
           <div className="form-outline mb-4">
             <input
-              type="number"
+              type="text"
               id="form6Example4"
               className="form-control"
-              defaultValue={
-                user != null && user.length != 0 ? user[0].tel : "loading..."
-              }
+              defaultValue={user && user.length != 0 && user[0].tel}
               onChange={(e) => {
                 setTel(e.target.value);
               }}
@@ -190,32 +173,34 @@ const requestTAs = () => {
               }}
             >
               <option
-                value={
-                  user != null && user.length != 0
-                    ? user[0].title
-                    : "loading..."
-                }
+                value={user && user.length != 0 && user[0].title}
                 disabled
                 selected
                 hidden
               >
-                {user != null && user.length != 0
-                  ? user[0].title
-                  : "loading..."}
+                {user && user.length != 0 && user[0].title}
               </option>
 
               {roles.map((val, key) => {
-                return <option value={val.title}>{val.title}</option>;
+                return <option value={val.id}>{val.title}</option>;
               })}
             </select>
             <label className="form-label" for="form6Example5">
               ตำแหน่ง
             </label>
           </div>
-          <button type="submit" className="btn btn-primary btn-block mb-4" onClick={()=>window.history.back()}>
+          <button
+            type="submit"
+            className="btn btn-primary btn-block mb-4"
+            onClick={() => window.history.back()}
+          >
             ย้อนกลับ
           </button>
-          <button type="submit" className="btn btn-success btn-block mb-4" onClick={userUpdate}>
+          <button
+            type="submit"
+            className="btn btn-success btn-block mb-4"
+            onClick={userUpdate}
+          >
             บันทึก
           </button>
         </form>

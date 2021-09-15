@@ -4,10 +4,11 @@ import { useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
 
-function officerApproveCost(props) {
+function officerFillNumber(props) {
   const [courseList, setCourseList] = useState([]);
   const [search, setSearch] = useState(null);
   const [major, setMajor] = useState("All");
+  const [level, setLevel] = useState("All");
   const [numberReal, setNumberReal] = useState(null);
   const [session, loading] = useSession();
 
@@ -96,7 +97,7 @@ function officerApproveCost(props) {
 
   return (
     <div className="container">
-      <h1>จัดทำเอกสารอนุมัติหลักการ (เจ้าหน้าที่)</h1>
+      <h1>กรอกจำนวนนิสิตที่ลงทะเบียน (เจ้าหน้าที่)</h1>
       <div className="input-group mb-3">
         <input
           type="text"
@@ -111,7 +112,7 @@ function officerApproveCost(props) {
           }}
         >
           <option value={null} disabled selected hidden>
-            เลือกสาขาของวิชา
+            {level == "All" ? "เลือกระดับก่อน" : "เลือกสาขาของวิชา"}
           </option>
           <option value="All" disabled selected hidden>
             เลือกสาขาของวิชา
@@ -138,12 +139,7 @@ function officerApproveCost(props) {
           <option value="โครงการพิเศษคณะฯ">โครงการพิเศษคณะฯ(ป.ตรี)</option>
         </select>
       </div>
-        <button type="submit" className="btn btn-success">
-          พิมพ์เอกสาร
-        </button>
-        <button type="submit" className="btn btn-success">
-          ตรวจสอบทั้งหมด
-        </button>
+        
       <div className="information">
         <table className="table table-bordered">
           <thead>
@@ -160,8 +156,6 @@ function officerApproveCost(props) {
               <th rowSpan="2">อาจารย์ผู้สอน</th>
               <th rowSpan="2">อาจารย์ผู้ขอ</th>
               <th colSpan="2">จำนวนที่ขอ</th>
-              <th rowSpan="2">จำนวนชั่วโมง/สัปดาห์</th>
-              <th rowSpan="2">ค่าใช้จ่าย</th>
               <th rowSpan="2">ตอบกลับ</th>
             </tr>
             <tr>
@@ -205,24 +199,7 @@ function officerApproveCost(props) {
                   <td>{val.name_email} </td>
                   <td>{val.number1}</td>
                   <td>{val.number2}</td>
-                  {val.sec_D && val.sec_P && <td>5</td>}
-                  {val.sec_D && !val.sec_P && <td>2</td>}
-                  {!val.sec_D && val.sec_P && <td>3</td>}
-                  {val.sec_D && val.sec_P && (
-                    <td>
-                      {val.number1 * 5 * 30 * 15 + val.number2 * 5 * 40 * 15}
-                    </td>
-                  )}
-                  {val.sec_D && !val.sec_P && (
-                    <td>
-                      {val.number1 * 2 * 30 * 15 + val.number2 * 2 * 40 * 15}
-                    </td>
-                  )}
-                  {!val.sec_D && val.sec_P && (
-                    <td>
-                      {val.number1 * 3 * 30 * 15 + val.number2 * 3 * 40 * 15}
-                    </td>
-                  )}
+                  
                   <td>
                     <button
                       type="button"
@@ -232,7 +209,7 @@ function officerApproveCost(props) {
                           replyTAsuccess(val.CID);
                       }}
                     >
-                      ตรวจสอบ
+                      ยืนยัน
                     </button>
                     <button
                       type="button"
@@ -262,6 +239,6 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(officerApproveCost);
+export default connect(mapStateToProps, mapDispatchToProps)(officerFillNumber);
 
 
