@@ -1,4 +1,5 @@
 import Navbar from "./Navbar";
+import Navbar2 from './Navbar2'
 import { useRouter } from "next/router";
 const Layout = ({ children }) => {
   console.log("in layout ", children);
@@ -14,6 +15,7 @@ const Layout = ({ children }) => {
     <div>
       <div className="content">
         <Navbar/>
+        {/* <Navbar2/> */}
         {children}
       </div>
     </div>

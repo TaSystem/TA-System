@@ -22,11 +22,11 @@
     position: relative;
     cursor: default;
   }
-  .sidebar .logoDetails img {
+  .sidebar .logoDetails Image {
     opacity: 0;
     transition: all 0.5s ease;
   }
-  .sidebar .logoDetails .logo_name {
+  .sidebar .logo_name {
     color: #090001;
     font-size: 1.5vw;
     font-weight: 600;
