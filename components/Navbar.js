@@ -278,19 +278,22 @@ const Navbar = (props) => {
                 <a class="nav-item nav-link">คำขออาจารย์ของเจ้าหน้าที่ </a>
               </Link>
               <Link href="/provost/headRequest">
-                <a class="nav-item nav-link">คำขอนิสิตของหัวหน้าภาค </a>
+                <a class="nav-item nav-link">คำขออาจารย์ของหัวหน้าภาค </a>
               </Link>
               <Link href="/provost/deputyDeanRequest">
-                <a class="nav-item nav-link">คำขอนิสิตของรองคณบดี </a>
+                <a class="nav-item nav-link">คำขออาจารย์ของรองคณบดี </a>
               </Link>
               <Link href="/provost/officerApproveCost">
-                <a class="nav-item nav-link">จัดทำเอกสารอนุมัติหลักการ</a>
+                <a class="nav-item nav-link">จัดทำเอกสารค่าใช้จ่าย</a>
               </Link>
               <Link href="/provost/provostHItoryApply">
                 <a class="nav-item nav-link">รายวิชาที่ยื่นขอSA </a>
               </Link>
-              <Link href="/provost/nisitRequest">
-                <a class="nav-item nav-link">รายชื่อนิสิตที่ขอ </a>
+              <Link href="/provost/provostNisitRequest">
+                <a class="nav-item nav-link">รายชื่อนิสิตที่ขอ(อาจารย์) </a>
+              </Link>
+              <Link href="/provost/officerNisitRequest">
+                <a class="nav-item nav-link">รายชื่อนิสิตที่ขอ(เจ้าหน้าที่) </a>
               </Link>
               <Link href="/provost/officerSystem">
                 <a class="nav-item nav-link">ตั้งค่าระบบ </a>

@@ -1,5 +1,7 @@
 import Axios from "../../config/Axios";
 import React, { useState, useEffect } from "react";
+import SelectMajor from "../../components/SelectMajor";
+import Modal from "../../components/ModalCourse";
 import { useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
@@ -7,10 +9,11 @@ import { getDetailNisit } from "../../redux/actions/nisitAction";
 function OfficerRequest(props) {
   const [courseList, setCourseList] = useState([]);
   const [search, setSearch] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [major, setMajor] = useState("All");
-  const [level, setLevel] = useState("All");
+  const [value,setValue] = useState([]);
   const [session, loading] = useSession();
-
+  
   useEffect(() => {
     async function getCourses() {
       const response = await Axios.post("/courses/teacher-reply", {
@@ -65,26 +68,34 @@ function OfficerRequest(props) {
   }
 
   async function replyTAsuccess(course,AID) {
-    await Axios.post("/reply/teacher-reply", {
+    await Axios.put("/reply/teacher-reply", {
       email:session.user.email,
       applyTaId:AID,
       courseID: course,
       status: 2,
+      notereply:null
     }).then((response) => {
       setCourseList(response.data);
     });
   }
-  async function replyTAfail(course,AID) {
-    await Axios.post("/reply/teacher-reply", {
-      email:session.user.email,
-      applyTaId:AID,
-      courseID: course,
-      status: 0,
-    }).then((response) => {
-      setCourseList(response.data);
-    });
+
+  async function replyTAfail(course,AID,title) {
+    let notereply = prompt("เหตุผลที่ยกเลิกวิชา "+title);
+    console.log("notereply: ",notereply);
+    // await Axios.put("/reply/teacher-reply", {
+    //   email:session.user.email,
+    //   applyTaId:AID,
+    //   courseID: course,
+    //   status: 0,
+    //   notereply:notereply
+    // }).then((response) => {
+    //   setCourseList(response.data);
+    // });
   }
-  
+
+  const showModal=(val)=>{
+    setValue(val);
+   }
 
   //จำนวนที่ลงใส่หน้านี้
 
@@ -92,47 +103,23 @@ function OfficerRequest(props) {
     <div className="container">
       <h1>รายวิชาที่ยื่นขอเปิดรับ TA (เจ้าหน้าที่)</h1>
       <div className="input-group mb-3">
-        <input
+      <input
           type="text"
           className="form-control"
           placeholder="รหัสวิชา/ชื่อวิชา/อาจารย์"
           onChange={(e) => setSearch(e.target.value)}
         />
-        <select
-          name="major"
-          onChange={(e) => {
+        <SelectMajor onChange={(e) => {
             setMajor(e.target.value);
-          }}
-        >
-          <option value={null} disabled selected hidden>
-            {level == "All" ? "เลือกระดับก่อน" : "เลือกสาขาของวิชา"}
-          </option>
-          <option value="All" disabled selected hidden>
-            เลือกสาขาของวิชา
-          </option>
-
-          <option value="วิศวกรรมอุตสาหการและระบบ">
-            วิศวกรรมอุตสาหการและระบบ(ป.ตรี)
-          </option>
-
-          <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์">
-            วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)
-          </option>
-
-          <option value="วิศวกรรมโยธา">วิศวกรรมโยธา(ป.ตรี)</option>
-
-          <option value="วิศวกรรมเครื่องกลและการออกแบบ">
-            วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)
-          </option>
-
-          <option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์">
-            วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)
-          </option>
-
-          <option value="โครงการพิเศษคณะฯ">โครงการพิเศษคณะฯ(ป.ตรี)</option>
-        </select>
+          }}/>
       </div>
       <div className="information">
+      {success && (
+            <div className="alert alert-success" role="alert">
+              {" "}
+              {success}{" "}
+            </div>
+      )}
         <table className="table table-bordered">
           <thead>
             <tr>
@@ -208,10 +195,11 @@ function OfficerRequest(props) {
                     <button
                       type="button"
                       className="btn btn-danger"
-                      onClick={() => {
-                        if (window.confirm("ต้องการยืนยันวิชา: " + val.title))
-                          replyTAfail(val.CID,val.AID);
-                      }}
+                      // data-bs-toggle="modal" 
+                      // data-bs-target="#exampleModal"
+                      // onClick={()=>window.prompt("เหตุผลในการยกเลิกรายวิชา "+val.title)}
+                      // onClick={()=>showModal(val)}
+                      onClick={() =>  replyTAfail(val.CID,val.AID,val.title)}
                     >
                       ยกเลิก
                     </button>
@@ -221,6 +209,10 @@ function OfficerRequest(props) {
             })}
           </tbody>
         </table>
+        <Modal val={value} />
+
+        
+      
       </div>
     </div>
   );

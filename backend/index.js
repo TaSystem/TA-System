@@ -12,6 +12,7 @@ var login = require('./routes/login');
 var system = require('./routes/system');
 var download = require('./routes/downloadfile');
 var setdate = require('./routes/setdate');
+var historyreply = require('./routes/historyreply');
 
 app.set("view engine","ejs");
 app.use(cors());
@@ -25,6 +26,7 @@ app.use('/apply',apply);
 app.use('/reply',reply);
 app.use('/system',system);
 app.use('/setdate',setdate);
+app.use('/historyreply',historyreply);
 
 
 app.get("/download",(req,res)=>{

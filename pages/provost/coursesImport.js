@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { signIn, signOut, useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
+import SelectMajor from "../../components/SelectMajor";
 
 function Courses(props) {
   const today = new Date();
@@ -95,16 +96,9 @@ function Courses(props) {
       <div className="information">
         <form encType="multipart/form-data" onSubmit={submitHandler}>
           <div className="input-group mb-3">
-          <select  name="major" onChange={(e)=>{setMajor(e.target.value)}}>
-                <option value={null} disabled selected hidden>{"เลือกสาขาของวิชา"}</option>
-                <option value="วิศวกรรมอุตสาหการและระบบ(ป.ตรี)">วิศวกรรมอุตสาหการและระบบ(ป.ตรี)</option>
-                <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)">วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)</option>
-                <option value="วิศวกรรมโยธา(ป.ตรี)">วิศวกรรมโยธา(ป.ตรี)</option>
-                <option value="วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)">วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)</option>
-                <option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)">วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)</option>
-                <option value="โครงการพิเศษคณะฯ(ป.ตรี)">โครงการพิเศษคณะฯ(ป.ตรี)</option>
-                
-            </select>
+          <SelectMajor onChange={(e) => {
+            setMajor(e.target.value);
+          }}/>
             <input
               type="text"
               defaultValue={today.getFullYear()+543}

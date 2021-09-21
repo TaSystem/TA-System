@@ -4,13 +4,17 @@ import { signIn, signOut, useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
 
-function historyReqest(props) {
+function officerNisitRequest(props) {
   const [courses, setCourses] = useState([]);
+  const [success, setSuccess] = useState(null);
   const [session, loading] = useSession();
+  
 
   useEffect(() => {
     async function getCourses() {
-      const response = await Axios.get("/courses/student-reply");
+      const response = await Axios.post("/courses/student-reply",{
+          status:2
+      });
       setCourses(response.data);  
     }
     getCourses();
@@ -25,11 +29,10 @@ function historyReqest(props) {
 
   const replyTAsuccess = async (userID,courseID) => {
     await Axios.put("/reply/student-reply", {
-      userID: userID,
+      email:session.user.email,
       courseID: courseID,
-      status: 2,
+      status: 3,
     }).then((res) => {
-      console.log(res.data);
       setCourses(res.data);
     });
   };
@@ -38,7 +41,7 @@ function historyReqest(props) {
     await Axios.put("/reply/student-reply", {
       userID: userID,
       courseID: courseID,
-      status: 3,
+      status: 0,
     }).then((res) => {
       console.log(res.data);
       setCourses(res.data);
@@ -58,8 +61,23 @@ function historyReqest(props) {
 
   return (
     <div className="container">
-      <h1>รายชื่อนิสิตที่ยื่นขอ(อาจารย์ผู้สอน)</h1>
+      <h1>รายชื่อนิสิตที่ยื่นขอ(เจ้าหน้าที่)</h1>
       <div className="information">
+      <button type="submit" className="btn btn-success">
+          พิมพ์เอกสารอนุมัติหลักการ
+        </button>
+        <p style={{color:"red"}} > 
+        * 1.ยกเลิกคำขอของนิสิตที่ไม่ผ่านการเป็น SA ก่อน
+          2.พิมพ์เอกสารตามภาควิชานั้นๆโดยการเลือก
+          3.หลังพิมเอกสารยืนยันคำร้องนิสิตคนนั้นจะเป็น SA 
+        </p>
+      {success && (
+            <div className="alert alert-success" role="alert">
+              {" "}
+              {success}{" "}
+            </div>
+      )}
+       จำนวนคำร้อง:{courses != null && courses.length != 0 ? courses.length : "loading..."}
         <table className="table table-bordered">
           <thead>
             <tr>
@@ -130,4 +148,4 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(historyReqest);
+export default connect(mapStateToProps, mapDispatchToProps)(officerNisitRequest);

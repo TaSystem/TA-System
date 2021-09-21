@@ -3,14 +3,25 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
+import SelectMajor from "../../components/SelectMajor";
+import Link from "next/link";
+import ModalCourse from "../../components/ModalCourse";
+import ModalDetailTeacher from "../../components/ModalDetailTeacher";
+import ModalHistoryReply from "../../components/ModalHistoryReply";
+
 
 function officerApproveCost(props) {
   const [courseList, setCourseList] = useState([]);
   const [search, setSearch] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [major, setMajor] = useState("All");
-  const [numberReal, setNumberReal] = useState(null);
+  const [numberReal, setNumberReal] = useState({});
+  const [value,setValue] = useState([]);
+  const [applyID,setApplyID] = useState([]);
+  const [historyReply,setHistoryReply] = useState([]);
   const [session, loading] = useSession();
 
+  
   useEffect(() => {
     async function getCourses() {
       const response = await Axios.post("/courses/teacher-reply", {
@@ -63,26 +74,38 @@ function officerApproveCost(props) {
     });
   }
 
-  
+  const TeacherapplyID = (id) =>{
+    let l = id.toString().length;
+    if(l==1) return "TR00000"+id;
+    else if(l==2) return "TR0000"+id;
+    else if(l==3) return "TR000"+id;
+    else if(l==4) return "TR00"+id;
+    else if(l==5) return "TR0"+id;
+    else if(l==6) return "TR"+id;
+}
 
-  async function replyTAsuccess(course) {
-    await Axios.put("/reply/teacher-reply", {
-      userID: 13,
-      courseID: course,
+
+  async function CheckCourseCondition(course,AID) {
+    await Axios.put("/reply/check-course-condition", {
+      email:session.user.email,
+      applyTaId:AID,
       status: 5,
     }).then((response) => {
-      setCourseList(response.data);
+      setSuccess(response.data.message);
+      setCourseList(response.data.data);
     });
   }
-  async function replyTAfail(course) {
+  async function replyTAfail(course,AID) {
     await Axios.put("/reply/teacher-reply", {
-      userID: 13,
+      email:session.user.email,
+      applyTaId:AID,
       courseID: course,
       status: 0,
     }).then((response) => {
       setCourseList(response.data);
     });
   }
+
   const updateNumberReal = async (id) => {
     await Axios.put("/courses/updateNumber", {
       id: id,
@@ -92,11 +115,17 @@ function officerApproveCost(props) {
     });
   };
 
+  const showModalHistory = async (id) =>{
+    const response = await Axios.get(`/historyreply/${id}`);
+    setHistoryReply(response.data);
+    setApplyID(id);
+  }
+  
   //จำนวนที่ลงใส่หน้านี้
 
   return (
     <div className="container">
-      <h1>จัดทำเอกสารอนุมัติหลักการ (เจ้าหน้าที่)</h1>
+      <h1>พิมพ์เอกสารอนุมัติค่าใช้จ่าย (เจ้าหน้าที่)</h1>
       <div className="input-group mb-3">
         <input
           type="text"
@@ -104,47 +133,25 @@ function officerApproveCost(props) {
           placeholder="รหัสวิชา/ชื่อวิชา/อาจารย์"
           onChange={(e) => setSearch(e.target.value)}
         />
-        <select
-          name="major"
-          onChange={(e) => {
+        <SelectMajor onChange={(e) => {
             setMajor(e.target.value);
-          }}
-        >
-          <option value={null} disabled selected hidden>
-            เลือกสาขาของวิชา
-          </option>
-          <option value="All" disabled selected hidden>
-            เลือกสาขาของวิชา
-          </option>
-
-          <option value="วิศวกรรมอุตสาหการและระบบ">
-            วิศวกรรมอุตสาหการและระบบ(ป.ตรี)
-          </option>
-
-          <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์">
-            วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)
-          </option>
-
-          <option value="วิศวกรรมโยธา">วิศวกรรมโยธา(ป.ตรี)</option>
-
-          <option value="วิศวกรรมเครื่องกลและการออกแบบ">
-            วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)
-          </option>
-
-          <option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์">
-            วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)
-          </option>
-
-          <option value="โครงการพิเศษคณะฯ">โครงการพิเศษคณะฯ(ป.ตรี)</option>
-        </select>
-      </div>
+          }}/>
+          </div>
         <button type="submit" className="btn btn-success">
-          พิมพ์เอกสาร
+          พิมพ์เอกสารอนุมัติค่าใช้จ่าย
         </button>
-        <button type="submit" className="btn btn-success">
+        <p style={{color:"red"}} > *ต้องปริ้นเอกสารอนุมัติหลักการก่อนจะตรวจสอบ </p>
+        {/* <button type="submit" className="btn btn-success">
           ตรวจสอบทั้งหมด
-        </button>
+        </button> */}
       <div className="information">
+      {success && (
+            <div className="alert alert-success" role="alert">
+              {" "}
+              {success}{" "}
+            </div>
+      )}
+        จำนวนคำร้อง: {courseList != null && courseList.length != 0 ? courseList.length : "loading..."}
         <table className="table table-bordered">
           <thead>
             <tr>
@@ -176,8 +183,20 @@ function officerApproveCost(props) {
               return (
                 <tr key={key}>
                   <td>{key + 1}</td>
-                  <td>{val.AID}</td>
-                  <td>{val.courseID}</td>
+                  <td>
+                    <Link href="#">
+                      <a  data-bs-toggle="modal" data-bs-target="#ModalHistoryReply" onClick={()=>showModalHistory(val.AID)} >
+                        {TeacherapplyID(val.AID)}
+                      </a>
+                    </Link>
+                  </td>
+                  <td>
+                    <Link href="#">
+                      <a  data-bs-toggle="modal" data-bs-target="#ModalCourse"  onClick={()=>setValue(val)}>
+                        {val.courseID}
+                      </a>
+                    </Link>
+                  </td>
                   <td>{val.title}</td>
                   <td>{val.sec_D ? val.sec_D : "-"}</td>
                   <td>{val.sec_P ? val.sec_P : "-"}</td>
@@ -186,14 +205,14 @@ function officerApproveCost(props) {
                   <td>{val.numberReal ? val.numberReal : "ยังไม่กรอก"}</td>
                   <td>
                     <input
+                      key={key}
                       className="form-control"
                       type="text"
                       placeholder="จำนวนนิสิต"
-                      onChange={(e) => {
-                        setNumberReal(e.target.value);
-                      }}
+                      
                     />
                     <button
+                    key={key}
                       type="button"
                       className="btn btn-success"
                       onClick={() => updateNumberReal(val.CID)}
@@ -202,7 +221,13 @@ function officerApproveCost(props) {
                     </button>
                   </td>
                   <td>{val.teacher}</td>
-                  <td>{val.name_email} </td>
+                  <td>
+                    <Link href="#">
+                      <a  data-bs-toggle="modal" data-bs-target="#ModalDetailTeacher"  onClick={()=>setValue(val)}>
+                        {val.name_email}
+                      </a>
+                    </Link>
+                  </td>
                   <td>{val.number1}</td>
                   <td>{val.number2}</td>
                   {val.sec_D && val.sec_P && <td>5</td>}
@@ -229,7 +254,7 @@ function officerApproveCost(props) {
                       className="btn btn-success"
                       onClick={() => {
                         if (window.confirm("ต้องการยืนยันวิชา: " + val.title))
-                          replyTAsuccess(val.CID);
+                          CheckCourseCondition(val.CID,val.AID);
                       }}
                     >
                       ตรวจสอบ
@@ -239,7 +264,7 @@ function officerApproveCost(props) {
                       className="btn btn-danger"
                       onClick={() => {
                         if (window.confirm("ต้องการยืนยันวิชา: " + val.title))
-                          replyTAfail(val.CID);
+                          replyTAfail(val.CID,val.AID);
                       }}
                     >
                       ยกเลิก
@@ -250,6 +275,9 @@ function officerApproveCost(props) {
             })}
           </tbody>
         </table>
+        <ModalCourse val={value} />
+        <ModalDetailTeacher val={value} />
+        <ModalHistoryReply AID={applyID} history={historyReply}  />
       </div>
     </div>
   );

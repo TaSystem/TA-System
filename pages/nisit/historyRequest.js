@@ -45,27 +45,35 @@ function historyReqest(props) {
   const condition = (status) => {
     if (status === 1) {
       return (
-        <td>
+        <>
           <p style={{ backgroundColor: "#E3E726", color: "black" }}>
-            รอดำเนินการ
-          </p>{" "}
-        </td>
+            รอดำเนินการจากอาจารย์
+          </p>
+        </>
       );
     } else if (status === 2) {
       return (
-        <td>
+        <>
+          <p style={{ backgroundColor: "#E3E726", color: "black" }}>
+            รอดำเนินการจากเจ้าหน้าที่
+          </p>
+        </>
+      );
+    }else if (status === 3) {
+      return (
+        <>
           <p style={{ backgroundColor: "#32CD32", color: "black" }}>
             ขอTAสำเร็จ
-          </p>{" "}
-        </td>
+          </p>
+        </>
       );
-    } else {
+    }else {
       return (
-        <td>
+        <>
           <p style={{ backgroundColor: "#DD0E0E", color: "white" }}>
             ขอTAไม่ผ่าน
           </p>{" "}
-        </td>
+        </>
       );
     }
   };
@@ -106,15 +114,7 @@ function historyReqest(props) {
             {courses.map((val, key) => {
               return (
                 <tr>
-                  <td>
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      value=""
-                      id="flexCheckDefault"
-                    />{" "}
-                    {key + 1}
-                  </td>
+                  <td>{key + 1}</td>
                   <td>{val.courseID}</td>
                   <td>{val.title}</td>
                   <td>{val.level}</td>

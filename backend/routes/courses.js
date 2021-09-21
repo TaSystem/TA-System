@@ -39,7 +39,7 @@ router.get('/term',(req, res) => {
 });
 
 router.get('/student',(req,res)=>{
-  db.query("SELECT * FROM courses WHERE status=true ORDER BY courseID", (err,result)=>{
+  db.query("SELECT C.id,C.courseID,C.title,C.sec_D,C.day_D,C.start_D,C.end_D,C.sec_P,C.day_P,C.start_P,C.end_P,C.major,C.teacher FROM courses as C,teacherapplyta as TA WHERE C.id=TA.courseID AND TA.status = 5 ORDER BY TA.courseID", (err,result)=>{
       if(err){
           console.log(err); 
       }
@@ -49,22 +49,6 @@ router.get('/student',(req,res)=>{
       }
   });
 })
-
-router.get('/student-reply',(req,res)=>{
-    
-    
-  let sqlcommand = `SELECT C.id,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.sec_P,A.userID,A.status,A.noteapply,U.name_email FROM courses AS C,studentapplyta AS A,users AS U WHERE C.id = A.courseID AND A.userID=U.id AND A.status = 1`;
-  
-  db.query(sqlcommand, (err,result)=>{
-      if(err){
-          console.log(err);
-      }
-      else{
-          res.send(result);
-      }
-  });
-});
-
 
 router.get('/test',(req,res)=>{
   
@@ -108,7 +92,7 @@ router.get("/request/:id",async (req, res) => {
 
 router.post("/student-apply-success",(req,res)=>{
   const email = req.body.email;
-  db.query("SELECT C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.sec_P,C.day_D,C.start_D,C.end_D,C.day_P,C.start_P,C.end_P,A.status FROM courses AS C,studentapplyta AS A ,users AS U WHERE C.id = A.courseID AND A.status = 2 AND U.id=A.userID AND U.email = ?",email,(err,result)=>{
+  db.query("SELECT C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.sec_P,C.day_D,C.start_D,C.end_D,C.day_P,C.start_P,C.end_P,A.status FROM courses AS C,studentapplyta AS A ,users AS U WHERE C.id = A.courseID AND A.status = 3 AND U.id=A.userID AND U.email = ?",email,(err,result)=>{
     if(err){
       console.log(err);
     }
@@ -132,10 +116,25 @@ router.post("/student-apply",(req,res)=>{
     })
 });
 
+router.post('/student-reply',(req,res)=>{
+    
+  let status = req.body.status;    
+  let sqlcommand = `SELECT C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.sec_P,A.id,A.userID,A.status,A.noteapply,U.name_email FROM courses AS C,studentapplyta AS A,users AS U WHERE C.id = A.courseID AND A.userID=U.id AND A.status = ?`;
+  
+  db.query(sqlcommand,status,(err,result)=>{
+      if(err){
+          console.log(err);
+      }
+      else{
+          res.send(result);
+      }
+  });
+});
+
 router.post('/teacher-reply',(req,res)=>{//รอส่ง userID
   let status = req.body.status ;
     
-  let sqlcommand = `SELECT C.id as CID,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.number_D,C.sec_P,C.number_P,C.day_D,C.day_P,C.start_D,C.end_D,C.start_P,C.end_P,C.numberReal,A.id as AID,A.number1,A.number2,A.status,A.noteapply,U.name_email FROM courses AS C,teacherapplyta AS A,users AS U WHERE C.id = A.courseID AND A.userID=U.id AND A.status = ?`;
+  let sqlcommand = `SELECT C.id as CID,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.number_D,C.sec_P,C.number_P,C.day_D,C.day_P,C.start_D,C.end_D,C.start_P,C.end_P,C.numberReal,A.id as AID,A.number1,A.number2,A.status,A.noteapply,U.email,U.name_email,U.name,U.lastname,U.department,U.tel,R.title as roleTitle FROM courses AS C,teacherapplyta AS A,users AS U,users_roles AS UR,roles AS R WHERE C.id = A.courseID AND A.userID=U.id AND U.id=UR.userID AND R.id =UR.roleID AND A.status = ?`;
   let items = [status];
   db.query(sqlcommand,items,(err,result)=>{
       if(err){
@@ -148,60 +147,66 @@ router.post('/teacher-reply',(req,res)=>{//รอส่ง userID
   });
 });
 
-router.post("/delete",(req,res)=>{
+router.post("/delete",(req,res)=>{ //multiple delete 
   let year = req.body.year;
   let term = req.body.term;
   let major = req.body.major;
-
   let sqlcommand=null,item=null; 
+  let message ;
   
   if(!year){
      sqlcommand = `TRUNCATE TABLE courses`;
-     res.send("delete all");
+     console.log("delete all");
   }
   else if(year){
     if(term){
       if(major){
         sqlcommand = `DELETE FROM courses WHERE year = ? AND term = ? AND major = ?`;
         item = [year,term,major];
-        res.send("delete at year,term,major");
+        message = "ลบวิชาทั้งหมดวิชาของสาขา "+major+" ปีการศึกษา "+year+" ภาคเรียน "+term;
+        console.log("delete at year,term,major");
       }
       else if(!major){
         sqlcommand = `DELETE FROM courses WHERE year = ? AND term = ?`;
         item = [year,term];
-        res.send("delete at year,term");
+        message = "ลบวิชาทั้งหมดวิชาของ"+" ปีการศึกษา "+year+" ภาคเรียน "+term;
+        console.log("delete at year,term");
       }
     }
     else if(!term){
       sqlcommand = `DELETE FROM courses WHERE year = ?`;
       item = [year]; 
-      res.send("delete at year");
+      message = "ลบวิชาทั้งหมดวิชาของ"+" ปีการศึกษา "+year;
+      console.log("delete at year");
     }
   }
-  console.log("sqlcommand: ",sqlcommand)
-  console.log("item: ",item)
-  
 
-  // db.query(sqlcommand,item,(err,result)=>{
-  //   if(err){
-  //     console.log(err);
-  //   }
-  //   else{
-  //     res.send(result);
-  //     console.log("hisory reuest:",email);
-  //   }
-  // })
+  db.query(sqlcommand,item,(err,result)=>{
+    if(err) throw(err);
+    
+    else{
+      db.query("SELECT * FROM courses", (err,result)=>{
+        if(err) throw(err);
+        else{
+            let respose = { message: message, data: result };
+            res.send(respose);
+            
+        }
+    });
+    }
+  })
 });
 
-router.post('/single-upload',(req,res)=>{
+router.post('/single-upload',(req,res)=>{//อัดโหลดไฟล์เดียว
     let file = req.files.filename;
     let filename = Date.now()+'-'+file.name;
     let level = "ปริญญาตรี";
-    let name = req.body.major;
+    let major = req.body.major;
     let year = req.body.year;
     let term = req.body.term;
 
-    var major   = name.substring(0, name.lastIndexOf("("));
+    // var major   = name.substring(0, name.lastIndexOf("("));
+    
     file.mv('./uploads/excel/'+ filename,(err)=>{
         if(err){
             res.send('fail to upload');
@@ -265,8 +270,6 @@ router.post('/single-upload',(req,res)=>{
                         //    preTeacher
                         //    console.log("preNUmber: ",preNUmber);
                         //  }
-
-                        console.log(teacher);
                         
                         if(courseID=="03602312"){ //03602312 วิศวกรรมอุสาหการและระบบเบื้องต้น 1 คน 2ชม.
                           console.log("03602312 วิชาอุตขอได้พิเศษ");
@@ -549,7 +552,8 @@ router.delete("/delete/:id",(req,res)=>{
             console.log(err);
           }
           else{
-            res.send(result);
+            let respose = { message: "ลบรายวิชาสำเร็จ", data: result };
+            res.send(respose);
           }
         });
       }

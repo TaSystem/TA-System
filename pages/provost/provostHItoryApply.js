@@ -34,7 +34,7 @@ function provostHItoryApply(props) {
         return <td><p style={{backgroundColor:"#E3E726",color:"white"}}>รอดำเนินการจากรองคณบดี</p> </td>
     }
     else if(status === 4){
-        return <td><p style={{backgroundColor:"#0E7ADD",color:"white"}}>รอดำเนินทำเอกสารการจากเจ้าหน้าที</p> </td>
+        return <td><p style={{backgroundColor:"#E3E726",color:"white"}}>รอดำเนินทำเอกสารการจากเจ้าหน้าที</p> </td>
     }
     else if(status === 5){
       return <td><p style={{backgroundColor:"#0E7ADD",color:"white"}}>ขอTAสำเร็จ</p> </td>
@@ -65,7 +65,7 @@ function provostHItoryApply(props) {
             {courses.map((val, key) => {
               return (
                 <tr>
-                  <td><input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"/> {key+1}</td>
+                  <td> {key+1}</td>
                   <td>{val.courseID}</td>
                   <td>{val.title}</td>
                   <td>{val.level}</td>
