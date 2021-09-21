@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
-
+import SelectMajor from "../../components/SelectMajor";
 
 function HeadRequest(props) {
   const [courseList, setCourseList] = useState([]);
@@ -31,7 +31,7 @@ function HeadRequest(props) {
 
 
   async function replyTAsuccess(course,AID) {
-    await Axios.post("/reply/teacher-reply", {
+    await Axios.put("/reply/teacher-reply", {
       email:session.user.email,
       applyTaId:AID,
       courseID: course,
@@ -41,7 +41,7 @@ function HeadRequest(props) {
     });
   }
   async function replyTAfail(course,AID) {
-    await Axios.post("/reply/teacher-reply", {
+    await Axios.put("/reply/teacher-reply", {
       email:session.user.email,
       applyTaId:AID,
       courseID: course,
@@ -104,40 +104,9 @@ function HeadRequest(props) {
           placeholder="รหัสวิชา/ชื่อวิชา/อาจารย์"
           onChange={(e) => setSearch(e.target.value)}
         />
-        <select
-          name="major"
-          onChange={(e) => {
+        <SelectMajor onChange={(e) => {
             setMajor(e.target.value);
-          }}
-        >
-          <option value={null} disabled selected hidden>
-            {level == "All" ? "เลือกระดับก่อน" : "เลือกสาขาของวิชา"}
-          </option>
-          <option value="All" disabled selected hidden>
-            เลือกสาขาของวิชา
-          </option>
-
-          <option value="วิศวกรรมอุตสาหการและระบบ">
-            วิศวกรรมอุตสาหการและระบบ(ป.ตรี)
-          </option>
-
-          <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์">
-            วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)
-          </option>
-
-          <option value="วิศวกรรมโยธา">วิศวกรรมโยธา(ป.ตรี)</option>
-
-          <option value="วิศวกรรมเครื่องกลและการออกแบบ">
-            วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)
-          </option>
-
-          <option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์">
-            วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)
-          </option>
-
-          <option value="โครงการพิเศษคณะฯ">โครงการพิเศษคณะฯ(ป.ตรี)</option>
-        </select>
-      </div>
+          }}/></div>
       <div className="information">
         <table className="table table-bordered">
           <thead>

@@ -41,9 +41,7 @@ function coursesTeacher(props) {
 
   }, [loading]);
 
-  const showModal=(val)=>{
-    setValue(val);
-   }
+
 
    if (typeof window !== "undefined" && loading) return null;
 
@@ -109,7 +107,7 @@ function coursesTeacher(props) {
               return (
                 
                 <tr key={key}>
-                  <td><input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"/> {key+1}</td>
+                  <td>{key+1}</td>
                   <td>{val.courseID}</td>
                   <td>{val.title}</td>
                   <td>{val.sec_D?val.sec_D:"-"}</td>
@@ -120,7 +118,7 @@ function coursesTeacher(props) {
                   <td>{val.number_D?val.number_D:val.number_P}</td>
                   <td>{val.numberReal?val.numberReal:0}</td>
                   <td>
-                    <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>showModal(val)} >
+                    <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>setValue(val)} >
                       ดูข้อมูล
                     </button>
                   </td>

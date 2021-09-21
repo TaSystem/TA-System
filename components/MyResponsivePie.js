@@ -21,7 +21,7 @@ const MyResponsivePie = ({ data /* see data tab */ }) => (
         arcLinkLabelsDiagonalLength={36}
         arcLinkLabelsStraightLength={36}
         arcLinkLabelsColor={{ from: 'color' }}
-        arcLabelsTextColor={{ from: 'color', modifiers: [ [ 'darker', '1.9' ] ] }}
+        arcLabelsTextColor={{ from: 'color', modifiers: [ [ 'darker', '9' ] ] }}
         defs={[
             {
                 id: 'dots',
@@ -97,10 +97,10 @@ const MyResponsivePie = ({ data /* see data tab */ }) => (
                 anchor: 'bottom',
                 direction: 'row',
                 justify: false,
-                translateX: 50,
+                translateX: -30,
                 translateY: 70,
                 itemsSpacing: 45,
-                itemWidth: 106,
+                itemWidth: 50,
                 itemHeight: 10,
                 itemTextColor: '#999',
                 itemDirection: 'left-to-right',

@@ -6,10 +6,10 @@ import { getDetailNisit } from "../../redux/actions/nisitAction";
 import Navbar from '../../components/Navbar'
 
 function index(props) {
-  const today = new Date();
   const [courses, setCourses] = useState([]);
   const [session, loading] = useSession();
   const [search, setSearch] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [yearSearch, setYearSearch] = useState([]);
   const [year, setYear] = useState(null);
   const [term, setTerm] = useState(null);
@@ -39,7 +39,8 @@ function index(props) {
 
   const deleteCourse = async (id) =>{
     await Axios.delete(`/courses/delete/${id}`).then((response) => {
-      setCourses(response.data);
+      setCourses(response.data.data);
+      setSuccess(response.data.message);
     });
   }
   const deleteCourseList = async () =>{
@@ -47,7 +48,10 @@ function index(props) {
       year:year,
       term:term,
       major:major
-    })
+    }).then((response) => {
+      setCourses(response.data.data);
+      setSuccess(response.data.message);
+    });
   }
 
   function Filter(courses) {
@@ -208,7 +212,12 @@ function index(props) {
           <option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์">
             วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)
           </option>
-          <option value="โครงการพิเศษคณะฯ">โครงการพิเศษคณะฯ(ป.ตรี)</option>
+          <option value="วิศวกรรมเครื่องกลและระบบการผลิต">
+            วิศวกรรมเครื่องกลและระบบการผลิต(ป.ตรี)
+        </option>
+        <option value="วิศวกรรมเครื่องกลและระบบการผลิต">
+            วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ(ป.ตรี)
+        </option>
         </select>
       </div>
       <div>
@@ -217,6 +226,12 @@ function index(props) {
         </button>
       </div>
       <div className="information">
+      {success && (
+            <div className="alert alert-success" role="alert">
+              {" "}
+              {success}{" "}
+            </div>
+      )}
         <table className="table table-bordered">
           <thead>
             <tr>
