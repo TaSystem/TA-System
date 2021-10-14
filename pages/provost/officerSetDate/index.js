@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Axios from "../../config/Axios";
-import Dateformat from "../../components/DateFormat";
-import DatePicker from '../../components/DatePickers';
+import Axios from "../../../config/Axios";
+import Dateformat from "../../../components/DateFormat";
+import DatePicker from '../../../components/DatePickers';
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import { connect } from "react-redux";
-import { getDetailNisit } from "../../redux/actions/nisitAction";
+import { getDetailNisit } from "../../../redux/actions/nisitAction";
 
 
 function officerSetDate(props) {
@@ -19,6 +19,7 @@ function officerSetDate(props) {
   const [term, setTerm] = useState(null);
   const [openDate, setOpenDate] = useState(new Date());
   const [closeDate, setCloseDate] = useState(new Date());
+  const [category, setCategory] = useState(null);
   const [err, setErr] = useState(null);
   const [success, setSuccess] = useState(null);
   
@@ -41,6 +42,7 @@ function officerSetDate(props) {
   }, [loading]);
 
   const setDateStudy = async () => {
+    console.log("category: ",category);
     if (!year) {
       setErr("กรุณากรอกปีการศึกษา");
     } else if (!term) {
@@ -55,6 +57,7 @@ function officerSetDate(props) {
         term: term,
         openDate: openDate,
         closeDate: closeDate,
+        category: category
       }).then((response) => {
         setErr(null);
         setSuccess(response.data.message);
@@ -63,13 +66,17 @@ function officerSetDate(props) {
         setTerm(null);
         setOpenDate(new Date());
         setCloseDate(new Date());
+        setCategory(null);
       });
     }
   };
 
   const setYearAndTermNow = async (value) => {
+    console.log(value.year,value.term);
     await Axios.put("/setdate/setNow", {
       id: value.id,
+      year:value.year,
+      term:value.term
     }).then((response) => {
       console.log("value: ",value);
       setErr(null);
@@ -79,7 +86,7 @@ function officerSetDate(props) {
   };
 
   const edit = (id) => {
-    return router.push(`/provost/setDatestop/${id}`);
+    return router.push(`/provost/officerSetDate/${id}`);
   };
 
   const del = async (id) =>{
@@ -112,6 +119,7 @@ function officerSetDate(props) {
               <th rowSpan="2">ภาคเรียน</th>
               <th rowSpan="2">วันที่เปิดเรียน</th>
               <th rowSpan="2">วันสุดท้ายของการเรียน</th>
+              <th rowSpan="2">ประเภท</th>
               <th rowSpan="2">การกระทำ</th>
               
             </tr>
@@ -125,11 +133,13 @@ function officerSetDate(props) {
                     <td>{val.term}</td>
                     <td>   <Dateformat date={val.openDate}/> </td>
                     <td>   <Dateformat date={val.closeDate}/> </td>
+                    <td> {val.category==0?"ธรรมดา":"พิเศษ"} </td>
                     <td>
                     <button type="button" className="btn btn-success" onClick={()=>{
                         if (window.confirm("ยืนยันตั้งค่าปีการศึกษา " + val.year + "เทอม " + val.term+" เป็นเทอมปัจจุบัน"))
                         setYearAndTermNow(val);
-                      }}>เทอมปัจจุบัน</button>
+                      }}
+                      >เทอมปัจจุบัน</button>
                       <button type="button" className="btn btn-primary" onClick={()=>edit(val.id)} >เพิ่มวันหยุด</button>
                       <button type="button" className="btn btn-danger" onClick={() => {
                         if (window.confirm("ยืนยันการลบปีการศึกษา " + val.year + "เทอม " + val.term))
@@ -174,7 +184,7 @@ function officerSetDate(props) {
               <option value={null} disabled selected hidden>
                 ภาคเรียน
               </option>
-              <option value="ฤดูร้อน">ฤดูร้อน</option>
+              
               <option value="ต้น">ต้น</option>
               <option value="ปลาย">ปลาย</option>
             </select>
@@ -195,6 +205,25 @@ function officerSetDate(props) {
             <DatePicker onChange={(date) => 
                 setCloseDate(date)
               } date={closeDate}/>
+          </div>
+          <div class="col-auto">
+            <label for="closeDate" class="form-label">
+              ประเภท
+            </label>
+            <select
+              name="term"
+              class="form-select"
+              onChange={(e) => {
+                setCategory(e.target.value);
+              }}
+            >
+              <option value={null} disabled selected hidden>
+                เลือกประเภท
+              </option>
+              <option value={0}>ธรรมดา</option>
+              <option value={1}>พิเศษ</option>
+              
+            </select>
           </div>
 
           <div className="col-auto">

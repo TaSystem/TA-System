@@ -4,6 +4,8 @@ import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../redux/actions/nisitAction";
+import ENGBadge from '../img/unnamed.jpg';
+import Image from "next/image";
 
 
 const Navbar = (props) => {
@@ -33,9 +35,10 @@ const Navbar = (props) => {
         //   {/* <Link href='/profile'><a>Profile</a></Link> */}
         // </nav>
 
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style={{padding:"2vh"}} >
+            <Image src={ENGBadge} alt="Engineering badge" width={40} height={35} />
           <Link href="/nisit">
-            <a class="navbar-brand">SA</a>
+              <a class="navbar-brand" style={{padding:"1vh",fontWeight:600,fontSize:"2vw"}}>SA</a>
           </Link>
           <button
             class="navbar-toggler"
@@ -286,6 +289,9 @@ const Navbar = (props) => {
               <Link href="/provost/officerApproveCost">
                 <a class="nav-item nav-link">จัดทำเอกสารค่าใช้จ่าย</a>
               </Link>
+              <Link href="/provost/officerCourseSuccess">
+                <a class="nav-item nav-link">รายวิชาที่เปิดรับSAได้</a>
+              </Link>
               <Link href="/provost/provostHItoryApply">
                 <a class="nav-item nav-link">รายวิชาที่ยื่นขอSA </a>
               </Link>
@@ -294,6 +300,9 @@ const Navbar = (props) => {
               </Link>
               <Link href="/provost/officerNisitRequest">
                 <a class="nav-item nav-link">รายชื่อนิสิตที่ขอ(เจ้าหน้าที่) </a>
+              </Link>
+              <Link href="/provost/officerSASuccess">
+                <a class="nav-item nav-link">นิสิตSA(เจ้าหน้าที่) </a>
               </Link>
               <Link href="/provost/officerSystem">
                 <a class="nav-item nav-link">ตั้งค่าระบบ </a>
@@ -307,10 +316,11 @@ const Navbar = (props) => {
               {/* <Link href="/nisit/requestTA">
               <a class="nav-item nav-link">ลงทะเบียนTA </a>
             </Link> */}
-
+              
               <a class="nav-item nav-link" onClick={() => signOut()}>
                 Sign Out
               </a>
+              {/* <img src={props.nisit.imgURL} alt="" /> */}
               <a class="nav-item nav-link" style={{color:"red"}}>
                   ตำแหน่ง: {props.nisit.title?props.nisit.title:"loading..."}
               </a>
@@ -324,52 +334,57 @@ const Navbar = (props) => {
       }
       else if(props.nisit.roleID >= 6){
         return (
-          <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <Link href="/provost/provostCourses">
-              <a class="navbar-brand">SA</a>
+          <div class="offcanvas offcanvas-start w-20 bg-dark" tabindex="-1" id="offcanvas" style={{width:"10vh"}} data-bs-keyboard="false" data-bs-backdrop="true">
+            <div class="offcanvas-header">
+            <Image src={ENGBadge} alt="Engineering badge" width={68} height={60} />
+            <Link href="/provost/provostCourses" >
+              <h2 class="offcanvas-title d-none d-sm-block text-white" id="offcanvas" style={{fontWeight:600,padding:"2vh"}}>SA</h2>
             </Link>
-            <button
-              class="navbar-toggler"
-              type="button"
-              data-toggle="collapse"
-              data-target="#navbarNavAltMarkup"
-              aria-controls="navbarNavAltMarkup"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span class="navbar-toggler-icon"></span>
-            </button>
+            <button type="button" class="btn-close btn-close-white text-reset " data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
   
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-              <div class="navbar-nav"> 
-                <Link href="/provost/provostCourses">
-                  <a class="nav-item nav-link">หน้าเเรก </a>
+            <div class="offcanvas-body px-0">
+              <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-start " id="menu">
+              <li class="nav-item">
+                <Link href="/provost/provostCourses" >
+                <a class="nav-link text-truncate">
+                  <span class="ms-1 d-none d-sm-inline text-white" style={{fontWeight:600,fontSize:"1vw",padding:"3vh"}}>หน้าเเรก</span>
+                  </a>
                 </Link>
-                <Link href="/provost/provostHItoryApply">
-                  <a class="nav-item nav-link">ประวัติยื่นคำร้อง </a>
+              </li>
+              <li class="mt-4">
+                <Link href="/provost/provostHItoryApply" >
+                  <a class="nav-link text-truncate">
+                  <span class="ms-1 d-none d-sm-inline text-white"style={{fontWeight:600,fontSize:"1vw",padding:"3vh"}}>ประวัติยื่นคำร้อง</span>
+                  </a>
                 </Link>
+              </li>
+              <li class="mt-4">
                 <Link href="/provost/nisitRequest">
-                  <a class="nav-item nav-link">คำร้องนิสิต </a>
+                <a class="nav-link text-truncate">
+                  <span class="ms-1 d-none d-sm-inline text-white"style={{fontWeight:600,fontSize:"1vw",padding:"3vh"}}>คำร้องนิสิต</span>
+                  </a>
                 </Link>
-
-                {/* <Link href="/nisit/requestTA">
-                <a class="nav-item nav-link">ลงทะเบียนTA </a>
-              </Link> */}
+              </li>
                 
                     
                   
+                <li class="mt-4">
                 <a class="nav-item nav-link" onClick={() => signOut()}>
-                  Sign Out
+                <span class="ms-1 d-none d-sm-inline text-white" style={{cursor:"pointer",fontWeight:600,fontSize:"1vw",padding:"3vh"}}>ออกจากระบบ</span>
                 </a>
-                <a class="nav-item nav-link" style={{color:"red"}}>
-                  ตำแหน่ง: {props.nisit.title}
-                </a>
-                <a class="nav-item nav-link" style={{color:"red"}}>
+              </li>
+              <div class="position-absolute bottom-0">
+              <a class="nav-item nav-link " style={{color:"red"}}>
                   ชื่อ: {props.nisit.name_email} 
                 </a>
-              </div>
+                <a class="nav-item nav-link " style={{color:"red"}}>
+                  ตำแหน่ง: {props.nisit.title}
+                </a>
+                </div>
+              </ul>
             </div>
-          </nav>
+          </div>
         );
       }
       else{

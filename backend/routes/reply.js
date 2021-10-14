@@ -178,13 +178,13 @@ router.put("/teacher-reply-note", (req, res) => {
 
 router.put("/student-reply", (req, res) => {
   let email = req.body.email;
-  let id = req.body.courseID;
+  let id = req.body.studentapplyID;
   let status = req.body.status;
   // let notereply = req.body.notereply;
   let userID;
 
   let sqlcommand = `UPDATE studentapplyta SET status = ? WHERE id = ?`;
-  let applyItem = [status, id, email];
+  let applyItem = [status, id];
   console.log("applyItem: ", applyItem);
 
   db.query(sqlcommand, applyItem, (err, result) => {

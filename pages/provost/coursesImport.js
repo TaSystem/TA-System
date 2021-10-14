@@ -119,7 +119,7 @@ function Courses(props) {
               <option value={null} disabled selected hidden>
                 ภาคเรียน
               </option>
-              <option value="ฤดูร้อน">ฤดูร้อน</option>
+              
               <option value="ต้น">ต้น</option>
               <option value="ปลาย">ปลาย</option>
             </select>

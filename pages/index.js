@@ -20,6 +20,18 @@ function Redirect({ to }) {
 function Page(props) {
   const [session, loading] = useSession();
   const router = useRouter();
+
+  useEffect(() => {
+    if(session){
+      console.log("test login", session.user)
+     } 
+     else{
+       console.log("not session")
+       signIn()
+     }
+
+  },[loading])
+
   // useEffect(() => {
   //   session != undefined
   //     ? axios.post("http://localhost:3001/users/login", {
@@ -44,9 +56,9 @@ function Page(props) {
         <>
           {console.log("status case1 ", session)}
           {/* <Redirect to='/nisit'/> */}
-          Not signed in <br />
+          {/* Not signed in <br /> */}
 
-          <button onClick={() => signIn()}>Sign in</button>
+          {/* <button onClick={() => signIn()}>Sign in</button> */}
           {/* <Date/> */}
         </>
       )}

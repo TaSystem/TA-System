@@ -81,6 +81,7 @@ router.post("/setDateStudy", (req, res) => {
   let openDate = req.body.openDate;
   let closeDate = req.body.closeDate;
   let status = 0;
+  let category = req.body.category;
   let NewOpenDate = new Date(new Date(openDate).getTime() + 1000 * 60 * 60 * 7)
     .toISOString()
     .slice(0, 19)
@@ -94,14 +95,14 @@ router.post("/setDateStudy", (req, res) => {
 
   console.log(NewOpenDate, NewCloseDate);
 
-  let sqlcommand = `INSERT INTO datestudy (year,term,opendate,closedate,status) VALUE (?,?,?,?,?)`;
-  let dateItems = [year, term, NewOpenDate, NewCloseDate, status];
+  let sqlcommand = `INSERT INTO datestudy (year,term,opendate,closedate,status,category) VALUE (?,?,?,?,?,?)`;
+  let dateItems = [year, term, NewOpenDate, NewCloseDate, status, category];
   console.log("date item: ", dateItems);
 
   db.query(sqlcommand, dateItems, (err, result) => {
     if (err) throw err;
     else {
-      db.query("SELECT * FROM datestudy ORDER BY year", (err, result) => {
+      db.query("SELECT * FROM datestudy ORDER BY openDate", (err, result) => {
         if (err) throw err;
         else {
           respose = { message: "เพิ่มวันที่เรียนสำเร็จ", data: result };
@@ -168,9 +169,12 @@ router.post("/delete-datestop", (req, res) => {
 });
 
 router.put("/setNow", (req, res) => {
+  let year = req.body.year;
+  let term = req.body.term;
   let id = req.body.id;
-  let sqlcommand = `UPDATE datestudy SET status=1 WHERE id = ? `;
-  let dateItems = [id];
+  let sqlcommand = `UPDATE datestudy SET status=1 WHERE year = ? AND term = ?`;
+  let dateItems = [year,term];
+  console.log("dateItems: ",dateItems);
 
   db.query("SELECT * FROM datestudy WHERE status = 1", (err, result) => {
     if (err) throw err;
@@ -184,8 +188,8 @@ router.put("/setNow", (req, res) => {
       });
     } else {
       db.query(
-        `UPDATE datestudy SET status=0 WHERE id = ?`,
-        result[0].id,
+        `UPDATE datestudy SET status=0 WHERE year = ? AND term = ?`,
+        [result[0].year,result[0].term],
         (err, result) => {
           if (err) throw err;
           else {
@@ -197,12 +201,12 @@ router.put("/setNow", (req, res) => {
                   (err, result) => {
                     if (err) throw err;
                     else {
+                      let message="ตั้งค่าปีการศึกษา "+ year +"และภาคเรียน:" +term +"ปัจจุบันสำเร็จ"
                       respose = {
-                        message: "ตั้งค่าปีการศึกษาและภาคเรียนปัจจุบันสำเร็จ",
+                        message: message,
                         data: result,
                       };
                       res.send(respose);
-                      console.log(respose);
                     }
                   }
                 );

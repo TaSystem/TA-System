@@ -56,6 +56,7 @@ function index(props) {
         onChange={(e) => setSearch(e.target.value)}
       />
       <div className="information">
+      จำนวนชั่วโมงที่เป็น SA:{courseList != null && courseList.length != 0 ? courseList[0].hrperweek : 0}
         <table className="table table-bordered">
           <thead>
             <tr>

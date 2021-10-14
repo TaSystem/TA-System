@@ -21,9 +21,7 @@ function DeputyDeanRequest(props) {
   
   useEffect(() => {
     async function getCourses() {
-      const response = await Axios.post("/courses/teacher-reply", {
-        status: 3,
-      });
+      const response = await Axios.get(`/courses/teacher-reply/${3}`);
       setCourseList(response.data);
     }
     getCourses();

@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 export default function ModalTeacher(props) {
-  const [numberTA, setNumberTA] = useState(null);
+  
   const router = useRouter();
 
   const applyTa = async () => {
-    return router.push(`/provost/requestTAs/${props.val.id}`);
+    return router.push(`/provost/provostCourses/${props.val.id}`);
   };
 
 

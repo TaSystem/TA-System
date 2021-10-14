@@ -27,6 +27,17 @@ router.get("/get-role", async (req, res) => {
   });
 });
 
+router.get("/users-SA", async (req, res) => {
+  await db.query("SELECT DISTINCT SA.userID,COUNT(SA.userID) as count_courses,SUM(SA.hrperweek) as sumHour,U.email,U.name_email,U.name,U.lastname,U.idStudent,U.tel,U.department,U.tel,U.level as lvl,U.nameBank,U.idBank,U.fileCardStudent,U.fileBookBank FROM studentapplyta as SA,users as U WHERE SA.userID = U.id and SA.status = 3 GROUP BY SA.userID", (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   await db.query(
@@ -38,6 +49,36 @@ router.get("/:id", async (req, res) => {
       } else {
         res.send(result);
       }
+    }
+  );
+});
+
+router.get("/users-SA/:id", async (req, res) => {
+  const courseID = req.params.id;
+  await db.query(
+    "SELECT * FROM studentapplyta as SA,users as U WHERE U.id=SA.userID AND SA.status=3 AND SA.courseID = ?",
+    courseID,
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      } 
+    }
+  );
+});
+
+router.get("/course-owner/:id", async (req, res) => {
+  const courseID = req.params.id;
+  await db.query(
+    "SELECT U.email,U.name_email,U.name,U.lastname,U.department,U.tel,R.title as roleTitle FROM teacherapplyta as TA,users as U,roles as R,users_roles as UR WHERE U.id = TA.userID AND U.id = UR.userID AND UR.roleID = R.id AND TA.status = 5 AND TA.courseID = ?",
+    courseID,
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      } 
     }
   );
 });
@@ -381,7 +422,8 @@ router.put("/edit-profile-teacher", async (req, res) => {
   let editUser = `UPDATE users SET name = ?,lastname = ?,level = ?,department = ?,tel = ?,updated_at=? WHERE id = ?`;
   let userDetail = [name, lastname, level, department, tel, updated_at, userID];
   let editUserRole = `UPDATE users_roles SET roleID = ? WHERE userID = ?`;
-  let Roletitle = [roleID, , userID];
+  let Roletitle = [roleID, userID];
+  
 
   await db.query(editUser, userDetail, (err, result) => {
     if (err) {
@@ -391,11 +433,11 @@ router.put("/edit-profile-teacher", async (req, res) => {
         if (err) {
           console.log(err);
         }  else {
-          res.send("User Updated Role");
+          res.send("อัปเดตข้อมูลสำเร็จ");
         }
       });
     } else {
-      res.send("User Updated");
+      res.send("อัปเดตข้อมูลสำเร็จ");
     }
   });
 });

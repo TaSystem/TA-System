@@ -12,7 +12,7 @@ export default function SelectMajor(props) {
         className="form-contro"
         onChange={props.onChange}
       >
-        <option value="All" disabled selected hidden>
+        <option defaultValue="All" disabled selected hidden>
           เลือกสาขาของวิชา
         </option>
         <option value="วิศวกรรมอุตสาหการและระบบ">

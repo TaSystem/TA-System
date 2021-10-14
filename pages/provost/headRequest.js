@@ -14,9 +14,7 @@ function HeadRequest(props) {
   
   useEffect(() => {
     async function getCourses() {
-      const response = await Axios.post("/courses/teacher-reply", {
-        status: 2,
-      });
+      const response = await Axios.get(`/courses/teacher-reply/${2}`);
       setCourseList(response.data);
     }
     getCourses();

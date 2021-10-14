@@ -8,6 +8,7 @@ var users = require('./routes/users');
 var courses = require('./routes/courses');
 var apply = require('./routes/applyta');
 var reply = require('./routes/reply');
+var document = require('./routes/document');
 var login = require('./routes/login');
 var system = require('./routes/system');
 var download = require('./routes/downloadfile');
@@ -27,6 +28,7 @@ app.use('/reply',reply);
 app.use('/system',system);
 app.use('/setdate',setdate);
 app.use('/historyreply',historyreply);
+app.use('/document', document);
 
 
 app.get("/download",(req,res)=>{
@@ -35,6 +37,14 @@ app.get("/download",(req,res)=>{
   console.log("File downloaded!!!");
 })
 
+app.get("/get-dashborad",(req,res)=>{
+  db.query("SELECT * FROM studentapplyta as SA,courses as C  WHERE C.id = SA.courseID", id, (err, result) => {
+    if (err) throw (err);
+    else {
+      res.send(result);
+    }
+  });
+})
 
 app.listen(port, () => {
   console.log(`running app listening at http://localhost:${port}`)

@@ -1,9 +1,9 @@
-import Axios from "../../config/Axios";
+import Axios from "../../../config/Axios";
 import React, { useState, useEffect } from "react";
-import Modal from "../../components/ModalTeacher";
+import Modal from "../../../components/ModalTeacher";
 import { signIn, signOut, useSession } from "next-auth/client";
 import { connect } from "react-redux";
-import { getDetailNisit } from "../../redux/actions/nisitAction";
+import { getDetailNisit } from "../../../redux/actions/nisitAction";
 
 function coursesTeacher(props) {
  //ขอเลือกระดับได้
@@ -65,6 +65,7 @@ function coursesTeacher(props) {
 
   return (
     <div className="container">
+            
       <h1>รายวิชาที่เปิดสอน  </h1>
       <h2>ปี {yearNow != null && yearNow.length != 0 ? yearNow[0].year : "loading..."} เทอม {yearNow != null && yearNow.length != 0 ? yearNow[0].term : "loading..."} ระบบ {syStatus?"เปิด":"ปิด"} </h2>
       <input type="text" className="form-control mb-3" placeholder="ค้นหาข้อมูล..." onChange={(e)=>setSearch(e.target.value)} />

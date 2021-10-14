@@ -16,9 +16,7 @@ function OfficerRequest(props) {
   
   useEffect(() => {
     async function getCourses() {
-      const response = await Axios.post("/courses/teacher-reply", {
-        status: 1,
-      });
+      const response = await Axios.get(`/courses/teacher-reply/${1}`);
       setCourseList(response.data);
     }
     getCourses();
@@ -31,6 +29,15 @@ function OfficerRequest(props) {
 
   }, [loading]);
 
+  const TeacherapplyID = (id) =>{
+    let l = id.toString().length;
+    if(l==1) return "TR00000"+id;
+    else if(l==2) return "TR0000"+id;
+    else if(l==3) return "TR000"+id;
+    else if(l==4) return "TR00"+id;
+    else if(l==5) return "TR0"+id;
+    else if(l==6) return "TR"+id;
+}
 
   function Filter(courses) {
     return courses.filter((course) => {
@@ -75,22 +82,34 @@ function OfficerRequest(props) {
       status: 2,
       notereply:null
     }).then((response) => {
-      setCourseList(response.data);
+      setCourseList(
+        courseList.filter((val) => {
+          return val.AID !== AID;
+        })
+      );
     });
   }
 
   async function replyTAfail(course,AID,title) {
     let notereply = prompt("เหตุผลที่ยกเลิกวิชา "+title);
-    console.log("notereply: ",notereply);
-    // await Axios.put("/reply/teacher-reply", {
-    //   email:session.user.email,
-    //   applyTaId:AID,
-    //   courseID: course,
-    //   status: 0,
-    //   notereply:notereply
-    // }).then((response) => {
-    //   setCourseList(response.data);
-    // });
+    if(notereply != null){
+      await Axios.put("/reply/teacher-reply", {
+        email:session.user.email,
+        applyTaId:AID,
+        courseID: course,
+        status: 0,
+        notereply:notereply
+      }).then((response) => {
+        setCourseList(
+          courseList.filter((val) => {
+            return val.AID !== AID;
+          })
+        );
+      });
+    }
+    else{
+      console.log("cancle")
+    }
   }
 
   const showModal=(val)=>{
@@ -101,7 +120,7 @@ function OfficerRequest(props) {
 
   return (
     <div className="container">
-      <h1>รายวิชาที่ยื่นขอเปิดรับ TA (เจ้าหน้าที่)</h1>
+      <h1>รายวิชาที่ยื่นขอเปิดรับ SA (เจ้าหน้าที่)</h1>
       <div className="input-group mb-3">
       <input
           type="text"
@@ -150,7 +169,7 @@ function OfficerRequest(props) {
               return (
                 <tr key={key}>
                   <td>{key + 1}</td>
-                  <td>{val.AID}</td>
+                  <td>{TeacherapplyID(val.AID)}</td>
                   <td>{val.courseID}</td>
                   <td>{val.title}</td>
                   <td>{val.sec_D ? val.sec_D : "-"}</td>

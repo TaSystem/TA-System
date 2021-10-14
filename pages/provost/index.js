@@ -148,7 +148,7 @@ function index(props) {
   return (
     <div className="container">
       {/* <Navbar roleID={props.nisit.roleID} /> */}
-      <h1>รายวิชาของเจ้าหน้าที่</h1>
+      <h1>เจ้าหน้าที่</h1>
       <div className="input-group mb-3">
         <input
           type="text"
@@ -181,9 +181,9 @@ function index(props) {
           <option value="All" disabled selected hidden>
             {year ? "ภาคเรียน" : "เลือกปีการศึกษาก่อน"}
           </option>
-          <option value="ฤดูร้อน">ฤดูร้อน</option>
-          <option value="ต้น">ต้น</option>
-          <option value="ปลาย">ปลาย</option>
+          
+          {year&&<option value="ต้น">ต้น</option>}
+          {year&&<option value="ปลาย">ปลาย</option>}
         </select>
 
         <select
@@ -196,28 +196,28 @@ function index(props) {
             {term ? "สาขาของวิชา" : "เลือกภาคเรียนก่อน"}
           </option>
 
-          <option value="วิศวกรรมอุตสาหการและระบบ">
+          {term&&<option value="วิศวกรรมอุตสาหการและระบบ">
             วิศวกรรมอุตสาหการและระบบ(ป.ตรี)
-          </option>
+          </option>}
 
-          <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์">
+          {term&&<option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์">
             วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)
-          </option>
+          </option>}
 
-          <option value="วิศวกรรมโยธา">วิศวกรรมโยธา(ป.ตรี)</option>
+          {term&&<option value="วิศวกรรมโยธา">วิศวกรรมโยธา(ป.ตรี)</option>}
 
-          <option value="วิศวกรรมเครื่องกลและการออกแบบ">
+          {term&&<option value="วิศวกรรมเครื่องกลและการออกแบบ">
             วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)
-          </option>
-          <option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์">
+          </option>}
+          {term&&<option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์">
             วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)
-          </option>
-          <option value="วิศวกรรมเครื่องกลและระบบการผลิต">
+          </option>}
+          {term&&<option value="วิศวกรรมเครื่องกลและระบบการผลิต">
             วิศวกรรมเครื่องกลและระบบการผลิต(ป.ตรี)
-        </option>
-        <option value="วิศวกรรมเครื่องกลและระบบการผลิต">
+        </option>}
+        {term&&<option value="วิศวกรรมเครื่องกลและระบบการผลิต">
             วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ(ป.ตรี)
-        </option>
+        </option>}
         </select>
       </div>
       <div>
@@ -237,7 +237,7 @@ function index(props) {
             <tr>
               <th rowSpan="2">ลำดับ</th>
               <th rowSpan="2">รหัสวิชา</th>
-              <th rowSpan="2">รหัสวิชา-พ.ศ.หลักสูตร</th>
+              <th rowSpan="2">พศ.ที่ปรับปรุงหลักสูตร</th>
               <th rowSpan="2">ชื่อวิชา</th>
               <th colSpan="11">บรรยาย</th>
               <th colSpan="10">ปฎิบัติ</th>

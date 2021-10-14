@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Axios from "../../config/Axios";
+import Axios from "../../../config/Axios";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import { connect } from "react-redux";
-import { getDetailNisit } from "../../redux/actions/nisitAction";
+import { getDetailNisit } from "../../../redux/actions/nisitAction";
 
 function officerSetRole(props) {
   const [userList, setUserList] = useState([]);
@@ -37,7 +37,7 @@ function officerSetRole(props) {
   }, [loading]);
 
   const edit = (id) => {
-    return router.push(`/provost/editProfile/${id}`);
+    return router.push(`/provost/officerSetRole/${id}`);
   };
 
   const setRole = async () => {
