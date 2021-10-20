@@ -35,18 +35,33 @@ function HeadRequest(props) {
       courseID: course,
       status: 3,
     }).then((response) => {
-      setCourseList(response.data);
+      setCourseList(
+        courseList.filter((val) => {
+          return val.AID !== AID;
+        })
+      );
     });
   }
-  async function replyTAfail(course,AID) {
-    await Axios.put("/reply/teacher-reply", {
-      email:session.user.email,
-      applyTaId:AID,
-      courseID: course,
-      status: 0,
-    }).then((response) => {
-      setCourseList(response.data);
-    });
+  async function replyTAfail(course,AID,title) {
+    let notereply = prompt("เหตุผลที่ยกเลิกวิชา "+title);
+    if(notereply != null){
+      await Axios.put("/reply/teacher-reply", {
+        email:session.user.email,
+        applyTaId:AID,
+        courseID: course,
+        status: 0,
+        notereply:notereply
+      }).then((response) => {
+        setCourseList(
+          courseList.filter((val) => {
+            return val.AID !== AID;
+          })
+        );
+      });
+    }
+    else{
+      console.log("cancle")
+    }
   }
 
   function Filter(courses) {
@@ -165,7 +180,7 @@ function HeadRequest(props) {
                     <button
                       type="button"
                       class="btn btn-danger"
-                      onClick={()=>{if (window.confirm('ต้องการยกเลิกวิชา: '+val.title))replyTAfail(val.CID,val.AID)}}
+                      onClick={() =>  replyTAfail(val.CID,val.AID,val.title) }
                     >
                       ยกเลิก
                     </button>

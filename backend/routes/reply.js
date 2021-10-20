@@ -34,8 +34,21 @@ router.put("/teacher-reply", (req, res) => {
                   (err, result) => {
                     if (err) console.log(err);
                     else {
-                      res.send(result);
-                      console.log("success reply!!!");
+                      if(status == 0){
+                        let respose = {
+                          message: "ยกเลิกสำเร็จ!!!",
+                          data: result,
+                        };
+                        res.send(respose);
+                      }
+                      else{
+                          let respose = {
+                          message: "ตรวจสอบสำเร็จ!!!",
+                          data: result,
+                        };
+                        res.send(respose);
+                      }
+                   
                     }
                   }
                 );

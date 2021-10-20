@@ -144,7 +144,7 @@ function officerCourseSuccess(props) {
     <div className="container">
       <h1>รายวิชาที่เปิดรับ SA ได้(เจ้าหน้าที่)</h1>
       <div className="input-group mb-3">
-      <input
+      <input  
           type="text"
           className="form-control"
           placeholder="รหัสวิชา/ชื่อวิชา/อาจารย์"

@@ -99,18 +99,34 @@ function officerApproveCost(props) {
       status: 5,
     }).then((response) => {
       setSuccess(response.data.message);
-      setCourseList(response.data.data);
+      setCourseList(
+        courseList.filter((val) => {
+          return val.AID !== AID;
+        })
+      );
     });
   }
-  async function replyTAfail(course,AID) {
-    await Axios.put("/reply/teacher-reply", {
-      email:session.user.email,
-      applyTaId:AID,
-      courseID: course,
-      status: 0,
-    }).then((response) => {
-      setCourseList(response.data);
-    });
+  async function replyTAfail(course,AID,title) {
+    let notereply = prompt("เหตุผลที่ยกเลิกวิชา "+title);
+    if(notereply != null){
+      await Axios.put("/reply/teacher-reply", {
+        email:session.user.email,
+        applyTaId:AID,
+        courseID: course,
+        status: 0,
+        notereply:notereply
+      }).then((response) => {
+        setSuccess(response.data.message);
+        setCourseList(
+          courseList.filter((val) => {
+            return val.AID !== AID;
+          })
+        );
+      });
+    }
+    else{
+      console.log("cancle")
+    }
   }
 
   const updateNumberReal = async (id) => {
@@ -556,10 +572,7 @@ function officerApproveCost(props) {
                     <button
                       type="button"
                       className="btn btn-danger"
-                      onClick={() => {
-                        if (window.confirm("ต้องการยืนยันวิชา: " + val.title))
-                          replyTAfail(val.CID,val.AID);
-                      }}
+                      onClick={() =>  replyTAfail(val.CID,val.AID,val.title) }
                     >
                       ยกเลิก
                     </button>
