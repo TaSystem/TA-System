@@ -26,6 +26,7 @@ function officerCourseSuccess(props) {
     async function getCourses() {
       const response = await Axios.get(`/courses/teacher-reply/${5}`);
       setCourseList(response.data);
+      console.log("resposne: ",response.data);
     }
     getCourses();
   }, []);
@@ -177,7 +178,7 @@ function officerCourseSuccess(props) {
               <th>บรรยาย</th>
               <th>ปฎิบัติ</th>
               <th>จำนวนที่รับ</th>
-              <th>ดูข้อมูล</th>
+              <th>จำนวนที่ลง</th>
             </tr>
           </thead>
           <tbody>
@@ -225,9 +226,13 @@ function officerCourseSuccess(props) {
                     
                   </td>
                   <td>
-                    <button type="button" className="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#ModalCourseNisitSA"  onClick={() => showModalCourseNisitSA(val)} >
-                      ดูข้อมูล
-                    </button>
+                  <Link href="#">
+                      <a  data-bs-toggle="modal" data-bs-target="#ModalCourseNisitSA"  onClick={() => showModalCourseNisitSA(val)}>
+                        {val.number_SA}
+                      </a>
+                    </Link>
+                    
+                    
                   </td>
                 </tr>
               );

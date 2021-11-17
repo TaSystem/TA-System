@@ -234,15 +234,18 @@ function officerNisitRequest(props) {
                   <td>{val.teacher}</td>
                   <td> 
                   <td>
-                    <button type="button" className="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#ModalDetailTeacher"  onClick={() => showModalCourseOwner(val.CID)} >
-                      ดูข้อมูล
-                    </button>  
+                    <Link href="#">
+                      <a  data-bs-toggle="modal" data-bs-target="#ModalDetailTeacher"  onClick={() => showModalCourseOwner(val.CID)}>
+                        {val.ownerName} {val.ownerLastname}
+                      </a>
+                    </Link>
+                    
                   </td>
                   </td>
                   <td>
                   <Link href="#">
-                      <a  data-bs-toggle="modal" data-bs-target="#ModalDetailTeacher"  onClick={()=>showModalNisit(val)}>
-                        {val.name_email}
+                      <a  data-bs-toggle="modal" data-bs-target="#ModalDetailNisit"  onClick={()=>showModalNisit(val)}>
+                        {val.name} {val.lastname}
                       </a>
                     </Link>
                   </td>

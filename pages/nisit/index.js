@@ -15,9 +15,8 @@ function index(props) {
   useEffect(() => {
     // async function getCourses() {
     if (session) {
-      Axios.post("/courses/student-apply-success", {
-        email: session.user.email,
-      }).then((res) => {
+      Axios.get(`/courses/student-apply-success/${session.user.email}`)
+      .then((res) => {
         console.log("index Nisit : ", res.data , 'my email is ',session.user.email);
         setCourseList(res.data);
       });
@@ -32,6 +31,28 @@ function index(props) {
     }
   }, [loading]);
 
+  class Sumhour extends Array {
+    sum(key) {
+        return this.reduce((a, b) => a + (b[key] || 0), 0);
+    }
+  }
+  const sumHour = new Sumhour(...courseList);
+
+  function Filter(courses) {
+    return courses.filter((course) => {
+      if (!search) {
+        return course;
+      } else if (course.title.toLowerCase().includes(search.toLowerCase())) {
+        return course;
+      } else if (course.courseID.toLowerCase().includes(search.toLowerCase())) {
+        return course;
+      } else if (course.teacher.toLowerCase().includes(search.toLowerCase())) {
+        return course;
+      }
+      
+    });
+  }
+
   if (typeof window !== "undefined" && loading) return null;
 
   if (!session) {
@@ -44,6 +65,7 @@ function index(props) {
     );
   }
 
+
   console.log("session in nisit ", session);
 
   return (
@@ -52,11 +74,11 @@ function index(props) {
       <input
         type="text"
         className="form-control mb-3"
-        placeholder="ค้นหาข้อมูล..."
+        placeholder="รหัสวิชา/ชื่อวิชา/อาจารย์"
         onChange={(e) => setSearch(e.target.value)}
       />
       <div className="information">
-      จำนวนชั่วโมงที่เป็น SA:{courseList != null && courseList.length != 0 ? courseList[0].hrperweek : 0}
+       เวลาทำงานรวม: {courseList != null && courseList.length != 0 ? sumHour.sum('hrperweek') : 0} ชั่วโมง
         <table className="table table-bordered">
           <thead>
             <tr>
@@ -64,55 +86,37 @@ function index(props) {
               <th rowSpan="2">รหัสวิชา</th>
               <th rowSpan="2">ชื่อวิชา</th>
               <th colSpan="2">หมู่เรียน</th>
-              <th colSpan="2">เวลาเรียนบรรยาย</th>
-              <th colSpan="2">เวลาเรียนปฎิบัติ</th>
+              <th colSpan="2">เวลาเรียน</th>
               <th rowSpan="2">ระดับ</th>
               <th rowSpan="2">สาขาวิชา</th>
               <th rowSpan="2">อาจารย์ผู้สอน</th>
+              <th rowSpan="2">เวลาทำงาน</th>
             </tr>
             <tr>
               <th>บรรยาย</th>
               <th>ปฎิบัติ</th>
-              <th>วัน</th>
-              <th>เวลา</th>
-              <th>วัน</th>
-              <th>เวลา</th>
+              <th>บรรยาย</th>
+              <th>ปฎิบัติ</th>
+              
             </tr>
           </thead>
           <tbody>
-            {courseList
-              .filter((val) => {
-                if (!search) {
-                  return val;
-                } else if (
-                  val.title.toLowerCase().includes(search.toLowerCase())
-                ) {
-                  return val;
-                } else if (
-                  val.courseID.toLowerCase().includes(search.toLowerCase())
-                ) {
-                  return val;
-                }
-              })
-              .map((val, key) => {
+            {Filter(courseList).map((val, key) => {
                 return (
                   <tr key={key}>
                     <td>{key + 1}</td>
                     <td>{val.courseID}</td>
                     <td>{val.title}</td>
-                    <td>{val.sec_D ? val.sec_D : "-"}</td>
+                    <td>{val.sec_D ? val.sec_D : "-"} </td>
                     <td>{val.sec_P ? val.sec_P : "-"}</td>
-                    <td>{val.day_D ? val.day_D : ""}</td>
-                    <td>
-                      {val.start_D ? val.start_D + " - " + val.end_D : ""}
-                    </td>
-                    <td>{val.day_P ? val.day_P : ""}</td>
-                    <td>
-                      {val.start_P ? val.start_P + " - " + val.end_P : ""}
-                    </td>
+                    <td>{val.day_D ? val.day_D : ""} {val.start_D ? val.start_D + " - " + val.end_D : ""}</td>
+                    
+                    <td>{val.day_P ? val.day_P : ""} {val.start_P ? val.start_P + " - " + val.end_P : ""}</td>
+                    
                     <td>{val.level}</td>
                     <td>{val.major}</td>
                     <td>{val.teacher}</td>
+                    <td>{val.hrperweek}</td>
                   </tr>
                 );
               })}

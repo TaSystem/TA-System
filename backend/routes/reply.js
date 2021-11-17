@@ -43,7 +43,7 @@ router.put("/teacher-reply", (req, res) => {
                       }
                       else{
                           let respose = {
-                          message: "ตรวจสอบสำเร็จ!!!",
+                          message: "ยืนยันสำเร็จ!!!",
                           data: result,
                         };
                         res.send(respose);

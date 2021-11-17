@@ -13,6 +13,8 @@ function requestTA(props) {
   const [note, setNote] = useState(null);
   const [yearNow,setYearNow] = useState([]);
   const [system,setSystem] = useState([]);
+  const [success,setSuccess] = useState(null);
+  const [error,setError] = useState(null);
   const [session, loading] = useSession();
   var syStatus = system != null && system.length != 0 ? system[0].status : "loading...";
 
@@ -46,6 +48,21 @@ function requestTA(props) {
     // }
   }, [loading]);
 
+  function Filter(courses) {
+    return courses.filter((course) => {
+      if (!search) {
+        return course;
+      } else if (course.title.toLowerCase().includes(search.toLowerCase())) {
+        return course;
+      } else if (course.courseID.toLowerCase().includes(search.toLowerCase())) {
+        return course;
+      } else if (course.teacher.toLowerCase().includes(search.toLowerCase())) {
+        return course;
+      }
+      
+    });
+  }
+
   const secNumber = (D, P) => {
     if (P && D) {
       const sec = D + "," + P;
@@ -60,16 +77,22 @@ function requestTA(props) {
   }
 
   const applyTA = async (id,hr) => {
-    console.log("id: ",id);
-    console.log("hr: ",hr);
+    setSuccess(null);
+    setError(null);
     await Axios.post("/apply/student-apply", {
       userID: props.nisit.userID,
+      level:props.nisit.level,
       courseID: id,
       hrperweek:hr,
       status: 1,
       noteapply: note,
     }).then((res) => {
-      console.log(res.data);
+      if(res.data.check){
+        setSuccess(res.data.message);
+      }
+      else{
+        setError(res.data.message);
+      }
     });
   };
 
@@ -103,30 +126,30 @@ function requestTA(props) {
 //จำนวนชั่วโฒง
   return (
     <div className="container">
-      <h1>ลงทะเบียนTA {props.nisit.level=="ปริญญาตรี"?"(ขอได้ไม่เกิน 10 ชั่วโมง)":"(ขอได้ไม่จำกัดชั่วโมง)"}</h1>
+      <h1>ลงทะเบียนSA {props.nisit.level=="ปริญญาตรี"?"(ขอได้ไม่เกิน 10 ชั่วโมง)":"(ขอได้ไม่จำกัดชั่วโมง)"}</h1>
       <h2>ปี {yearNow != null && yearNow.length != 0 ? yearNow[0].year : "loading..."} เทอม {yearNow != null && yearNow.length != 0 ? yearNow[0].term : "loading..."} ระบบ {syStatus?"เปิด":"ปิด"} </h2>
       <input
         type="text"
         className="form-control mb-3"
-        placeholder="ค้นหาข้อมูล..."
+        placeholder="รหัสวิชา/ชื่อวิชา/อาจารย์"
         onChange={(e) => setSearch(e.target.value)}
       />
+      {success && (
+            <div className="alert alert-success" role="alert">
+              {" "}
+              {success}
+              {" "}
+            </div>
+      )}
+      {error && (
+            <div className="alert alert-danger" role="alert">
+              {" "}
+              {error}
+              {" "}
+            </div>
+      )}
       <div className="information">
-        {courseList
-          .filter((val) => {
-            if (!search) {
-              return val;
-            } else if (val.title.toLowerCase().includes(search.toLowerCase())) {
-              return val;
-            } else if (
-              val.courseID.toLowerCase().includes(search.toLowerCase())
-            ) {
-              return val;
-            } else {
-              return null;
-            }
-          })
-          .map((val, key) => {
+        {Filter(courseList).map((val, key) => {
             return (
               <div class="card text-center mb-2">
                 <div class="card-header">{val.courseID}</div>
@@ -172,6 +195,7 @@ function requestTA(props) {
               </div>
             );
           })}
+          {courseList && !courseList.length && <h2 style={{color:"red"}}>ไม่มีรายวิชาที่เปิดสอนรับ SA</h2> }
       </div>
     </div>
   );

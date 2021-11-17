@@ -10,7 +10,7 @@ function provostHItoryApply(props) {
   const [courses, setCourses] = useState([]);
   useEffect(() => {
     async function getCourses(){
-        const response = await Axios.get("/courses/teacher-apply");
+        const response = await Axios.get(`/courses/teacher-apply/${props.nisit.email}`);
         setCourses(response.data)
     }
     getCourses(); 
@@ -18,7 +18,7 @@ function provostHItoryApply(props) {
 
   useEffect(() => {
     if (session) {
-      props.getDetailNisit(session.user.email)
+      props.getDetailNisit(session.user.email);
     }
 
   }, [loading]);

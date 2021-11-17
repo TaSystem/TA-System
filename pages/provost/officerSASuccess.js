@@ -22,7 +22,9 @@ function officerSASuccess(props) {
     async function getUsers() {
       const response = await Axios.get(`/users/users-SA`);
       setUsers(response.data);
+      console.log(response.data);
     }
+    
     getUsers();
   }, []);
 

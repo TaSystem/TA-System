@@ -163,7 +163,7 @@ function provostNisitRequest(props) {
             {courses.map((val, key) => {
               return (
                 <tr>
-                  <td>{key + 1,val.CID}</td>
+                  <td>{key + 1}</td>
                   <td>{NisitapplyID(val.AID)}</td>
                   <td>
                   <Link href="#">
@@ -179,9 +179,11 @@ function provostNisitRequest(props) {
                   <td>{val.major}</td>
                   <td>{val.teacher}</td>
                   <td>
-                    <button type="button" className="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#ModalDetailTeacher"  onClick={() => showModalCourseOwner(val.CID)} >
-                      ดูข้อมูล
-                    </button>  
+                  <Link href="#">
+                      <a  data-bs-toggle="modal" data-bs-target="#ModalDetailTeacher"  onClick={() => showModalCourseOwner(val.CID)}>
+                        {val.ownerName} {val.ownerLastname}
+                      </a>
+                    </Link>
                   </td>
                   <td>
                   <Link href="#">

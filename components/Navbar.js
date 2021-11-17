@@ -173,7 +173,7 @@ const Navbar = (props) => {
                 <Link href="/provost/provostHItoryApply">
                   <a class="nav-item nav-link">ประวัติยื่นคำร้อง </a>
                 </Link>
-                <Link href="/provost/nisitRequest">
+                <Link href="/provost/deputyDeanRequest">
                   <a class="nav-item nav-link">คำร้องนิสิต </a>
                 </Link>
 
@@ -271,8 +271,8 @@ const Navbar = (props) => {
             <Link href="/provost/dashboard">
                 <a class="nav-item nav-link">dashboard</a>
               </Link>
-              <Link href="/provost/coursesImport">
-                <a class="nav-item nav-link">เพิ่มรายวิชาที่เปิดสอน </a>
+              <Link href="/provost">
+                <a class="nav-item nav-link">รายวิชาทั้งหมด </a>
               </Link>
               <Link href="/provost/provostCourses">
                 <a class="nav-item nav-link">รายวิชาที่เปิดสอน </a>
@@ -360,7 +360,7 @@ const Navbar = (props) => {
                 </Link>
               </li>
               <li class="mt-4">
-                <Link href="/provost/nisitRequest">
+                <Link href="/provost/headRequest">
                 <a class="nav-link text-truncate">
                   <span class="ms-1 d-none d-sm-inline text-white"style={{fontWeight:600,fontSize:"1vw",padding:"3vh"}}>คำร้องนิสิต</span>
                   </a>

@@ -1,7 +1,8 @@
 import Axios from "../../config/Axios";
 import React, { useState, useEffect } from "react";
 import SelectMajor from "../../components/SelectMajor";
-import Modal from "../../components/ModalCourse";
+import Link from "next/link";
+import ModalDetailTeacher from "../../components/ModalDetailTeacher";
 import { useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
@@ -11,8 +12,8 @@ function OfficerRequest(props) {
   const [search, setSearch] = useState(null);
   const [success, setSuccess] = useState(null);
   const [major, setMajor] = useState("All");
-  const [value,setValue] = useState([]);
   const [session, loading] = useSession();
+  const [teacherValue,setTeacherValue] = useState([]);
   
   useEffect(() => {
     async function getCourses() {
@@ -81,12 +82,13 @@ function OfficerRequest(props) {
       courseID: course,
       status: 2,
       notereply:null
-    }).then((response) => {
+    }).then((res) => {
       setCourseList(
         courseList.filter((val) => {
           return val.AID !== AID;
         })
       );
+      setSuccess(res.data.message);
     });
   }
 
@@ -99,12 +101,13 @@ function OfficerRequest(props) {
         courseID: course,
         status: 0,
         notereply:notereply
-      }).then((response) => {
+      }).then((res) => {
         setCourseList(
           courseList.filter((val) => {
             return val.AID !== AID;
           })
         );
+        setSuccess(res.data.message);
       });
     }
     else{
@@ -112,9 +115,20 @@ function OfficerRequest(props) {
     }
   }
 
-  const showModal=(val)=>{
-    setValue(val);
-   }
+  
+   const showModalTeacher =  (val) =>{
+    setTeacherValue({
+      CID:val.CID,
+      email:val.email,
+      name_email:val.name_email,
+      name:val.name,
+      lastname:val.lastname,
+      department:val.department,
+      roleTitle:val.roleTitle,
+      tel:val.tel,
+    });
+    
+  }
 
   //จำนวนที่ลงใส่หน้านี้
 
@@ -178,7 +192,13 @@ function OfficerRequest(props) {
                   <td>{val.number_D ? val.number_D : val.number_P}</td>
                   
                   <td>{val.teacher}</td>
-                  <td>{val.name_email} </td>
+                  <td>
+                    <Link href="#">
+                      <a  data-bs-toggle="modal" data-bs-target="#ModalDetailTeacher"  onClick={()=>showModalTeacher(val)}>
+                        {val.name} {val.lastname}
+                      </a>
+                    </Link>
+                  </td>
                   <td>{val.number1}</td>
                   <td>{val.number2}</td>
                   {val.sec_D && val.sec_P && <td>5</td>}
@@ -228,7 +248,7 @@ function OfficerRequest(props) {
             })}
           </tbody>
         </table>
-        <Modal val={value} />
+        <ModalDetailTeacher val={teacherValue}  />
 
         
       

@@ -53,6 +53,8 @@ router.get("/:id", async (req, res) => {
   );
 });
 
+
+
 router.get("/users-SA/:id", async (req, res) => {
   const courseID = req.params.id;
   await db.query(
@@ -67,6 +69,7 @@ router.get("/users-SA/:id", async (req, res) => {
     }
   );
 });
+
 
 router.get("/course-owner/:id", async (req, res) => {
   const courseID = req.params.id;

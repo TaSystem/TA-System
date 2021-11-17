@@ -3,6 +3,7 @@ import Axios from "../../config/Axios";
 import { signIn, signOut, useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
+import { useRouter } from "next/router";
 import Navbar from '../../components/Navbar'
 
 function index(props) {
@@ -14,6 +15,7 @@ function index(props) {
   const [year, setYear] = useState(null);
   const [term, setTerm] = useState(null);
   const [major, setMajor] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     async function getCourses() {
@@ -53,6 +55,9 @@ function index(props) {
       setSuccess(response.data.message);
     });
   }
+  const addCourses = () => {
+    return router.push(`/provost/coursesImport`);
+  };
 
   function Filter(courses) {
     return courses.filter((course) => {
@@ -221,6 +226,9 @@ function index(props) {
         </select>
       </div>
       <div>
+      <button type="submit" className="btn btn-success" onClick={()=>addCourses()}>
+          เพิ่มรายวิชา
+        </button>
         <button type="submit" className="btn btn-danger" onClick={()=>{if (window.confirm('ลบวิชาที่ ปีการศึกษา '+year+" ภาคเรียน "+term+" สาขา "+major))deleteCourseList()}}>
           ลบวิชารายวิชา
         </button>

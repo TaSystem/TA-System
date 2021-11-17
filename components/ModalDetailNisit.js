@@ -40,8 +40,8 @@ export default function ModalDetailNisit(props) {
             <p>ระดับ: {props.val.lvl} &emsp; ภาควิชา:{props.val.department}</p>
             <p>อีเมลล์: {props.val.email}     &emsp; เบอร์โทรศัพท์: {props.val.tel}</p>
             <p>ชิ่อธนาคาร: {props.val.nameBank}     &emsp; เลขบัญชี: {props.val.idBank}</p>
-            <Image src={require(`../backend/uploads/img/fileCardStudent-1626268177640.jpg`)} alt="fileCardStudent" width={220} height={220} />
-            <Image src={require(`../backend/uploads/img/fileCardStudent-1626268177640.jpg`)} alt="fileCardStudent" width={220} height={220} />
+            {/* <Image src={require(`../backend/uploads/img/${props.val.fileCardStudent}`)} alt="fileCardStudent" width={220} height={220} />
+            <Image src={require(`../backend/uploads/img/${props.val.fileBookBank}`)} alt="fileCardStudent" width={220} height={220} /> */}
           </div>
           <div class="modal-footer">
             <button
