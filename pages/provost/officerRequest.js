@@ -1,7 +1,8 @@
 import Axios from "../../config/Axios";
 import React, { useState, useEffect } from "react";
 import SelectMajor from "../../components/SelectMajor";
-import Modal from "../../components/ModalCourse";
+import Link from "next/link";
+import ModalDetailTeacher from "../../components/ModalDetailTeacher";
 import { useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
@@ -11,14 +12,12 @@ function OfficerRequest(props) {
   const [search, setSearch] = useState(null);
   const [success, setSuccess] = useState(null);
   const [major, setMajor] = useState("All");
-  const [value,setValue] = useState([]);
   const [session, loading] = useSession();
+  const [teacherValue,setTeacherValue] = useState([]);
   
   useEffect(() => {
     async function getCourses() {
-      const response = await Axios.post("/courses/teacher-reply", {
-        status: 1,
-      });
+      const response = await Axios.get(`/courses/teacher-reply/${1}`);
       setCourseList(response.data);
     }
     getCourses();
@@ -31,6 +30,15 @@ function OfficerRequest(props) {
 
   }, [loading]);
 
+  const TeacherapplyID = (id) =>{
+    let l = id.toString().length;
+    if(l==1) return "TR00000"+id;
+    else if(l==2) return "TR0000"+id;
+    else if(l==3) return "TR000"+id;
+    else if(l==4) return "TR00"+id;
+    else if(l==5) return "TR0"+id;
+    else if(l==6) return "TR"+id;
+}
 
   function Filter(courses) {
     return courses.filter((course) => {
@@ -74,34 +82,59 @@ function OfficerRequest(props) {
       courseID: course,
       status: 2,
       notereply:null
-    }).then((response) => {
-      setCourseList(response.data);
+    }).then((res) => {
+      setCourseList(
+        courseList.filter((val) => {
+          return val.AID !== AID;
+        })
+      );
+      setSuccess(res.data.message);
     });
   }
 
   async function replyTAfail(course,AID,title) {
     let notereply = prompt("เหตุผลที่ยกเลิกวิชา "+title);
-    console.log("notereply: ",notereply);
-    // await Axios.put("/reply/teacher-reply", {
-    //   email:session.user.email,
-    //   applyTaId:AID,
-    //   courseID: course,
-    //   status: 0,
-    //   notereply:notereply
-    // }).then((response) => {
-    //   setCourseList(response.data);
-    // });
+    if(notereply != null){
+      await Axios.put("/reply/teacher-reply", {
+        email:session.user.email,
+        applyTaId:AID,
+        courseID: course,
+        status: 0,
+        notereply:notereply
+      }).then((res) => {
+        setCourseList(
+          courseList.filter((val) => {
+            return val.AID !== AID;
+          })
+        );
+        setSuccess(res.data.message);
+      });
+    }
+    else{
+      console.log("cancle")
+    }
   }
 
-  const showModal=(val)=>{
-    setValue(val);
-   }
+  
+   const showModalTeacher =  (val) =>{
+    setTeacherValue({
+      CID:val.CID,
+      email:val.email,
+      name_email:val.name_email,
+      name:val.name,
+      lastname:val.lastname,
+      department:val.department,
+      roleTitle:val.roleTitle,
+      tel:val.tel,
+    });
+    
+  }
 
   //จำนวนที่ลงใส่หน้านี้
 
   return (
     <div className="container">
-      <h1>รายวิชาที่ยื่นขอเปิดรับ TA (เจ้าหน้าที่)</h1>
+      <h1>รายวิชาที่ยื่นขอเปิดรับ SA (เจ้าหน้าที่)</h1>
       <div className="input-group mb-3">
       <input
           type="text"
@@ -150,7 +183,7 @@ function OfficerRequest(props) {
               return (
                 <tr key={key}>
                   <td>{key + 1}</td>
-                  <td>{val.AID}</td>
+                  <td>{TeacherapplyID(val.AID)}</td>
                   <td>{val.courseID}</td>
                   <td>{val.title}</td>
                   <td>{val.sec_D ? val.sec_D : "-"}</td>
@@ -159,7 +192,13 @@ function OfficerRequest(props) {
                   <td>{val.number_D ? val.number_D : val.number_P}</td>
                   
                   <td>{val.teacher}</td>
-                  <td>{val.name_email} </td>
+                  <td>
+                    <Link href="#">
+                      <a  data-bs-toggle="modal" data-bs-target="#ModalDetailTeacher"  onClick={()=>showModalTeacher(val)}>
+                        {val.name} {val.lastname}
+                      </a>
+                    </Link>
+                  </td>
                   <td>{val.number1}</td>
                   <td>{val.number2}</td>
                   {val.sec_D && val.sec_P && <td>5</td>}
@@ -209,7 +248,7 @@ function OfficerRequest(props) {
             })}
           </tbody>
         </table>
-        <Modal val={value} />
+        <ModalDetailTeacher val={teacherValue}  />
 
         
       

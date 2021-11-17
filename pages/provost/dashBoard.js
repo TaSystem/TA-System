@@ -10,146 +10,339 @@ const data = [
     id:'industrial',
     label: "industrial",
     value: 113,
-    name: "2546(ภาคต้น)"
+    name: "2564(ภาคต้น)"
   },
   {
     id:'Computer',
     label: "Computer",
     value: 213,
-    name: "2546(ภาคต้น)"
+    name: "2564(ภาคต้น)"
   },
   {
     id: 'Civil',
     label: "Civil",
     value: 504,
-    name: "2546(ภาคต้น)"
+    name: "2564(ภาคต้น)"
   },
   {
     id: 'Robotic',
     label: "Robotic",
     value: 531,
-    name:"2546(ภาคต้น)"
+    name:"2564(ภาคต้น)"
   },
   {
     id: 'Electric',
     label: "Electric",
     value: 206,
-    name:"2546(ภาคต้น)"
+    name:"2564(ภาคต้น)"
   },
   {
     id: 'Mechanical',
     label: "Mechanical",
     value: 120,
-    name:"2546(ภาคต้น)"
+    name:"2564(ภาคต้น)"
   },
   {
     id: 'Mechanical and Production',
     label: "Mechanical and Production",
     value: 270,
-    name:"2546(ภาคต้น)"
+    name:"2564(ภาคต้น)"
   },
+
+//
   {
     id:'industrial',
     label: "industrial",
-    value: 249,
-    name: "2546(ภาคฤดูร้อน)"
+    value: 513,
+    name: "2564(ภาคฤดูร้อน)"
   },
   {
     id:'Computer',
     label: "Computer",
-    value: 143,
-    name: "2546(ภาคฤดูร้อน)"
+    value: 273,
+    name: "2564(ภาคฤดูร้อน)"
   },
   {
     id: 'Civil',
     label: "Civil",
-    value: 504,
-    name: "2546(ภาคฤดูร้อน)"
+    value: 614,
+    name: "2564(ภาคฤดูร้อน)"
   },
   {
     id: 'Robotic',
     label: "Robotic",
-    value: 241,
-    name:"2546(ภาคฤดูร้อน)"
+    value: 431,
+    name:"2564(ภาคฤดูร้อน)"
   },
   {
     id: 'Electric',
     label: "Electric",
-    value: 276,
-    name:"2546(ภาคฤดูร้อน)"
+    value: 306,
+    name:"2564(ภาคฤดูร้อน)"
   },
   {
     id: 'Mechanical',
     label: "Mechanical",
-    value: 327,
-    name:"2546(ภาคฤดูร้อน)"
+    value: 420,
+    name:"2564(ภาคฤดูร้อน)"
   },
   {
     id: 'Mechanical and Production',
     label: "Mechanical and Production",
-    value: 170,
-    name:"2546(ภาคฤดูร้อน)"
+    value: 470,
+    name:"2564(ภาคฤดูร้อน)"
   },
+  //
+  {
+    id:'industrial',
+    label: "industrial",
+    value: 313,
+    name: "2564(ภาคปลาย)"
+  },
+  {
+    id:'Computer',
+    label: "Computer",
+    value: 413,
+    name: "2564(ภาคปลาย)"
+  },
+  {
+    id: 'Civil',
+    label: "Civil",
+    value: 304,
+    name: "2564(ภาคปลาย)"
+  },
+  {
+    id: 'Robotic',
+    label: "Robotic",
+    value: 431,
+    name:"2564(ภาคปลาย)"
+  },
+  {
+    id: 'Electric',
+    label: "Electric",
+    value: 606,
+    name:"2564(ภาคปลาย)"
+  },
+  {
+    id: 'Mechanical',
+    label: "Mechanical",
+    value: 520,
+    name:"2564(ภาคปลาย)"
+  },
+  {
+    id: 'Mechanical and Production',
+    label: "Mechanical and Production",
+    value: 470,
+    name:"2564(ภาคปลาย)"
+  },
+//
+{
+  id:'industrial',
+  label: "industrial",
+  value: 413,
+  name: "2565(ภาคต้น)"
+},
+{
+  id:'Computer',
+  label: "Computer",
+  value: 613,
+  name: "2565(ภาคต้น)"
+},
+{
+  id: 'Civil',
+  label: "Civil",
+  value: 704,
+  name: "2565(ภาคต้น)"
+},
+{
+  id: 'Robotic',
+  label: "Robotic",
+  value: 231,
+  name:"2565(ภาคต้น)"
+},
+{
+  id: 'Electric',
+  label: "Electric",
+  value: 406,
+  name:"2565(ภาคต้น)"
+},
+{
+  id: 'Mechanical',
+  label: "Mechanical",
+  value: 820,
+  name:"2565(ภาคต้น)"
+},
+{
+  id: 'Mechanical and Production',
+  label: "Mechanical and Production",
+  value: 370,
+  name:"2565(ภาคต้น)"
+},
+//
+{
+  id:'industrial',
+  label: "industrial",
+  value: 713,
+  name: "2565(ภาคฤดูร้อน)"
+},
+{
+  id:'Computer',
+  label: "Computer",
+  value: 213,
+  name: "2565(ภาคฤดูร้อน)"
+},
+{
+  id: 'Civil',
+  label: "Civil",
+  value: 504,
+  name: "2565(ภาคฤดูร้อน)"
+},
+{
+  id: 'Robotic',
+  label: "Robotic",
+  value: 531,
+  name:"2565(ภาคฤดูร้อน)"
+},
+{
+  id: 'Electric',
+  label: "Electric",
+  value: 206,
+  name:"2565(ภาคฤดูร้อน)"
+},
+{
+  id: 'Mechanical',
+  label: "Mechanical",
+  value: 420,
+  name:"2565(ภาคฤดูร้อน)"
+},
+{
+  id: 'Mechanical and Production',
+  label: "Mechanical and Production",
+  value: 970,
+  name:"2565(ภาคฤดูร้อน)"
+},
+//
+{
+  id:'industrial',
+  label: "industrial",
+  value: 313,
+  name: "2565(ภาคปลาย)"
+},
+{
+  id:'Computer',
+  label: "Computer",
+  value: 413,
+  name: "2565(ภาคปลาย)"
+},
+{
+  id: 'Civil',
+  label: "Civil",
+  value: 204,
+  name: "2565(ภาคปลาย)"
+},
+{
+  id: 'Robotic',
+  label: "Robotic",
+  value: 731,
+  name:"2565(ภาคปลาย)"
+},
+{
+  id: 'Electric',
+  label: "Electric",
+  value: 906,
+  name:"2565(ภาคปลาย)"
+},
+{
+  id: 'Mechanical',
+  label: "Mechanical",
+  value: 520,
+  name:"2565(ภาคปลาย)"
+},
+{
+  id: 'Mechanical and Production',
+  label: "Mechanical and Production",
+  value: 670,
+  name:"2565(ภาคปลาย)"
+},
+
+  
 ];
 
 const datas = [
   {
-    "id": "php",
-    "label": "php",
-    "value": 587,
-    "color": "hsl(89, 70%, 50%)"
+    id:'industrial',
+    label: "industrial",
+    value: 313,
+    name: "2565(ภาคปลาย)"
   },
   {
-    "id": "rust",
-    "label": "rust",
-    "value": 472,
-    "color": "hsl(192, 70%, 50%)"
+    id:'Computer',
+    label: "Computer",
+    value: 413,
+    name: "2565(ภาคปลาย)"
   },
   {
-    "id": "make",
-    "label": "make",
-    "value": 221,
-    "color": "hsl(122, 70%, 50%)"
+    id: 'Civil',
+    label: "Civil",
+    value: 204,
+    name: "2565(ภาคปลาย)"
   },
   {
-    "id": "stylus",
-    "label": "stylus",
-    "value": 387,
-    "color": "hsl(144, 70%, 50%)"
+    id: 'Robotic',
+    label: "Robotic",
+    value: 731,
+    name:"2565(ภาคปลาย)"
   },
   {
-    "id": "hack",
-    "label": "hack",
-    "value": 539,
-    "color": "hsl(187, 70%, 50%)"
-  }
+    id: 'Electric',
+    label: "Electric",
+    value: 906,
+    name:"2565(ภาคปลาย)"
+  },
+  {
+    id: 'Mechanical',
+    label: "Mechanical",
+    value: 520,
+    name:"2565(ภาคปลาย)"
+  },
+  {
+    id: 'Mechanical and Production',
+    label: "Mechanical and Production",
+    value: 670,
+    name:"2565(ภาคปลาย)"
+  },
 ]
 
 const dataBar = [
   {
-    ปีเทอมการศึกษา: "2546(ภาคต้น)",
-    ค่าใช้จ่าย: 100,
+    ปีเทอมการศึกษา: "2564(ภาคต้น)",
+    ค่าใช้จ่าย: 7480,
     จำนวนคน:5
   },
   {
-    ปีเทอมการศึกษา: "2546(ภาคฤดูร้อน)",
-    ค่าใช้จ่าย: 86,
+    ปีเทอมการศึกษา: "2564(ภาคฤดูร้อน)",
+    ค่าใช้จ่าย: 7180,
+    จำนวนคน:6
   },
   {
-    ปีเทอมการศึกษา: "2546(ภาคปลาย)",
-    ค่าใช้จ่าย: 92,
+    ปีเทอมการศึกษา: "2564(ภาคปลาย)",
+    ค่าใช้จ่าย: 9742,
+    จำนวนคน:9
   },
   {
-    ปีเทอมการศึกษา: "2547(ภาคต้น)",
-    ค่าใช้จ่าย: 122,
+    ปีเทอมการศึกษา: "2565(ภาคต้น)",
+    ค่าใช้จ่าย: 7880,
+    จำนวนคน:8
   },
   {
-    ปีเทอมการศึกษา: "2547(ภาคฤดูร้อน)",
-    ค่าใช้จ่าย: 53,
+    ปีเทอมการศึกษา: "2565(ภาคฤดูร้อน)",
+    ค่าใช้จ่าย: 4490,
+    จำนวนคน:5
   },
   {
-    ปีเทอมการศึกษา: "2547(ภาคปลาย)",
-    ค่าใช้จ่าย: 76,
+    ปีเทอมการศึกษา: "2565(ภาคปลาย)",
+    ค่าใช้จ่าย: 3488,
+    จำนวนคน:7
   },
 ];
 
@@ -163,6 +356,8 @@ function dashboard(props) {
     if (session) {
       props.getDetailNisit(session.user.email);
       setOndata(data);
+      setSelectData(datas)
+      setLabel("2565(ภาคปลาย)")
     }
   }, [loading]);
 
@@ -196,6 +391,7 @@ function dashboard(props) {
           height: "480px",
         }}
       >
+        <h1>ค่าใช้จ่ายเเละจำนวน SA</h1>
         {/* <select
           name="major"
           className="form-control"
@@ -226,11 +422,8 @@ function dashboard(props) {
         change data to B
       </button> */}
 
-      <MyResponsivePie data={selectData}/>
-      {console.log('count')}
-      </div>
-      <div style={{ marginLeft: "0px", width: "830px", height: "490px" }}>
-        <MyResponsiveBar
+      
+      <MyResponsiveBar
           data={dataBar}
           selectBar={(e) => {
             setLabel(e.indexValue);
@@ -243,6 +436,11 @@ function dashboard(props) {
             }));
           }}
         />
+      {console.log('count')}
+      </div>
+      <div style={{ marginLeft: "0px", width: "830px", height: "490px" }}>
+      <h1>ค่าใช้จ่ายของ {label} แยกสาขา</h1>
+        <MyResponsivePie data={selectData}/>
       </div>
     </div>
   );

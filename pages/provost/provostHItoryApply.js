@@ -10,7 +10,7 @@ function provostHItoryApply(props) {
   const [courses, setCourses] = useState([]);
   useEffect(() => {
     async function getCourses(){
-        const response = await Axios.get("/courses/teacher-apply");
+        const response = await Axios.get(`/courses/teacher-apply/${props.nisit.email}`);
         setCourses(response.data)
     }
     getCourses(); 
@@ -18,7 +18,7 @@ function provostHItoryApply(props) {
 
   useEffect(() => {
     if (session) {
-      props.getDetailNisit(session.user.email)
+      props.getDetailNisit(session.user.email);
     }
 
   }, [loading]);
@@ -48,6 +48,7 @@ function provostHItoryApply(props) {
     <div className="container">
       <h1>รายวิชาที่ยื่นขอ</h1>
       <div className="information">
+      จำนวนคำร้อง: {courses != null && courses.length != 0 ? courses.length : 0}
         <table className="table table-bordered">
           <thead>
             <tr>
@@ -56,6 +57,7 @@ function provostHItoryApply(props) {
               <th>ชื่อวิชา</th>
               <th>ระดับ</th>
               <th>สาขาวิชา</th>
+              <th>อาจารย์ผู้ขอ</th>
               <th>จำนวนที่ขอ</th>
               <th>สถานะ</th>
 
@@ -70,6 +72,7 @@ function provostHItoryApply(props) {
                   <td>{val.title}</td>
                   <td>{val.level}</td>
                   <td>{val.major}</td>
+                  <td>{val.name_email}</td>
                   <td>{val.number1+val.number2}</td>
                   <td>{condition(val.status)}</td>
                   

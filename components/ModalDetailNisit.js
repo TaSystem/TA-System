@@ -1,6 +1,8 @@
 import React from "react";
+import Image from "next/image";
 
-export default function ModalDetailTeacher(props) {
+
+export default function ModalDetailNisit(props) {
  
 
   console.log(props.val)
@@ -8,7 +10,7 @@ export default function ModalDetailTeacher(props) {
   return (
     <div
       className="modal fade"
-      id="ModalDetailTeacher"
+      id="ModalDetailNisit"
       tabIndex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
@@ -22,7 +24,7 @@ export default function ModalDetailTeacher(props) {
               id="exampleModalLabel"
               style={{ color: "white" }}
             >
-              #ข้อมูลอาจารย์ {props.val.email}
+              #ข้อมูลนิสิต 
             </h5>
             <button
               type="button"
@@ -33,10 +35,13 @@ export default function ModalDetailTeacher(props) {
             ></button>
           </div>
           <div className="modal-body">
-            <p>อีเมลล์:  {props.val.email}    &emsp; ชื่ออีเมลล์: {props.val.name_email}</p>
-            <p>ชื่อ-สกุล: {props.val.name} {props.val.lastname}     &emsp; ภาควิชา:{props.val.department} </p>
-            <p>ตำแหน่ง: {props.val.roleTitle}     &emsp; เบอร์โทรศัพท์: {props.val.tel}</p>
-            
+            <p>ชื่ออีเมลล์: {props.val.name_email}</p>
+            <p>ชื่อ-สกุล: {props.val.name} {props.val.lastname} &emsp; รหัสนิสิต: {props.val.idStudent} </p>
+            <p>ระดับ: {props.val.lvl} &emsp; ภาควิชา:{props.val.department}</p>
+            <p>อีเมลล์: {props.val.email}     &emsp; เบอร์โทรศัพท์: {props.val.tel}</p>
+            <p>ชิ่อธนาคาร: {props.val.nameBank}     &emsp; เลขบัญชี: {props.val.idBank}</p>
+            {/* <Image src={require(`../backend/uploads/img/${props.val.fileCardStudent}`)} alt="fileCardStudent" width={220} height={220} />
+            <Image src={require(`../backend/uploads/img/${props.val.fileBookBank}`)} alt="fileCardStudent" width={220} height={220} /> */}
           </div>
           <div class="modal-footer">
             <button

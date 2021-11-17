@@ -18,6 +18,18 @@ router.get('/',(req,res)=>{
         }
     });
 })
+router.get('/course-open',(req,res)=>{
+  db.query("SELECT * FROM courses  WHERE year IN (SELECT DISTINCT(year) FROM datestudy  WHERE status = 1) AND term IN (SELECT DISTINCT(term) FROM datestudy  WHERE status = 1)", (err,result)=>{
+      if(err){
+          console.log(err); 
+      }
+      else{
+          res.send(result);
+          console.log("course open");
+      }
+  });
+})
+
 router.get('/year',(req, res) => {
   db.query("SELECT DISTINCT year FROM courses ORDER BY year", (err, result) => {
     if (err) {
@@ -39,7 +51,7 @@ router.get('/term',(req, res) => {
 });
 
 router.get('/student',(req,res)=>{
-  db.query("SELECT C.id,C.courseID,C.title,C.sec_D,C.day_D,C.start_D,C.end_D,C.sec_P,C.day_P,C.start_P,C.end_P,C.major,C.teacher FROM courses as C,teacherapplyta as TA WHERE C.id=TA.courseID AND TA.status = 5 ORDER BY TA.courseID", (err,result)=>{
+  db.query("SELECT C.id,C.courseID,C.title,C.sec_D,C.day_D,C.start_D,C.end_D,C.sec_P,C.day_P,C.start_P,C.end_P,C.major,C.teacher FROM courses as C,teacherapplyta as TA WHERE C.id=TA.courseID AND TA.status = 5 AND C.year IN (SELECT DISTINCT(year) FROM datestudy WHERE status = 1) AND C.term IN (SELECT DISTINCT(term) FROM datestudy WHERE status = 1)", (err,result)=>{
       if(err){
           console.log(err); 
       }
@@ -55,14 +67,39 @@ router.get('/test',(req,res)=>{
   res.sendFile(__dirname+'/index.html');   
 })
 
-router.get("/teacher-apply",(req,res)=>{
-  
-  db.query("SELECT C.courseID,C.title,C.level,C.major,C.teacher,A.number1,A.number2,A.status FROM courses AS C,teacherapplyta AS A WHERE C.id = A.courseID",(err,result)=>{
-    if(err){
-      console.log(err);
-    }
+router.get("/teacher-apply/:email",(req,res)=>{
+  const email = req.params.email;
+
+  let checkRole = `SELECT R.id,R.title FROM users as U,roles as R,users_roles as UR WHERE U.id = UR.userID AND R.id = UR.roleID AND U.email = ?`;
+  let historyUser = `SELECT C.courseID,C.title,C.level,C.major,C.teacher,A.number1,A.number2,A.status,U.email,U.name_email,U.name,U.lastname,U.department,U.tel,R.title as roleTitle FROM courses AS C,teacherapplyta AS A,users AS U,users_roles AS UR,roles AS R WHERE A.userID=U.id AND U.id=UR.userID AND R.id =UR.roleID AND C.id = A.courseID AND U.email = ?`;
+  let historyAdmin = `SELECT C.courseID,C.title,C.level,C.major,C.teacher,A.number1,A.number2,A.status,U.email,U.name_email,U.name,U.lastname,U.department,U.tel,R.title as roleTitle FROM courses AS C,teacherapplyta AS A,users AS U,users_roles AS UR,roles AS R WHERE A.userID=U.id AND U.id=UR.userID AND R.id =UR.roleID AND C.id = A.courseID `;
+
+  db.query(checkRole,email,(err,result)=>{
+    if(err) throw err
     else{
-      res.send(result);
+      
+      if(result[0].title=="เจ้าหน้าที่"){
+
+        db.query(historyAdmin,(err,result)=>{
+          if(err) throw err
+          else{
+              res.send(result);
+          }
+        });
+
+      }
+      else{//หัวหน้าภาค
+
+        console.log("email: ",email);
+        db.query(historyUser,email,(err,result)=>{
+          if(err) throw err
+          else{
+            res.send(result);
+          }
+        })
+        
+      }
+      
     }
   })
 });
@@ -78,6 +115,7 @@ router.get('/:id',(req,res)=>{
       }
   });
 });
+
 router.get("/request/:id",async (req, res) => {
   const id = req.params.id;
   await db.query("SELECT * FROM courses WHERE id = ?", id, (err, result) => {
@@ -90,9 +128,54 @@ router.get("/request/:id",async (req, res) => {
   });
 });
 
-router.post("/student-apply-success",(req,res)=>{
-  const email = req.body.email;
-  db.query("SELECT C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.sec_P,C.day_D,C.start_D,C.end_D,C.day_P,C.start_P,C.end_P,A.status FROM courses AS C,studentapplyta AS A ,users AS U WHERE C.id = A.courseID AND A.status = 3 AND U.id=A.userID AND U.email = ?",email,(err,result)=>{
+router.get('/student-reply/:status',(req,res)=>{
+  let status = req.params.status;
+  let sqlcommand = `SELECT C.id as CID,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.number_D,C.sec_P,C.number_P,C.day_D,C.day_P,C.start_D,C.end_D,C.start_P,C.end_P,C.numberReal,A.id as AID,A.status,A.noteapply,U.email,U.name_email,U.name,U.lastname,U.idStudent,U.department,U.tel,U.level as lvl,U.nameBank,U.idBank,U.fileCardStudent,U.fileBookBank,R.title as roleTitle,TA.userID,(SELECT U.name FROM teacherapplyta as TA,users as U WHERE U.id = TA.userID AND TA.status = 5 AND TA.courseID = C.id) as ownerName,(SELECT U.lastname FROM teacherapplyta as TA,users as U WHERE U.id = TA.userID AND TA.status = 5 AND TA.courseID = C.id) as ownerLastname FROM courses AS C,studentapplyta AS A,users AS U,users_roles AS UR,roles AS R,teacherapplyta as TA WHERE C.id = A.courseID AND A.userID=U.id AND U.id=UR.userID AND R.id =UR.roleID AND A.courseID = TA.courseID AND TA.status=5 AND A.status = ?`;
+  
+  db.query(sqlcommand,status,(err,result)=>{
+      if(err){
+          console.log(err);
+      }
+      else{
+          res.send(result);
+      }
+  });
+});
+
+router.get('/courses-sa/:id',(req,res)=>{
+  let userID = req.params.id;
+  let sqlcommand = `SELECT C.id as CID,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.number_D,C.sec_P,C.number_P,C.day_D,C.day_P,C.start_D,C.end_D,C.start_P,C.end_P,SA.hrperweek FROM courses as C,studentapplyta as SA WHERE C.id=SA.courseID AND SA.status = 3 AND SA.userID=? AND C.id IN (SELECT courseID FROM studentapplyta WHERE status=3 AND userID = ?)`;
+  
+  db.query(sqlcommand,[userID,userID],(err,result)=>{
+      if(err){
+          console.log(err);
+      }
+      else{
+          res.send(result);
+      }
+  });
+  
+});
+
+router.get('/teacher-reply/:status',(req,res)=>{
+  let status = req.params.status ;
+    
+  let sqlcommand = `SELECT C.id as CID,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.number_D,C.sec_P,C.number_P,C.day_D,C.day_P,C.start_D,C.end_D,C.start_P,C.end_P,C.numberReal,C.numberTAReal,A.id as AID,A.number1,A.number2,A.status,A.noteapply,U.email,U.name_email,U.name,U.lastname,U.department,U.tel,R.title as roleTitle,(SELECT COUNT(*) FROM studentapplyta as SA,users as U WHERE U.id=SA.userID AND SA.status=3 AND SA.courseID = C.id) as number_SA FROM courses AS C,teacherapplyta AS A,users AS U,users_roles AS UR,roles AS R WHERE C.id = A.courseID AND A.userID=U.id AND U.id=UR.userID AND R.id =UR.roleID AND A.status = ?`;
+  let items = [status];
+  db.query(sqlcommand,items,(err,result)=>{
+      if(err){
+          console.log(err);
+      }
+      else{
+          
+          res.send(result);
+      }
+  });
+});
+
+router.get("/student-apply-success/:email",(req,res)=>{
+  const email = req.params.email;
+  db.query("SELECT C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.sec_P,C.day_D,C.start_D,C.end_D,C.day_P,C.start_P,C.end_P,A.status,A.hrperweek FROM courses AS C,studentapplyta AS A ,users AS U WHERE C.id = A.courseID AND A.status = 3 AND U.id=A.userID AND U.email = ?",email,(err,result)=>{
     if(err){
       console.log(err);
     }
@@ -116,33 +199,46 @@ router.post("/student-apply",(req,res)=>{
     })
 });
 
-router.post('/student-reply',(req,res)=>{
-    
-  let status = req.body.status;    
-  let sqlcommand = `SELECT C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.sec_P,A.id,A.userID,A.status,A.noteapply,U.name_email FROM courses AS C,studentapplyta AS A,users AS U WHERE C.id = A.courseID AND A.userID=U.id AND A.status = ?`;
-  
-  db.query(sqlcommand,status,(err,result)=>{
-      if(err){
-          console.log(err);
-      }
-      else{
-          res.send(result);
-      }
-  });
-});
 
-router.post('/teacher-reply',(req,res)=>{//รอส่ง userID
+
+router.post('/teacher-reply',(req,res)=>{
+  let email = req.body.email;
   let status = req.body.status ;
-    
-  let sqlcommand = `SELECT C.id as CID,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.number_D,C.sec_P,C.number_P,C.day_D,C.day_P,C.start_D,C.end_D,C.start_P,C.end_P,C.numberReal,A.id as AID,A.number1,A.number2,A.status,A.noteapply,U.email,U.name_email,U.name,U.lastname,U.department,U.tel,R.title as roleTitle FROM courses AS C,teacherapplyta AS A,users AS U,users_roles AS UR,roles AS R WHERE C.id = A.courseID AND A.userID=U.id AND U.id=UR.userID AND R.id =UR.roleID AND A.status = ?`;
-  let items = [status];
-  db.query(sqlcommand,items,(err,result)=>{
-      if(err){
-          console.log(err);
-      }
+  let major=null;
+  
+  let checkRole = `SELECT R.id,R.title FROM users as U,roles as R,users_roles as UR WHERE U.id = UR.userID AND R.id = UR.roleID AND U.email = ?`;
+
+  let courseAdmin = `SELECT C.id as CID,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.number_D,C.sec_P,C.number_P,C.day_D,C.day_P,C.start_D,C.end_D,C.start_P,C.end_P,C.numberReal,C.numberTAReal,A.id as AID,A.number1,A.number2,A.status,A.noteapply,U.email,U.name_email,U.name,U.lastname,U.department,U.tel,R.title as roleTitle,(SELECT COUNT(*) FROM studentapplyta as SA,users as U WHERE U.id=SA.userID AND SA.status=3 AND SA.courseID = C.id) as number_SA FROM courses AS C,teacherapplyta AS A,users AS U,users_roles AS UR,roles AS R WHERE C.id = A.courseID AND A.userID=U.id AND U.id=UR.userID AND R.id =UR.roleID AND A.status = ?`;
+  
+  let courseHead = `SELECT C.id as CID,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.number_D,C.sec_P,C.number_P,C.day_D,C.day_P,C.start_D,C.end_D,C.start_P,C.end_P,C.numberReal,C.numberTAReal,A.id as AID,A.number1,A.number2,A.status,A.noteapply,U.email,U.name_email,U.name,U.lastname,U.department,U.tel,R.title as roleTitle,(SELECT COUNT(*) FROM studentapplyta as SA,users as U WHERE U.id=SA.userID AND SA.status=3 AND SA.courseID = C.id) as number_SA FROM courses AS C,teacherapplyta AS A,users AS U,users_roles AS UR,roles AS R WHERE C.id = A.courseID AND A.userID=U.id AND U.id=UR.userID AND R.id =UR.roleID AND A.status = ? AND C.major = ?`;
+
+  db.query(checkRole,email,(err,result)=>{
+      if(err) throw err
       else{
-          
-          res.send(result);
+
+        if(result[0].title=="เจ้าหน้าที่"){
+
+          db.query(courseAdmin,[status],(err,result)=>{
+            if(err) throw err
+            else{
+                res.send(result);
+            }
+          });
+
+        }
+        else{//หัวหน้าภาค
+
+          major = result[0].title.substring(result[0].title.lastIndexOf(" ")+1);
+          console.log("major: ",major)
+          db.query(courseHead,[status,major],(err,result)=>{
+            if(err) throw err
+            else{
+                res.send(result);
+            }
+          });
+        }
+        
+        
       }
   });
 });
