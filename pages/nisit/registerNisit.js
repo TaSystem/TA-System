@@ -7,8 +7,6 @@ import { AtmSharp } from "@material-ui/icons";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { setRegisterNisit ,getDetailNisit } from "../../redux/actions/nisitAction";
-import styles from "../../styles/registerNisit.module.css";
-
 
 function registerNisit(props) {
   const [session, loading] = useSession();
@@ -24,8 +22,8 @@ function registerNisit(props) {
   const router = useRouter()
 
   useEffect(() => {
-    console.log("in useEffect level", level);
-    console.log("in useEffect major", department);
+    // console.log("in useEffect level", level);
+    // console.log("in useEffect major", department);
 
   }, [level,department]);
 
@@ -48,82 +46,117 @@ function registerNisit(props) {
       department: department,
       tel: tel,
     };
-    console.log("handleSubmit ", user);
+    // console.log("handleSubmit ", user);
     props.setRegisterNisit(user)
   };
 
   if (typeof window !== "undefined" && loading) return null;
 
   if (!session) {
-    console.log("in that case");
+    // console.log("in that case");
     return (
       <div>
         <h2>You aren't signed in, please sign in first</h2>
       </div>
     );
   }
-  console.log('register Nisit ', props)
+  // console.log('register Nisit ', props)
 
   return (
-    <div className={styles.gridView}>
-      <div className={styles.col4} style={{ backgroundColor: "#7a0117" }}>
-        <Image
-          src={pwit}
-          alt="pwit"
-          style={{ maxWidth: "100%", maxHeight: "100" }}
-        />
+    <form>
+      <div class="container" style={{padding:"0 4vw"}}>
+          <h1>กรอกข้อมูลนิสิต</h1>
+      <div class="row" style={{marginTop:"40px"}}>
+      <div class="col col-md-1">
+            <label for="sex">คำนำหน้า</label>
+            <select class="form-control custom-select" id="sex">
+              <option selected>เลือก</option>
+              <option>นาย</option>
+              <option>นาง</option>
+              <option>นางสาว</option>
+            </select>
+        </div>
+        <div class="col col-md-4">
+            <label for="firstName">ชื่อ</label>
+            <input type="text" class="form-control" id="firstName" />
+        </div>
+        <div class="col col-md-5">
+            <label for="lastName">นามสกุล</label>
+            <input type="text" class="form-control" id="lastName" />
+        </div>
       </div>
-      {/* {console.log('props in register ',props.nisit)} */}
-      {/* <form noValidate onSubmit={handleSubmit}> */}
-      <div className={styles.col8} style={{ backgroundColor: "white" }}>
-        <figure className={`${styles.col8__item1} ${styles.col8__item1}`}>
-          <h1 className={styles.registerH1}>กรอกข้อมูลนิสิต</h1>
-        </figure>
-        <figure className={`${styles.col8__item1} ${styles.col8__item2}`}>
-          <h2 className={styles.registerH2}>กรอกข้อมูลนิสิต</h2>
-        </figure>
-        <figure className={`${styles.col8__item} ${styles.col8__item3}`}>
-          <h3 className={styles.registerH3}>ชื่อ</h3>
-        </figure>
-        <figure className={`${styles.col8__item} ${styles.col8__item4}`}>
+      <div class="row" style={{marginTop:"50px"}}>
+        <div class="col col-md-5">
+            <label for="stuid">รหัสนิสิต</label>
+            <input type="text" class="form-control" id="stuid" />
+        </div>
+        <div class="col col-md-5">
+            <label for="tel">เบอร์โทรศัพท์</label>
+            <input type="text" class="form-control" id="tel"/>
+        </div>
+      </div>
+      <div class="row" style={{marginTop:"50px"}}>
+        <div class="col col-md-5">
+            <label for="degree">ระดับการศึกษา</label>
+            <select class="form-control custom-select" id="degree">
+              <option selected>เลือกระดับการศึกษา</option>
+              <option>ปริญญาตรี</option>
+              <option>ปริญญาโท</option>
+            </select>
+        </div>
+        <div class="col col-md-5">
+            <label for="major">ภาควิชา</label>
+            <select class="form-control custom-select" id="major">
+              <option selected>เลือกภาควิชา</option>
+              <option>วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์</option>
+              <option>วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ</option>
+              <option>วิศวกรรมอุตสาหการและระบบ</option>
+              <option>วิศวกรรมเครื่องกลและการออกแบบ</option>
+              <option>วิศวกรรมเครื่องกลและระบบการผลิต</option>
+              <option>วิศวกรรมโยธา</option>
+              <option>วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์</option>
+            </select>
+        </div>
+      </div>
+      <div style={{marginTop:"80px"}}>
+        <button className="btn btn-success" style={{width:"160px"}}>ยืนยัน</button>
+      </div>
+        {/* <figure>
           <input
-            className={styles.registerInput}
             type="text"
             id="name"
             name="name"
             onChange={(e) => setName(e.target.value)}
           />
         </figure>
-        <figure className={`${styles.col8__item} ${styles.col8__item5}`}>
-          <h3 className={styles.registerH3}>นามสกุล</h3>
+        <figure >
+          <h3>นามสกุล</h3>
         </figure>
-        <figure className={`${styles.col8__item} ${styles.col8__item6}`}>
+        <figure >
           <input
-            className={styles.registerInput}
             type="text"
             id="surname"
             name="surname"
             onChange={(e) => setLastname(e.target.value)}
           />
         </figure>
-        <figure className={`${styles.col8__item} ${styles.col8__item7}`}>
-          <h3 className={styles.registerH3}>รหัสนิสิต</h3>
+        <figure >
+          <h3 >รหัสนิสิต</h3>
         </figure>
-        <figure className={`${styles.col8__item} ${styles.col8__item8}`}>
+        <figure >
           <input
-            className={styles.registerInput}
             type="text"
             id="stuID"
             name="stuID"
             onChange={(e) => setIdStudent(e.target.value)}
           />
         </figure>
-        <figure className={`${styles.col8__item} ${styles.col8__item9}`}>
-          <h3 className={styles.registerH3}>เบอร์โทรศัพท์</h3>
+        <figure >
+          <h3>เบอร์โทรศัพท์</h3>
         </figure>
-        <figure className={`${styles.col8__item} ${styles.col8__item10}`}>
+        <figure >
           <input
-            className={styles.registerInput}
+           
             type="text"
             id="tel"
             name="tel"
@@ -131,8 +164,8 @@ function registerNisit(props) {
           />
         </figure>
 
-        <figure className={`${styles.col8__item} ${styles.col8__item11}`}>
-          <h3 className={styles.registerH3}>ระดับการศึกษา</h3>
+        <figure >
+          <h3>ระดับการศึกษา</h3>
         </figure>
 
         {/* <figure className={`${styles.col8__item} ${styles.col8__item12}`}>
@@ -144,9 +177,9 @@ function registerNisit(props) {
             onChange={(e) => setLevel(e.target.value)}
           />
         </figure> */}
-        {console.log(level)}
-        <figure className={`${styles.col8__item} ${styles.col8__item12}`}>
-          <div className={styles.selectBox__current} tabindex="1">
+        {/* {console.log(level)}
+        <figure >
+          <div> */}
             {/* <div className={styles.selectBox__value}>
               <input
                 className={styles.selectBox__input}
@@ -159,9 +192,8 @@ function registerNisit(props) {
               />
               <p className={styles.selectBox__inputText}>เลือกระดับการศึกษา</p>
             </div> */}
-            <div className={styles.selectBox__value}>
+            {/* <div>
               <input
-                className={styles.selectBox__input}
                 type="radio"
                 id="k1"
                 value="ปริญญาตรี"
@@ -169,11 +201,10 @@ function registerNisit(props) {
                 // checked="checked"
                 onChange={(e) => setLevel(e.target.value)}
               />
-              <p className={styles.selectBox__inputText}>ปริญญาตรี</p>
+              <p >ปริญญาตรี</p>
             </div>
-            <div className={styles.selectBox__value}>
+            <div >
               <input
-                className={styles.selectBox__input}
                 type="radio"
                 id="k2"
                 value="ปริญญาโท"
@@ -181,19 +212,17 @@ function registerNisit(props) {
                 // checked="checked"
                 onChange={(e) => setLevel(e.target.value)}
               />
-              <p className={styles.selectBox__inputText}>ปริญญาโท</p>
+              <p >ปริญญาโท</p>
             </div>
             <img
-              className={styles.selectBox__icon}
               src="http://cdn.onlinewebfonts.com/svg/img_295694.svg"
               alt="Arrow Icon"
               aria-hidden="true"
             />
           </div>
-          <ul className={styles.selectBox__list}>
+          <ul>
             <li>
               <label
-                className={styles.selectBox__option}
                 for="k1"
                 aria-hidden="aria-hidden"
               >
@@ -202,7 +231,6 @@ function registerNisit(props) {
             </li>
             <li>
               <label
-                className={styles.selectBox__option}
                 for="k2"
                 aria-hidden="aria-hidden"
               >
@@ -212,9 +240,9 @@ function registerNisit(props) {
           </ul>
         </figure>
 
-        <figure className={`${styles.col8__item} ${styles.col8__item13}`}>
-          <h3 className={styles.registerH3}>ภาควิชา</h3>
-        </figure>
+        <figure>
+          <h3>ภาควิชา</h3>
+        </figure> */}
         {/* <figure className={`${styles.col8__item} ${styles.col8__item14}`}>
           <input
             className={styles.registerInput}
@@ -225,8 +253,8 @@ function registerNisit(props) {
           />
         </figure> */}
 
-        <figure class={`${styles.col8__item} ${styles.col8__item14}`}>
-          <div class={styles.selectBox__current} tabindex="1">
+        {/* <figure >
+          <div> */}
             {/* <div class={styles.selectBox__value}>
               <input
                 class={styles.selectBox__input}
@@ -238,39 +266,38 @@ function registerNisit(props) {
               />
               <p class={styles.selectBox__inputText}>เลือกภาคการศึกษา</p>
             </div> */}
-            <div class={styles.selectBox__value}>
+            {/* <div >
               <input
-                class={styles.selectBox__input}
+               
                 type="radio"
                 id="m1"
                 value="คอมพิวเตอร์"
                 name="major"
                 onChange={(e) => setDepartment(e.target.value)}
               />
-              <p class={styles.selectBox__inputText}>คอมพิวเตอร์</p>
+              <p >คอมพิวเตอร์</p>
             </div>
-            <div class={styles.selectBox__value}>
+            <div >
               <input
-                class={styles.selectBox__input}
                 type="radio"
                 id="m2"
                 value="อุต"
                 name="major"
                 onChange={(e) => setDepartment(e.target.value)}
               />
-              <p class={styles.selectBox__inputText}>อุต</p>
+              <p >อุต</p>
             </div>
             <img
-              class={styles.selectBox__icon}
+              
               src="http://cdn.onlinewebfonts.com/svg/img_295694.svg"
               alt="Arrow Icon"
               aria-hidden="true"
             />
           </div>
-          <ul class={styles.selectBox__list}>
+          <ul >
             <li>
               <label
-                class={styles.selectBox__option}
+                
                 for="m1"
                 aria-hidden="aria-hidden"
               >
@@ -279,7 +306,7 @@ function registerNisit(props) {
             </li>
             <li>
               <label
-                class={styles.selectBox__option}
+                
                 for="m2"
                 aria-hidden="aria-hidden"
               >
@@ -289,19 +316,18 @@ function registerNisit(props) {
           </ul>
         </figure>
 
-        <figure className={`${styles.col8__item} ${styles.col8__item15}`}>
+        <figure >
           <button
-            className={styles.registerButton}
+            
             type="submit"
             id="submit"
             onClick={()=>{if (window.confirm('บันทึกข้อมูล'))handleSubmit}}
           >
             ต่อไป
           </button>
-        </figure>
+        </figure> */}
       </div>
-      {/* </form> */}
-    </div>
+    </form>
   );
 }
 

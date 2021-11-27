@@ -28,30 +28,19 @@ router.put("/teacher-reply", (req, res) => {
             (err, result) => {
               if (err) console.log(err);
               else {
-                db.query(
-                  "SELECT C.id,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.sec_P,C.number_D,C.number_P,A.id as AID,A.number1,A.number2,A.status,A.noteapply,U.name_email FROM courses AS C,Teacherapplyta AS A,users AS U WHERE C.id = A.courseID AND A.userID=U.id AND A.status = ?",
-                  status - 1,
-                  (err, result) => {
-                    if (err) console.log(err);
-                    else {
-                      if(status == 0){
-                        let respose = {
-                          message: "ยกเลิกสำเร็จ!!!",
-                          data: result,
-                        };
-                        res.send(respose);
-                      }
-                      else{
-                          let respose = {
-                          message: "ยืนยันสำเร็จ!!!",
-                          data: result,
-                        };
-                        res.send(respose);
-                      }
-                   
-                    }
-                  }
-                );
+                if (status == 0) {
+                  let respose = {
+                    message: "ยกเลิกสำเร็จ!!!",
+                    data: result,
+                  };
+                  res.send(respose);
+                } else {
+                  let respose = {
+                    message: "ยืนยันสำเร็จ!!!",
+                    data: result,
+                  };
+                  res.send(respose);
+                }
               }
             }
           );
@@ -77,9 +66,8 @@ router.put("/check-course-condition", (req, res) => {
     "SELECT C.id,C.courseID,C.title,C.number_D,C.number_P,C.numberReal FROM courses AS C,Teacherapplyta AS A WHERE C.id = A.courseID AND A.id = ?",
     applyTaId,
     (err, result) => {
-      if (err) throw (err);
-       else {
-
+      if (err) throw err;
+      else {
         //เงื่อนไขในการขอSA
         if (result[0].number_P && result[0].number_D) {
           //เงื่อนไขบรรยายและปฎิบัติ
@@ -193,41 +181,115 @@ router.put("/student-reply", (req, res) => {
   let email = req.body.email;
   let id = req.body.studentapplyID;
   let status = req.body.status;
-  // let notereply = req.body.notereply;
-  let userID;
+  let hrperweek = req.body.hrperweek;
+  let lvl = req.body.lvl;
+  let notereply = req.body.notereply;
+  let courseID = req.body.courseID;
+  let userID, cost;
 
-  let sqlcommand = `UPDATE studentapplyta SET status = ? WHERE id = ?`;
-  let applyItem = [status, id];
+  let sqlcommand;
+  let applyItem;
+
+  if (status == 3) {
+    //ยืนยันว่าเป็น TA แล้วเพิ่มcost
+    console.log("lvl: ", lvl);
+    if (lvl == "ปริญญาตรี") {
+      cost = hrperweek * 30 * 15;
+      console.log("ปริญญาตรี");
+    } else {
+      cost = hrperweek * 40 * 15;
+      console.log("ปริญญาโท");
+    }
+    sqlcommand = `UPDATE studentapplyta SET status = ?,cost = ? WHERE id = ?`;
+    applyItem = [status, cost, id];
+  } else {
+    sqlcommand = `UPDATE studentapplyta SET status = ?,notereply = ? WHERE id = ?`;
+    applyItem = [status, notereply, id];
+  }
+
+  console.log("sql: ", sqlcommand);
   console.log("applyItem: ", applyItem);
+  console.log("email: ", email);
 
-  db.query(sqlcommand, applyItem, (err, result) => {
+  db.query("SELECT id FROM users WHERE email= ?", email, (err, result) => {
     if (err) {
       console.log(err);
     } else {
-      db.query("SELECT id FROM users WHERE email= ?", email, (err, result) => {
-        if (err) {
-          console.log(err);
-        } else {
-          userID = result[0].id;
-          db.query("INSERT INTO userreplystudent value (?,?,?)",[id, userID, status],(err, result) => {
-              if (err) console.log(err);
-              else {
-                db.query(
-                  "SELECT C.id,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.sec_P,A.status,U.name_email FROM courses AS C,studentapplyta AS A,users AS U WHERE C.id = A.courseID AND A.userID=U.id AND A.status = 1",
-                  (err, result) => {
-                    if (err) {
-                      console.log(err);
-                    } else {
-                      res.send(result);
-                      console.log("success reply!!!");
-                    }
+      userID = result[0].id;
+      db.query(
+        "SELECT COUNT(SA.id) as CountTA,C.numberTAReal FROM courses as C,studentapplyta as SA WHERE C.id = SA.courseID AND SA.status>=2 AND SA.courseID = ?",
+        courseID,
+        (err, result) => {
+          if (err) throw err;
+          else {
+            if (status == 0) {
+              db.query(
+                "INSERT INTO userreplystudent value (?,?,?)",
+                [id, userID, status],
+                (err, result) => {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    db.query(sqlcommand, applyItem, (err, result) => {
+                      if (err) {
+                        console.log(err);
+                      } else {
+                        let respose = {
+                          message: "ยกเลิกสำเร็จ!!!",
+                          data: result,
+                        };
+                        res.send(respose);
+                      }
+                    });
                   }
-                );
-              }
+                }
+              );
+            }else if(status == 3){
+              
+              db.query(sqlcommand, applyItem, (err, result) => {
+                if (err) {
+                  console.log(err);
+                } else {
+                    let respose = {
+                      message: "ยืนยันสำเร็จ!!!",
+                      data: result,
+                    };
+                    res.send(respose);
+                }
+              });
+
+            } else if (result[0].CountTA >= result[0].numberTAReal) {
+              let response = {
+                check: 0,
+                message: "รายวิชานี้มีนิสิตช่วยงานครบแล้ว โปรดยกเลิก",
+              };
+              res.send(response);
+            } else {
+              db.query(
+                "INSERT INTO userreplystudent value (?,?,?)",
+                [id, userID, status],
+                (err, result) => {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    db.query(sqlcommand, applyItem, (err, result) => {
+                      if (err) {
+                        console.log(err);
+                      } else {
+                          let respose = {
+                            message: "ยืนยันสำเร็จ!!!",
+                            data: result,
+                          };
+                          res.send(respose);
+                      }
+                    });
+                  }
+                }
+              );
             }
-          );
+          }
         }
-      });
+      );
     }
   });
 });

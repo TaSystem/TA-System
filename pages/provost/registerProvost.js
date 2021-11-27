@@ -28,15 +28,15 @@ function registerProvost(props) {
       const json = await res.json();
       if (json.content) {
         setContent(json.content);
-        console.log("in useEffect");
+        //console.log("in useEffect");
       }
     };
     fetchData();
   }, [session]);
 
   useEffect(() => {
-    console.log("in useEffect level", level);
-    console.log("in useEffect major", department);
+    //console.log("in useEffect level", level);
+    //console.log("in useEffect major", department);
   }, [level, department]);
 
   useEffect(() => {
@@ -57,14 +57,14 @@ function registerProvost(props) {
       department: department,
       tel: tel,
     };
-    console.log("handleSubmit ", user);
+    //console.log("handleSubmit ", user);
     props.setRegisterNisit(user);
   };
 
   if (typeof window !== "undefined" && loading) return null;
 
   if (!session) {
-    console.log("in that case");
+    //console.log("in that case");
     return (
       <div>
         <h2>You aren't signed in, please sign in first</h2>

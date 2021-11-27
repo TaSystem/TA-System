@@ -12,14 +12,17 @@ function coursesTeacher(props) {
   const [value, setValue] = useState([]);
   const [search, setSearch] = useState(null);
   const [yearNow, setYearNow] = useState([]);
-  const [session, loading] = useSession();
+  const [load, setLoad] = useState(false);
+  const [session, loading] = useSession(); //ชื่อมันซ้ำ
   var syStatus =
     system != null && system.length != 0 ? system[0].status : "loading...";
-
+  
   useEffect(() => {
     async function getCourses() {
+      setLoad(true);
       const response = await Axios.get("/courses/course-open");
       setCourseList(response.data);
+      setLoad(false);
     }
     async function getSystem() {
       const response = await Axios.get("/system/1");
@@ -51,6 +54,9 @@ function coursesTeacher(props) {
       } else if (course.teacher.toLowerCase().includes(search.toLowerCase())) {
         return course;
       }
+      else if (course.major.toLowerCase().includes(search.toLowerCase())) {
+        return course;
+      }
       
     });
   }
@@ -58,7 +64,7 @@ function coursesTeacher(props) {
   if (typeof window !== "undefined" && loading) return null;
 
   if (!session) {
-    console.log("in that case");
+    // console.log("in that case");
     return (
       <div>
         <h2>You aren't signed in, please sign in first</h2>
@@ -84,8 +90,8 @@ function coursesTeacher(props) {
         {yearNow != null && yearNow.length != 0
           ? yearNow[0].term
           : "loading..."}{" "}
-        ระบบ {syStatus ? "เปิด" : "ปิด"}{" "}
       </h2>
+      {/* <h2>ระบบ {syStatus ? "เปิด" : "ปิด"}{" "}</h2> */}
       <input
         type="text"
         className="form-control mb-3"
@@ -95,10 +101,10 @@ function coursesTeacher(props) {
       จำนวน:{" "}
       {courseList != null && courseList.length != 0 ? courseList.length : 0}{" "}
       วิชา
-      <div className="information">
+      <div className="table-responsive" style={{maxHeight:"65vh",marginTop:"1vh"}}>
         
-          <table className="table table-bordered">
-            <thead>
+          <table className="table table-hover table-borderless" cellspacing="0" style={{textAlign:"center"}}>
+            <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
               <tr>
                 <th rowSpan="2">ลำดับ</th>
                 <th rowSpan="2">รหัสวิชา</th>
@@ -107,8 +113,8 @@ function coursesTeacher(props) {
                 <th rowSpan="2">ระดับ</th>
                 <th rowSpan="2">สาขาวิชา</th>
                 <th rowSpan="2">อาจารย์ผู้สอน</th>
-                <th colSpan="2">จำนวนนิสิต</th>
-                <th rowSpan="2">ดูข้อมูล</th>
+                <th colSpan="2" class="text-nowrap">จำนวนนิสิต</th>
+                <th rowSpan="2">ข้อมูล/ลงทะเบียน</th>
                 <th rowSpan="2">สถานะ</th>
               </tr>
 
@@ -128,7 +134,7 @@ function coursesTeacher(props) {
                       <td>{val.title}</td>
                       <td>{val.sec_D ? val.sec_D : "-"}</td>
                       <td>{val.sec_P ? val.sec_P : "-"}</td>
-                      <td>{val.level}</td>
+                      <td class="text-nowrap">{val.level}</td>
                       <td>{val.major}</td>
                       <td>{val.teacher}</td>
                       <td>{val.number_D ? val.number_D : val.number_P}</td>
@@ -136,35 +142,38 @@ function coursesTeacher(props) {
                       <td>
                         <button
                           type="button"
-                          className="btn btn-primary"
+                          className="btn btn-primary text-nowrap"
                           data-bs-toggle="modal"
                           data-bs-target="#exampleModal"
                           onClick={() => setValue(val)}
                         >
-                          ดูข้อมูล
+                          ข้อมูล/ลงทะเบียน
                         </button>
                       </td>
                       {val.status ? (
                         <td>
                           {" "}
                           <p
-                            style={{ backgroundColor: "green", color: "white" }}
+                            class="text-nowrap"
+                            style={{ color: "green",borderRadius:"6px",padding:"5px" }}
                           >
-                            ขอTAได้
+                            ขอSAได้
                           </p>{" "}
                         </td>
                       ) : (
                         <td>
                           {" "}
-                          <p style={{ backgroundColor: "red", color: "white" }}>
-                            ขอTAไม่ได้
+                          <p class="text-nowrap" style={{ color: "red",borderRadius:"6px",padding:"5px"}}>
+                            ขอSAไม่ได้
                           </p>{" "}
                         </td>
                       )}
                     </tr>
                   );
                 })}
-                {courseList && !courseList.length && <h2 style={{color:"red"}}>ไม่มีรายวิชาที่เปิดสอน</h2> }
+                {load  && <h2 style={{color:"red"}}>กำลังโหลด...</h2>}
+                {!load && courseList && !courseList.length && <h2 style={{color:"red"}}>ไม่มีรายวิชาที่เปิดสอน</h2>}
+                
             </tbody>
           </table>
          

@@ -8,11 +8,12 @@ router.post('/teacher-apply',(req,res)=>{
     let courseID = req.body.courseID;
     let number1 = req.body.number1;
     let number2 = req.body.number2;
+    let hrperweek = req.body.hrperweek;
     let status = req.body.status;
     let noteapply = req.body.noteapply; 
     let id ;
     console.log(email);
-    let sqlcommand = `INSERT INTO teacherapplyta (userID,courseID,number1,number2,status,noteapply) VALUE (?,?,?,?,?,?) `;
+    let sqlcommand = `INSERT INTO teacherapplyta (userID,courseID,number1,number2,hrperweek,status,noteapply) VALUE (?,?,?,?,?,?) `;
     // let applyItem = [id,courseID,number1,number2,status,noteapply];
 
     db.query("SELECT id FROM users WHERE email= ?",email,(err,result)=>{
@@ -21,7 +22,7 @@ router.post('/teacher-apply',(req,res)=>{
             console.log("result: ",result[0].id)
             id = result[0].id;
             console.log("id: ",id)
-            db.query("SELECT * FROM teacherapplyta WHERE courseID = ?",courseID,(err,result)=>{
+            db.query("SELECT * FROM teacherapplyta WHERE status = 5 AND courseID = ?",courseID,(err,result)=>{
                 console.log("id: ",result)
                 if(err) throw(err)
 
@@ -36,7 +37,7 @@ router.post('/teacher-apply',(req,res)=>{
                                 console.log("กรอกข้อมูลอาจารย์ไม่ครบ !!!");
                             }
                             else{
-                                db.query(sqlcommand,[id,courseID,number1,number2,status,noteapply,id],(err,result)=>{
+                                db.query(sqlcommand,[id,courseID,number1,number2,hrperweek,status,noteapply,id],(err,result)=>{
                                 if(err) throw(err)
                                 else{
                                     
@@ -83,7 +84,7 @@ router.post('/student-apply',(req,res)=>{
             console.log("level: ",level)
             if(result[0].sumHour>=10 && level=="ปริญญาตรี"){
                 let response = {check:0,
-                                message: level+" ยื่นขอได้ไม่เกิน 10 ชั่วโมง"}
+                                message: level+" ยื่นขอได้ไม่เกิน 10  ชั่วโมง"}
                 res.send(response);
                 
             }
@@ -108,12 +109,22 @@ router.post('/student-apply',(req,res)=>{
                                         res.send(response);
                                     }
                                     else{
-                                        db.query(sqlcommand,applyItem,(err,result)=>{
+                                        db.query("SELECT COUNT(SA.id) as CountTA,C.numberTAReal FROM courses as C,studentapplyta as SA WHERE C.id = SA.courseID AND SA.status=3 AND SA.courseID = ?",courseID,(err,result)=>{
                                             if(err)throw err
-                                            else{
-                                                let response = {check:1,
-                                                    message: "ยื่นขอรายวิชาสำเร็จ"}
+                                            else if(result[0].CountTA >= result[0].numberTAReal){
+                                                let response = {check:0,
+                                                    message: "รายวิชานี้มีนิสิตช่วยงานครบแล้ว"} 
                                                 res.send(response);
+                                            }
+                                            else{
+                                                db.query(sqlcommand,applyItem,(err,result)=>{
+                                                    if(err)throw err    
+                                                    else{
+                                                        let response = {check:1,
+                                                            message: "ยื่นขอรายวิชาสำเร็จ"}
+                                                        res.send(response);
+                                                    }
+                                                })
                                             }
                                         })
                                     }

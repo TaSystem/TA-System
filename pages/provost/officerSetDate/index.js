@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Axios from "../../../config/Axios";
 import Dateformat from "../../../components/DateFormat";
-import DatePicker from '../../../components/DatePickers';
+import DatePicker from "../../../components/DatePickers";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../../redux/actions/nisitAction";
 
-
 function officerSetDate(props) {
-
-  const [dates,setDate] = useState([]);
+  const [dates, setDate] = useState([]);
   const router = useRouter();
   const [session, loading] = useSession();
   const today = new Date();
@@ -22,7 +20,7 @@ function officerSetDate(props) {
   const [category, setCategory] = useState(null);
   const [err, setErr] = useState(null);
   const [success, setSuccess] = useState(null);
-  
+
   useEffect(() => {
     async function getDates() {
       const response = await Axios.get("/setdate");
@@ -31,18 +29,16 @@ function officerSetDate(props) {
       setTermNow(responseNow.data);
     }
     getDates();
-    
   }, []);
 
   useEffect(() => {
     if (session) {
-      props.getDetailNisit(session.user.email)
+      props.getDetailNisit(session.user.email);
     }
-
   }, [loading]);
 
   const setDateStudy = async () => {
-    console.log("category: ",category);
+    // console.log("category: ", category);
     if (!year) {
       setErr("กรุณากรอกปีการศึกษา");
     } else if (!term) {
@@ -57,12 +53,12 @@ function officerSetDate(props) {
         term: term,
         openDate: openDate,
         closeDate: closeDate,
-        category: category
+        category: category,
       }).then((response) => {
         setErr(null);
         setSuccess(response.data.message);
         setDate(response.data.data);
-        setYear(today.getFullYear() + 543)
+        setYear(today.getFullYear() + 543);
         setTerm(null);
         setOpenDate(new Date());
         setCloseDate(new Date());
@@ -72,13 +68,13 @@ function officerSetDate(props) {
   };
 
   const setYearAndTermNow = async (value) => {
-    console.log(value.year,value.term);
+    // console.log(value.year, value.term);
     await Axios.put("/setdate/setNow", {
       id: value.id,
-      year:value.year,
-      term:value.term
+      year: value.year,
+      term: value.term,
     }).then((response) => {
-      console.log("value: ",value);
+      // console.log("value: ", value);
       setErr(null);
       setSuccess(response.data.message);
       setTermNow(response.data.data);
@@ -89,30 +85,51 @@ function officerSetDate(props) {
     return router.push(`/provost/officerSetDate/${id}`);
   };
 
-  const del = async (id) =>{
-    await Axios.delete(`/setdate/delete-datestudy/${id}`)
-    .then((response) => {
+  const del = async (id) => {
+    await Axios.delete(`/setdate/delete-datestudy/${id}`).then((response) => {
       setErr(null);
       setSuccess(response.data.message);
       setDate(response.data.data);
     });
-  }
+  };
 
-
-  
   return (
     <div className="container">
       <h2>ตั้งค่าวันที่เรียน</h2>
-      <h3>ปัจจุบัน ปี:{termNow != null && termNow.length != 0 ? termNow[0].year : "loading..."} เทอม: {termNow != null && termNow.length != 0 ? termNow[0].term : "loading..."}</h3>
-      <div className="table-responsive">
+      <h3>
+        ปัจจุบัน ปี:
+        {termNow != null && termNow.length != 0
+          ? termNow[0].year
+          : "loading..."}{" "}
+        เทอม:{" "}
+        {termNow != null && termNow.length != 0
+          ? termNow[0].term
+          : "loading..."}
+      </h3>
       {success && (
-            <div className="alert alert-success" role="alert">
-              {" "}
-              {success}{" "}
-            </div>
+        <div className="alert alert-success" role="alert">
+          {" "}
+          {success}{" "}
+        </div>
       )}
-      <table className="table table-bordered">
-          <thead>
+      <div
+        className="table-responsive"
+        style={{ maxHeight: "70vh", maxWidth: "80vw", marginTop: "1vh" }}
+      >
+        <table
+          className="table table-hover table-bordered"
+          cellspacing="0"
+          style={{ textAlign: "center" }}
+        >
+          <thead
+            style={{
+              position: "sticky",
+              top: 0,
+              background: "#7a0117",
+              color: "#fff",
+              fontWeight: "400",
+            }}
+          >
             <tr>
               <th rowSpan="2">#</th>
               <th rowSpan="2">ปีการศึกษา</th>
@@ -121,40 +138,77 @@ function officerSetDate(props) {
               <th rowSpan="2">วันสุดท้ายของการเรียน</th>
               <th rowSpan="2">ประเภท</th>
               <th rowSpan="2">การกระทำ</th>
-              
             </tr>
           </thead>
           <tbody>
             {dates.map((val, key) => {
-                return (
-                  <tr key={key}>
-                    <td>{key + 1} </td>
-                    <td>{val.year}</td>
-                    <td>{val.term}</td>
-                    <td>   <Dateformat date={val.openDate}/> </td>
-                    <td>   <Dateformat date={val.closeDate}/> </td>
-                    <td> {val.category==0?"ธรรมดา":"พิเศษ"} </td>
-                    <td>
-                    <button type="button" className="btn btn-success" onClick={()=>{
-                        if (window.confirm("ยืนยันตั้งค่าปีการศึกษา " + val.year + "เทอม " + val.term+" เป็นเทอมปัจจุบัน"))
-                        setYearAndTermNow(val);
+              return (
+                <tr key={key}>
+                  <td>{key + 1} </td>
+                  <td>{val.year}</td>
+                  <td>{val.term}</td>
+                  <td>
+                    {" "}
+                    <Dateformat date={val.openDate} />{" "}
+                  </td>
+                  <td>
+                    {" "}
+                    <Dateformat date={val.closeDate} />{" "}
+                  </td>
+                  <td> {val.category == 0 ? "ธรรมดา" : "พิเศษ"} </td>
+                  <td>
+                    <button
+                      type="button"
+                      className="btn btn-success"
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            "ยืนยันตั้งค่าปีการศึกษา " +
+                              val.year +
+                              "เทอม " +
+                              val.term +
+                              " เป็นเทอมปัจจุบัน"
+                          )
+                        )
+                          setYearAndTermNow(val);
                       }}
-                      >เทอมปัจจุบัน</button>
-                      <button type="button" className="btn btn-primary" onClick={()=>edit(val.id)} >เพิ่มวันหยุด</button>
-                      <button type="button" className="btn btn-danger" onClick={() => {
-                        if (window.confirm("ยืนยันการลบปีการศึกษา " + val.year + "เทอม " + val.term))
+                    >
+                      เทอมปัจจุบัน
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={() => edit(val.id)}
+                      style={{ margin: "0 20px" }}
+                    >
+                      เพิ่มวันหยุด
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            "ยืนยันการลบปีการศึกษา " +
+                              val.year +
+                              "เทอม " +
+                              val.term
+                          )
+                        )
                           del(val.id);
-                      }}>ลบ</button>
-                    </td>
-                    
-                  </tr>
-                );
-              })}
+                      }}
+                    >
+                      ลบ
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
-        </div>
-        <div class="information">
-        <form className="row gy-2 gx-3 align-items-center">
+      </div>
+      <div class="information">
+        <form className="row gy-2 gx-3 ">
           <div class="col-auto">
             <label for="closeDate" class="form-label">
               ปีการศึกษา
@@ -184,7 +238,7 @@ function officerSetDate(props) {
               <option value={null} disabled selected hidden>
                 ภาคเรียน
               </option>
-              
+
               <option value="ต้น">ต้น</option>
               <option value="ปลาย">ปลาย</option>
             </select>
@@ -193,18 +247,23 @@ function officerSetDate(props) {
             <label for="openDate" class="form-label">
               เริ่ม
             </label>
-            <DatePicker onChange={(date) => 
-                setOpenDate(date)
-              } date={openDate}/>
-
+            <div>
+              <DatePicker
+                onChange={(date) => setOpenDate(date)}
+                date={openDate}
+              />
+            </div>
           </div>
           <div class="col-auto">
             <label for="closeDate" class="form-label">
               สุดท้าย
             </label>
-            <DatePicker onChange={(date) => 
-                setCloseDate(date)
-              } date={closeDate}/>
+            <div>
+              <DatePicker
+                onChange={(date) => setCloseDate(date)}
+                date={closeDate}
+              />
+            </div>
           </div>
           <div class="col-auto">
             <label for="closeDate" class="form-label">
@@ -222,7 +281,6 @@ function officerSetDate(props) {
               </option>
               <option value={0}>ธรรมดา</option>
               <option value={1}>พิเศษ</option>
-              
             </select>
           </div>
 
@@ -231,21 +289,19 @@ function officerSetDate(props) {
               type="button"
               className="btn btn-success"
               onClick={setDateStudy}
+              style={{ margin: "32px 0 0 1vw" }}
             >
               บันทึก
             </button>
           </div>
-
-          {err && (
-            <div className="alert alert-danger" role="alert">
-              {" "}
-              {err}{" "}
-            </div>
-          )}
-
         </form>
+        {err && (
+          <div className="alert alert-danger" role="alert">
+            {" "}
+            {err}{" "}
+          </div>
+        )}
       </div>
-      
     </div>
   );
 }
@@ -259,4 +315,3 @@ const mapDispatchToProps = {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(officerSetDate);
-

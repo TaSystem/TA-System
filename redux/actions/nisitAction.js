@@ -21,14 +21,14 @@ export const getDetailNisit = (email) => (dispatch) => {
     email: email,
   })
     .then((res) => {
-      console.log("getDetailNisit action :", res.data[0]);
+      //console.log("getDetailNisit action :", res.data[0]);
       dispatch({
         type: GET_DETAIL_NISIT,
         payload: res.data[0],
       });
     })
     .catch(() => {
-      console.log("error post");
+      //console.log("error post");
     });
 };
 
@@ -49,10 +49,10 @@ export const setRegisterNisit = (data) => (dispatch) => {
         payload: res.data[0],
       });
     
-      console.log("setRegisterNisit Success");
+      //console.log("setRegisterNisit Success");
     })
     .catch((error) => {
-      console.log("setRegisterNisit unSuccess", error);
+      //console.log("setRegisterNisit unSuccess", error);
     });
 };
 
@@ -71,10 +71,10 @@ export const setBankNisit = (data) => (dispatch) => {
         type: SET_BANK_NISIT,
         payload: res.data[0],
       });
-      console.log("setRegisterNisit Success");
+      //console.log("setRegisterNisit Success");
     })
     .catch((error) => {
-      console.log("setRegisterNisit unSuccess", error);
+      //console.log("setRegisterNisit unSuccess", error);
     });
 };
 
@@ -83,13 +83,13 @@ export const getCoursesNisit = (email) => (dispatch) => {
     email: email,
   })
     .then((res) => {
-      console.log("getCoursesNisit action :", res.data , 'my email is ',email);
+      //console.log("getCoursesNisit action :", res.data , 'my email is ',email);
       dispatch({
         type: GET_COURSES_NISIT,
         payload: res.data,
       });
     })
     .catch(() => {
-      console.log("error post");
+      //console.log("error post");
     });
 };

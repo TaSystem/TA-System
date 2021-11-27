@@ -1,72 +1,59 @@
 import React, { useEffect, useState } from "react";
-import Axios from "../../../config/Axios";
+import Axios from "../../config/Axios";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import Link from "next/link";
 import { connect } from "react-redux";
-import { getDetailNisit } from "../../../redux/actions/nisitAction"; 
+import { getDetailNisit } from "../../redux/actions/nisitAction"; 
 
-const requestTAs = (props) => {
+const profileProvost = (props) => {
 
   const [user, setUser] = useState([]);
-  const [roles, setRoles] = useState([]);
   const [name, setName] = useState(null);
   const [lastname, setLastname] = useState(null);
   const [level, setLevel] = useState(null);
   const [major, setMajor] = useState(null);
   const [tel, setTel] = useState(null);
-  const [roleID, setRoleID] = useState(null);
   const [success, setSuccess] = useState(null);
   const [error,setError] = useState(null);
-
-  const router = useRouter();
-  const { id } = router.query;
   const [session, loading] = useSession();
 
   useEffect(() => {
-    if(props.user && props.user.length != 0){
-      setName(props.user[0].name)
-      setLastname(props.user[0].lastname)
-      setLevel(props.user[0].level)
-      setMajor(props.user[0].department)
-      setTel(props.user[0].tel)
-      setRoleID(props.user[0].RID)
-    }
-    // console.log('id officerSetRole',props.user[0])
-    // async function getUser() {
-    //   const response = await Axios.get(`/users/${id}`);
-    //   setUser(response.data);
-    // }
     if (session) {
-      props.getDetailNisit(session.user.email)
+      props.getDetailNisit(session.user.email);
+      async function getUser() {
+        
+        const response = await Axios.post(`/users/profiledetail`, {
+          email: session.user.email,
+        });
+        setUser(response.data);
+        setName(response.data[0].name)
+        setLastname(response.data[0].lastname)
+        setLevel(response.data[0].level)
+        setMajor(response.data[0].department)
+        setTel(response.data[0].tel)
+        //console.log('profileNisit is ',response.data )
+      }
+      getUser();
     }
-
-    async function getRole() {
-      const response = await Axios.get(`/users/get-role`);
-      setRoles(response.data);
-    }
-    getRole();
-    // getUser();
   }, [loading]);
 
   const userUpdate = async (e) => {
     e.preventDefault()
-
-    etSuccess(null);
+    setSuccess(null);
     setError(null);
     await Axios.put("/users/edit-profile-teacher", {
-      userID: id,
+      email: session.user.email,
       name: name,
       lastname: lastname,
       level: level,
       department: major,
       tel: tel,
-      roleID: roleID,
     }).then((res) => {
-      // console.log("edit success")
-       setSuccess(res.data);
+      //console.log("edit success")
+      setSuccess(res.data);
     }).catch(() => {
-      // console.log("edit error")
+      //console.log("edit error")
       setError("เเก้ไขข้อมูลไม่สำเร็จ !!");
     });
   };
@@ -75,15 +62,15 @@ const requestTAs = (props) => {
   //   setName(props.user[0].name);
   //   console.log("Check case")
   // }
-  // console.log('in ID is ',session)
+  //console.log('in ID is ',session)
   return (
     <div className="container">
       <h2>
         {/* อีเมลล์ :{user && user.length != 0 ? user[0].email : "loading..."} */}
-        อีเมลล์ : {props.user && props.user.length != 0 ? props.user[0].email : 'loading...'}
+        อีเมลล์ : {user && user.length != 0 ? user[0].email : 'loading...'}
       </h2>
       <h3>
-        ชื่ออีเมลล์: {props.user && props.user.length != 0 ? props.user[0].name_email : "loading..."}
+        ชื่ออีเมลล์: {user && user.length != 0 ? user[0].name_email : "loading..."}
         {/* {user && user.length != 0 ? user[0].name_email : "loading..."} */}
       </h3>
       {success && (
@@ -108,10 +95,10 @@ const requestTAs = (props) => {
                   type="text"
                   id="form6Example1"
                   className="form-control"
-                  defaultValue={props.user && props.user.length != 0 ? props.user[0].name:"loading..."}
+                  defaultValue={name}
                   // defaultValue = {props.user[0].name}
                   onChange={(e) => {
-                    // console.log('setName ',e.target.value)
+                    //console.log('setName ',e.target.value)
                     setName(e.target.value);
                   }}
                 />
@@ -126,10 +113,10 @@ const requestTAs = (props) => {
                   type="text"
                   id="form6Example2"
                   className="form-control"
-                  defaultValue={props.user && props.user.length != 0 ? props.user[0].lastname : "loading..."}
+                  defaultValue={lastname}
                   // defaultValue={props.user[0].lastname}
                   onChange={(e) => {
-                    // console.log('setLastname ',e.target.value)
+                    //console.log('setLastname ',e.target.value)
                     setLastname(e.target.value);
                   }}
                 />
@@ -141,16 +128,6 @@ const requestTAs = (props) => {
           </div>
 
           <div className="form-outline mb-4">
-            {/* <input
-              type="text"
-              id="form6Example4"
-              className="form-control"
-              defaultValue={props.user && props.user.length != 0 ? props.user[0].level  :"loading..."}
-              // defaultValue={props.user[0].level}
-              onChange={(e) => {
-                setLevel(e.target.value);
-              }}
-            /> */}
             <select
               class="form-select"
               name="yearSelect"
@@ -158,8 +135,8 @@ const requestTAs = (props) => {
                 setLevel(e.target.value);
               }}
             >
-              <option value={props.user && props.user.length != 0 ? props.user[0].level: "loading..."} disabled selected hidden>
-                {props.user && props.user.length != 0 ? props.user[0].level : "loading..."}
+              <option value={level} disabled selected hidden>
+                {level}
               </option>
 
               <option value="ปริญญาตรี">
@@ -184,8 +161,8 @@ const requestTAs = (props) => {
                 setMajor(e.target.value);
               }}
             >
-              <option value={props.user && props.user.length != 0 ? props.user[0].department : "loading..."} disabled selected hidden>
-                {props.user && props.user.length != 0 ? props.user[0].department : "loading..."}
+              <option value={major} disabled selected hidden>
+                {major}
               </option>
 
               <option value="วิศวกรรมอุตสาหการและระบบ">
@@ -223,7 +200,7 @@ const requestTAs = (props) => {
               type="text"
               id="form6Example4"
               className="form-control"
-              defaultValue={props.user && props.user.length != 0 ? props.user[0].tel :"loading..."}
+              defaultValue={tel}
               onChange={(e) => {
                 setTel(e.target.value);
               }}
@@ -232,44 +209,8 @@ const requestTAs = (props) => {
               เบอร์โทร
             </label>
           </div>
+        
 
-          <div className="form-outline mb-4">
-            <select
-              class="form-select"
-              name="yearSelect"
-              onChange={(e) => {
-                setRoleID(e.target.value);
-              }}
-            >
-              <option
-                value={props.user && props.user.length != 0 ? props.user[0].title : "loading..."}
-                disabled
-                selected
-                hidden
-              >
-                {props.user && props.user.length != 0 ? props.user[0].title : 'loading...'}
-              </option>
-
-              {roles.map((val, key) => {
-                return <option value={val.id}>{val.title}</option>;
-              })}
-            </select>
-            <label className="form-label" for="form6Example5">
-              ตำแหน่ง
-            </label>
-          </div>
-
-          {/* <button
-            type="submit"
-            className="btn btn-primary btn-block mb-4"
-            onClick={() => window.history.back()}
-          >
-            ย้อนกลับ
-          </button> */}
-
-          <Link href="/provost/officerSetRole">
-            <button className="btn btn-primary btn-block mb-4">ย้อนกลับ</button>
-          </Link>
 
           <button
             type="submit"
@@ -279,20 +220,13 @@ const requestTAs = (props) => {
             บันทึก
           </button>
         </form>
+        
       </div>
     </div>
   );
 };
 
-requestTAs.getInitialProps = async ({query}) => {
-  // console.log('query is ',query.id)
-  const response = await Axios.get(`/users/${query.id}`);
-  // await console.log('response is ',response.data)
-  return {
-      post: query.id,
-      user: response.data
-  }
-}
+
 
 const mapStateToProps = (state) => ({
   nisit: state.nisit.nisit,
@@ -302,4 +236,4 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(requestTAs);
+export default connect(mapStateToProps, mapDispatchToProps)(profileProvost);

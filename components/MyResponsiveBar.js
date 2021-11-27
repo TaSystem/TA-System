@@ -11,10 +11,10 @@ const MyResponsiveBar = ({ data, selectBar /* see data tab */ }) => {
   return (
     <ResponsiveBar
       onClick={selectBar}
-      tooltip={(e)=> {
-          console.log(e.data.จำนวนคน)
-        return( <p>จำนวนคนที่เป็น SA : {e.data.จำนวนคน} </p>)
-      }}
+      // tooltip={(e)=> {
+      //     console.log(e.data.จำนวนคน)
+      //   return( <p>จำนวนคนที่เป็น SA : {e.data.จำนวนคน} </p>)
+      // }}
       data={data}
       keys={["ค่าใช้จ่าย"]}
       indexBy="ปีเทอมการศึกษา"
@@ -23,7 +23,7 @@ const MyResponsiveBar = ({ data, selectBar /* see data tab */ }) => {
       valueScale={{ type: "linear" }}
       indexScale={{ type: "band", round: true }}
       valueFormat={{ format: "", enabled: false }}
-      colors={{ scheme: "nivo" }}
+      colors={{ scheme: 'set3' }}
       defs={[
         {
           id: "dots",
@@ -70,16 +70,16 @@ const MyResponsiveBar = ({ data, selectBar /* see data tab */ }) => {
         legendOffset: 42,
       }}
       axisLeft={{
-        tickSize: 5,
-        tickPadding: 5,
+        tickSize: 0,
+        tickPadding: 0,
         tickRotation: 0,
         legend: "ค่าใช้จ่าย",
         legendPosition: "middle",
-        legendOffset: -40,
+        legendOffset: -52,
       }}
       labelSkipWidth={12}
       labelSkipHeight={12}
-      labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+      labelTextColor={{ from: "color", modifiers: [["darker", 3]] }}
       legends={[
         {
           dataFrom: "keys",

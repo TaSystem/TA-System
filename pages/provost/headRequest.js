@@ -15,23 +15,29 @@ function HeadRequest(props) {
   const [session, loading] = useSession();
   const [teacherValue,setTeacherValue] = useState([]);
   const [success, setSuccess] = useState(null);
+  const [yearNow, setYearNow] = useState([]);
+  const [load, setLoad] = useState(false);
   
-  useEffect(() => {
-    async function getCourses() {
-      const response = await Axios.post(`/courses/teacher-reply/`,{
-        email:props.nisit.email,
-        status:2,
-      });
-      setCourseList(response.data);
-    }
-    getCourses();
-  }, []);
 
   useEffect(() => {
     if (session) {
-      props.getDetailNisit(session.user.email)
+      props.getDetailNisit(session.user.email);
+      async function getCourses() {
+        setLoad(true);
+      const response = await Axios.post(`/courses/teacher-reply/`,{
+        email:session.user.email,
+        status:2,
+      });
+      setCourseList(response.data);
+      setLoad(false);
     }
-
+    async function getYear() {
+      const response = await Axios.get("/setdate/getNow");
+      setYearNow(response.data);
+    }
+    getYear();
+    getCourses();
+    }
   }, [loading]);
 
 
@@ -69,7 +75,7 @@ function HeadRequest(props) {
       });
     }
     else{
-      console.log("cancle")
+      console.log("")
     }
   }
 
@@ -130,7 +136,7 @@ const showModalTeacher =  (val) =>{
   });
   
 }
-console.log("roleID: ",props.nisit.roleID);
+//console.log("roleID: ",props.nisit.roleID);
 
 const searchBox = () =>{
   if(props.nisit.roleID==1){
@@ -152,16 +158,28 @@ const searchBox = () =>{
   return (
     <div className="container">
       <h1>รายวิชาที่ยื่นขอเปิดรับ TA (หัวหน้าภาค)</h1>
+      <h3>
+      ปี{" "}
+        {yearNow != null && yearNow.length != 0
+          ? yearNow[0].year
+          : "loading..."}{" "}
+        เทอม{" "}
+        {yearNow != null && yearNow.length != 0
+          ? yearNow[0].term
+          : "loading..."}
+      </h3> 
       {searchBox()}
-      <div className="information">
       {success && (
             <div className="alert alert-success" role="alert">
               {" "}
               {success}{" "}
             </div>
       )}
-        <table className="table table-bordered">
-          <thead>
+      {/* <p style={{color:"red"}}> โปรดเช็ครายวิชาว่ามีการขอซ้ำหรือไม่ </p> */}
+      จำนวนคำร้อง: {courseList != null && courseList.length != 0 ? courseList.length : 0}
+      <div className="table-responsive" style={{maxHeight:"70vh",maxWidth:"80vw",marginTop:"1vh"}}>
+        <table className="table table-hover table-bordered" cellspacing="0" style={{textAlign:"center"}}>
+          <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
             <tr>
               <th rowSpan="2">ลำดับ</th>
               <th rowSpan="2">รหัสคำขอ</th>
@@ -225,6 +243,8 @@ const searchBox = () =>{
                 </tr>
               );
             })}
+             {load  && <h2 style={{color:"red"}}>กำลังโหลด...</h2>}
+            {!load && courseList && !courseList.length && <h2 style={{color:"red"}}>ไม่มีคำร้อง</h2>}
           </tbody>
         </table>
         <ModalDetailTeacher val={teacherValue}  />

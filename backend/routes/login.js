@@ -6,6 +6,9 @@ var db = require("../config/db");
 const e = require("express");
 require("../config/passport");
 
+
+//ไม่ได้ใช้เก็บไว้เฉยๆ
+
 router.use(passport.initialize());
 router.use(passport.session());
 

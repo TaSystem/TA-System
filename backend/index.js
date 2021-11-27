@@ -14,6 +14,8 @@ var system = require('./routes/system');
 var download = require('./routes/downloadfile');
 var setdate = require('./routes/setdate');
 var historyreply = require('./routes/historyreply');
+var cost = require('./routes/cost');
+var workinghours = require('./routes/workinghours');
 
 app.set("view engine","ejs");
 app.use(cors());
@@ -28,23 +30,38 @@ app.use('/reply',reply);
 app.use('/system',system);
 app.use('/setdate',setdate);
 app.use('/historyreply',historyreply);
+app.use('/cost',cost);
 app.use('/document', document);
+app.use('/workinghours', workinghours);
 
 
-app.get("/download",(req,res)=>{
+
+app.get("/download",(req,res)=>{ //ดาวน์โหลดไฟล์ excel.csv เป็น  header
   const file = `${__dirname}/uploads/download/Header-form.csv`;
   res.download(file);
   console.log("File downloaded!!!");
 })
 
-app.get("/get-dashborad",(req,res)=>{
-  db.query("SELECT * FROM studentapplyta as SA,courses as C  WHERE C.id = SA.courseID", id, (err, result) => {
-    if (err) throw (err);
-    else {
-      res.send(result);
-    }
-  });
+app.get("/download-filecard/:filecard",(req,res)=>{
+  const filecard = req.params.filecard;
+  const file = `${__dirname}/uploads/img/${filecard}`;
+  res.download(file);
+  
+  console.log("Filecard downloaded!!!");
 })
+
+app.get("/download-filebookbank/:filebookbank",(req,res)=>{
+  const filebookbank = req.params.filebookbank;
+  const file = `${__dirname}/uploads/img/${filebookbank}`;
+  let response ={data:file,
+                name:filebookbank
+                }
+  res.download(file);
+  
+  
+  console.log("Filecard downloaded!!!");
+})
+
 
 app.listen(port, () => {
   console.log(`running app listening at http://localhost:${port}`)

@@ -1,15 +1,25 @@
 import { signIn, signOut, useSession } from "next-auth/client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import SelectMajor from "../../components/SelectMajor";
 import Axios from "../../config/Axios";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
+import ApplicationNisitSA from '../../components/form/ApplicationNisitSA'
+import ReactToPrint from 'react-to-print';
+import { useReactToPrint } from 'react-to-print';
 
 function index(props) {
+
+  const componentRef = React.useRef();
   const [courseList, setCourseList] = useState([]);
-  const [search, setSearch] = useState(null);
+  
+  const [yearNow,setYearNow] = useState([]);
   const [session, loading] = useSession();
+  const [search, setSearch] = useState(null);
+  const [major, setMajor] = useState("All");
+  const [data,setData] = useState([1]);
   const router = useRouter();
 
   useEffect(() => {
@@ -17,9 +27,14 @@ function index(props) {
     if (session) {
       Axios.get(`/courses/student-apply-success/${session.user.email}`)
       .then((res) => {
-        console.log("index Nisit : ", res.data , 'my email is ',session.user.email);
+        // console.log("index Nisit : ", res.data , 'my email is ',session.user.email);
         setCourseList(res.data);
       });
+      async function getYear() {
+        const response = await Axios.get("/setdate/getNow");
+        setYearNow(response.data);
+      }
+      getYear();
     }
     // }
     // getCourses();
@@ -40,47 +55,88 @@ function index(props) {
 
   function Filter(courses) {
     return courses.filter((course) => {
-      if (!search) {
-        return course;
-      } else if (course.title.toLowerCase().includes(search.toLowerCase())) {
-        return course;
-      } else if (course.courseID.toLowerCase().includes(search.toLowerCase())) {
-        return course;
-      } else if (course.teacher.toLowerCase().includes(search.toLowerCase())) {
-        return course;
+      if (major == "All") {
+        if (!search) {
+          return course;
+        } else if (course.title.toLowerCase().includes(search.toLowerCase())) {
+          return course;
+        } else if (
+          course.courseID.toLowerCase().includes(search.toLowerCase())
+        ) {
+          return course;
+        } else if (
+          course.teacher.toLowerCase().includes(search.toLowerCase())
+        ) {
+          return course;
+        }
       }
-      
+      else if (course.major == major) {
+        if (!search) {
+          return course;
+        } else if (course.title.toLowerCase().includes(search.toLowerCase())) {
+          return course;
+        } else if (
+          course.courseID.toLowerCase().includes(search.toLowerCase())
+        ) {
+          return course;
+        } else if (
+          course.teacher.toLowerCase().includes(search.toLowerCase())
+        ) {
+          return course;
+        }
+      }
     });
   }
 
   if (typeof window !== "undefined" && loading) return null;
 
   if (!session) {
-    console.log("in that case");
+    // console.log("in that case");
     // router.push('/')
     return (
       <div>
-        <h2>You aren't signed in, please sign in first</h2>
+        <h2>You aren't signed in, please sign in firstsss</h2>
       </div>
     );
   }
 
 
-  console.log("session in nisit ", session);
+  // console.log("session in nisit ", session);
 
   return (
     <div className="container">
-      <h1>รายวิชาที่เป็น TA (จำนวนชั่วโมงป.ตรี 10 ชม ป.โทไม่มีจำกัด)</h1>
-      <input
-        type="text"
-        className="form-control mb-3"
-        placeholder="รหัสวิชา/ชื่อวิชา/อาจารย์"
-        onChange={(e) => setSearch(e.target.value)}
-      />
-      <div className="information">
-       เวลาทำงานรวม: {courseList != null && courseList.length != 0 ? sumHour.sum('hrperweek') : 0} ชั่วโมง
-        <table className="table table-bordered">
-          <thead>
+      <h1>รายวิชาที่เป็น SA (จำนวนชั่วโมงป.ตรี 10 ชม ป.โทไม่มีจำกัด)</h1>
+      <h2>ปี {yearNow != null && yearNow.length != 0 ? yearNow[0].year : "loading..."} เทอม {yearNow != null && yearNow.length != 0 ? yearNow[0].term : "loading..."}  </h2>
+      <div className="input-group mb-3">
+      <input  
+          type="text"
+          className="form-control"
+          placeholder="รหัสวิชา/ชื่อวิชา/อาจารย์"
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <SelectMajor onChange={(e) => {
+            setMajor(e.target.value);
+          }}/>
+      </div>
+      
+      <div style ={{margin:'12px auto'}}>
+      {(data?.length >0) ? (   
+      <ReactToPrint
+        trigger={() => <button type="submit" className="btn btn-danger">
+        ดาวโหลดใบสมัครนิสิตช่วยปฎิบัติงาน (PDF)
+      </button>}
+        content={() => componentRef.current}
+      />):(<button className="btn btn-danger"  onClick = {()=>{alert('กรุณาเลือกสาขา')}}>ดาวโหลดข้อมูลเอกสารค่าใช้จ่าย(PDF) </button>)}
+      </div>
+
+        {/* <div style= {{display:'none'}}> */}
+        <ApplicationNisitSA ref = {componentRef}/>
+        {/* </div> */}
+      
+      จำนวน:{courseList != null && courseList.length != 0 ? courseList.length : 0} วิชา &emsp; เวลาทำงานรวม: {courseList != null && courseList.length != 0 ? sumHour.sum('hrperweek') : 0} ชั่วโมง
+      <div className="table-responsive" style={{maxHeight:"65vh",maxWidth:"80vw",marginTop:"1vh"}}>
+        <table className="table table-hover table-bordered" cellspacing="0" style={{textAlign:"center"}}>
+          <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
             <tr>
               <th rowSpan="2">#</th>
               <th rowSpan="2">รหัสวิชา</th>

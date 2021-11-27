@@ -40,11 +40,11 @@ function requestTA(props) {
   useEffect(() => {
     // console.log("useEffect 2");
     if (session && props.nisit.length == 0) {
-      console.log("useEffect get getDetailNisit");
+      // console.log("useEffect get getDetailNisit");
       props.getDetailNisit(session.user.email);
     }
     // if (session && props.courses.length == 0){
-    console.log("useEffect get getCoursesNisit");
+    // console.log("useEffect get getCoursesNisit");
     // }
   }, [loading]);
 
@@ -127,7 +127,8 @@ function requestTA(props) {
   return (
     <div className="container">
       <h1>ลงทะเบียนSA {props.nisit.level=="ปริญญาตรี"?"(ขอได้ไม่เกิน 10 ชั่วโมง)":"(ขอได้ไม่จำกัดชั่วโมง)"}</h1>
-      <h2>ปี {yearNow != null && yearNow.length != 0 ? yearNow[0].year : "loading..."} เทอม {yearNow != null && yearNow.length != 0 ? yearNow[0].term : "loading..."} ระบบ {syStatus?"เปิด":"ปิด"} </h2>
+      {/* <h2>ระบบ {syStatus?"เปิด":"ปิด"}</h2> */}
+      <h2>ปี {yearNow != null && yearNow.length != 0 ? yearNow[0].year : "loading..."} เทอม {yearNow != null && yearNow.length != 0 ? yearNow[0].term : "loading..."}  </h2>
       <input
         type="text"
         className="form-control mb-3"
@@ -148,6 +149,7 @@ function requestTA(props) {
               {" "}
             </div>
       )}
+      
       <div className="information">
         {Filter(courseList).map((val, key) => {
             return (

@@ -10,7 +10,7 @@ import Date from '../components/DatePickers'
 
 function Redirect({ to }) {
   const router = useRouter();
-  console.log("in useEffect");
+  //console.log("in useEffect");
   useEffect(() => {
     router.push(to);
   }, [to]);
@@ -22,11 +22,12 @@ function Page(props) {
   const router = useRouter();
 
   useEffect(() => {
+
     if(session){
-      console.log("test login", session.user)
+      //console.log("test login", session.user)
      } 
      else{
-       console.log("not session")
+       //console.log("not session")
        signIn()
      }
 
@@ -49,12 +50,11 @@ function Page(props) {
   //     : null;
   // }, [session]);
 
-  console.log("props in index", props, "session is ", session);
+  //console.log("props in index", props, "session is ", session);
   return (
     <>
       {!session && (
         <>
-          {console.log("status case1 ", session)}
           {/* <Redirect to='/nisit'/> */}
           {/* Not signed in <br /> */}
 
@@ -65,7 +65,6 @@ function Page(props) {
       {session && (
         <>
           {/* <Navbar/> */}
-          {console.log("status case2", session)}
           Signed in as {session.user.email} <br />
           <button>
             <Link href="/nisit/registerNisit">To the Register</Link>

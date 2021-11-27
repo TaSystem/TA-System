@@ -8,7 +8,8 @@ import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
-
+import { CSVLink } from 'react-csv';
+import ReactToPrint from 'react-to-print';
 function officerNisitRequest(props) {
   const [courses, setCourses] = useState([]);
   const [success, setSuccess] = useState(null);
@@ -18,13 +19,44 @@ function officerNisitRequest(props) {
   const [session, loading] = useSession();
   const [search, setSearch] = useState(null);
   const [major, setMajor] = useState("All");
+  const [yearNow, setYearNow] = useState([]);
+  const [error,setError] = useState(null);
+  const [load, setLoad] = useState(false);
+  const [data,setData] = useState([]);
+
+  const header = [ { label: 'รหัสวิชา', key: 'รหัสวิชา' },
+  { label: 'ชื่อวิชา', key: 'ชื่อวิชา' },
+  { label: 'ชื่อ-สกุล อาจารย์ผู้สอน', key: 'ชื่อ-สกุล อาจารย์ผู้สอน' },
+  { label: 'วัน ปฎิบัติงาน', key: 'วัน ปฎิบัติงาน' },
+  { label: 'เวลา ปฎิบัติงาน', key: 'เวลา ปฎิบัติงาน' },
+  { label: 'จำนวนนิสิตลงทะเบียน(คน)', key: 'จำนวนนิสิตลงทะเบียน(คน)' },
+  { label: 'จำนวนนิสิตช่วยงาน(คน)', key: 'จำนวนนิสิตช่วยงาน(คน)' },
+  {
+    label: 'จำนวนชั่วโมงการทำงาน(ชั่วโมง/คน/สัปดาห์)',
+    key: 'จำนวนชั่วโมงการทำงาน(ชั่วโมง/คน/สัปดาห์)',
+  },
+  { label: 'อัตราจ้างต่อชั่วโมง(บาท)', key: 'อัตราจ้างต่อชั่วโมง(บาท)' },
+  { label: 'รวม15ครั้งเป็นเงิน(บาท)', key: 'รวม15ครั้งเป็นเงิน(บาท)' },
+  { label: 'รหัสนิสิต', key: 'รหัสนิสิต' },
+  { label: 'ชื่อ-สกุลนิสิต', key: 'ชื่อ-สกุลนิสิต' },
+  { label: 'ธนาคาร', key: 'ธนาคาร' },
+  { label: 'เลขบัญชี', key: 'เลขบัญชี' },
+  { label: 'สาขา', key: 'สาขา' },
+  { label: 'เบอร์โทรศัพท์', key: 'เบอร์โทรศัพท์' },]
   
 
   useEffect(() => {
     async function getCourses() {
+      setLoad(true);
       const response = await Axios.get(`/courses/student-reply/2`);
       setCourses(response.data);  
+      setLoad(false);
     }
+    async function getYear() {
+      const response = await Axios.get("/setdate/getNow");
+      setYearNow(response.data);
+    }
+    getYear();
     getCourses();
   }, []);
 
@@ -96,12 +128,15 @@ function officerNisitRequest(props) {
       name_email:val.name_email,
       name:val.name,
       lastname:val.lastname,
+      idStudent: val.idStudent,
       lvl:val.lvl,
       department:val.department,
       roleTitle:val.roleTitle,
       tel:val.tel,
       nameBank:val.nameBank,
-      idBank:val.idBank
+      idBank:val.idBank,
+      fileCardStudent:val.fileCardStudent,
+      fileBookBank:val.fileBookBank
     });
   }
 
@@ -130,31 +165,57 @@ function officerNisitRequest(props) {
     else if(l==6) return "SR"+id;
 }
 
-  const replyTAsuccess = async (AID) => {
-    await Axios.put("/reply/student-reply", {
-      email:session.user.email,
-      studentapplyID: AID,
-      status: 3,
-    }).then((res) => {
-      setCourses(res.data);
-    });
-  };
+const replyTAsuccess = async (AID,CID,hrperweek,lvl) => {
+  setError(null);
+  setSuccess(null);
+  //console.log("AID: ",AID);
+  await Axios.put("/reply/student-reply", {
+    email:session.user.email,
+    studentapplyID: AID,
+    status: 3,
+    courseID:CID,
+    hrperweek:hrperweek,
+    lvl:lvl
+  }).then((response) => {
+    if(response.data.check==0){
+      setError(response.data.message);
+    }else{
+      setSuccess(response.data.message);
+      setCourses(
+        courses.filter((val) => {
+          return val.AID !== AID;
+        })
+      );
+    }
+  });
+};
 
-  const replyTAfail = async (AID) => {
+const replyTAfail = async (AID,CID,title) => {
+  let notereply = prompt("เหตุผลที่ยกนิสิต " + title);
+  if (notereply != null) {
     await Axios.put("/reply/student-reply", {
-      userID: userID,
+      email: session.user.email,
       studentapplyID: AID,
       status: 0,
-    }).then((res) => {
-      console.log(res.data);
-      setCourses(res.data);
+      courseID:CID,
+      notereply:notereply
+    }).then((response) => {
+      setSuccess(response.data.message);
+      setCourses(
+        courses.filter((val) => {
+          return val.AID !== AID;
+        })
+      );
     });
-  };
+  } else {
+      console.log("")
+  }
+};
 
   if (typeof window !== "undefined" && loading) return null;
 
   if (!session) {
-    console.log("in that case");
+    //console.log("in that case");
     return (
       <div>
         <h2>You aren't signed in, please sign in first</h2>
@@ -166,45 +227,80 @@ function officerNisitRequest(props) {
     <div className="container">
       <h1>รายชื่อนิสิตที่ยื่นขอ(เจ้าหน้าที่)</h1>
       <div className="information">
+      <h3>
+      ปี{" "}
+        {yearNow != null && yearNow.length != 0
+          ? yearNow[0].year
+          : "loading..."}{" "}
+        เทอม{" "}
+        {yearNow != null && yearNow.length != 0
+          ? yearNow[0].term
+          : "loading..."}
+      </h3>
       <div className="input-group mb-3">
+        {/* {console.log('eiei')} */}
       <input
           type="text"
           className="form-control"
           placeholder="รหัสวิชา/ชื่อวิชา/อาจารย์"
           onChange={(e) => setSearch(e.target.value)}
         />
-        <SelectMajor onChange={(e) => {
+        <SelectMajor onChange={ async(e) => {
             setMajor(e.target.value);
+            //console.log('major = ',e.target.value)
+            const response = await Axios.get(`/document/getCSVApprove/${e.target.value}`);
+            //console.log('data = ',response.data)
+            setData(response.data)
           }}/>
       </div>
-      <button type="submit" className="btn btn-success">
+      {/* <button type="submit" className="btn btn-success">
           พิมพ์เอกสารอนุมัติหลักการ
-        </button>
-        <p style={{color:"red"}} > 
+        </button> */}
+        {/* {console.log('courses = ',courses)} */}
+        {/* {console.log('Filter courses = ',Filter(courses))} */}
+        {(major !=='All') ? (   <ReactToPrint
+        trigger={() => <button type="submit" className="btn btn-danger">
+        ดาวโหลดเอกสารอนุมัติหลักการ(PDF)
+      </button>}
+        content={() => componentRef.current}
+      />):(<button className="btn btn-danger"  onClick = {()=>{alert('กรุณาเลือกสาขา')}}>ดาวโหลดข้อมูลเอกสารอนุมัติหลักการ(PDF) </button>)}
+  { (major !=='All') ? (  <CSVLink filename = {'เอกสารอนุมัติค่าใช้จ่าย.csv'} headers = {header} data ={data} disabled onClick = {()=>{console.log('')}} className="btn btn-success">ดาวโหลดข้อมูลเอกสารอนุมัติหลักการ(EXCEL) </CSVLink>):(<button className="btn btn-success" style={{margin:"0 50px"}} onClick = {()=>{alert('กรุณาเลือกสาขา')}}>ดาวโหลดข้อมูลเอกสารอนุมัติหลักการ(EXCEL) </button>)}
+
+
+
+
+        <samll style={{color:"red"}} ><br/>
         * 1.ยกเลิกคำขอของนิสิตที่ไม่ผ่านการเป็น SA ก่อน
           2.พิมพ์เอกสารตามภาควิชานั้นๆโดยการเลือก
           3.หลังพิมเอกสารยืนยันคำร้องนิสิตคนนั้นจะเป็น SA 
-        </p>
+        </samll>
       {success && (
             <div className="alert alert-success" role="alert">
               {" "}
               {success}{" "}
             </div>
       )}
+      {error && (
+            <div className="alert alert-danger" role="alert">
+              {" "}
+              {error}
+              {" "}
+            </div>
+      )}
       
-       จำนวนคำร้อง:{courses != null && courses.length != 0 ? courses.length : 0}
-        <table className="table table-bordered">
-          <thead>
+       <p for="table" style={{marginTop:"10px"}}>จำนวนคำร้อง:{courses != null && courses.length != 0 ? courses.length : 0}</p>
+        <table id="table"className="table table-hover table-bordered" cellspacing="0" style={{textAlign:"center"}}>
+          <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
             <tr>
               <th rowSpan="2">ลำดับ</th>
-              <th rowSpan="2">รหัสคำขอ</th>
+              <th rowSpan="2" class="text-nowrap">รหัสคำขอ</th>
               <th rowSpan="2">รหัสวิชา</th>
               <th rowSpan="2">ชื่อวิชา</th>
               <th colSpan="2">หมู่เรียน</th>
               <th rowSpan="2">สาขาวิชา</th>
               <th rowSpan="2">อาจารย์</th>
-              <th rowSpan="2">อาจารย์เจ้าของวิชา</th>
-              <th rowSpan="2">ชื่อผู้ยื่น</th>
+              <th rowSpan="2" class="text-nowrap">อาจารย์เจ้าของวิชา</th>
+              <th rowSpan="2" class="text-nowrap">ชื่อผู้ยื่น</th>
               <th rowSpan="2">เหตุผล</th>
               <th rowSpan="2">ตอบกลับคำร้อง</th>
             </tr>
@@ -217,7 +313,7 @@ function officerNisitRequest(props) {
             {Filter(courses).map((val, key) => {
               return (
                 <tr>
-                  <td>{key + 1}</td>
+                  <td>{key+1}</td>
                   <td>{NisitapplyID(val.AID)}</td>
                   <td>
                   <Link href="#">
@@ -233,7 +329,7 @@ function officerNisitRequest(props) {
                   <td>{val.major}</td>
                   <td>{val.teacher}</td>
                   <td> 
-                  <td>
+                  <td class="text-nowrap">
                     <Link href="#">
                       <a  data-bs-toggle="modal" data-bs-target="#ModalDetailTeacher"  onClick={() => showModalCourseOwner(val.CID)}>
                         {val.ownerName} {val.ownerLastname}
@@ -242,21 +338,21 @@ function officerNisitRequest(props) {
                     
                   </td>
                   </td>
-                  <td>
-                  <Link href="#">
+                  <td class="text-nowrap">
+                  <Link href="#" >
                       <a  data-bs-toggle="modal" data-bs-target="#ModalDetailNisit"  onClick={()=>showModalNisit(val)}>
                         {val.name} {val.lastname}
                       </a>
                     </Link>
                   </td>
-                  <td>{val.noteapply}</td>
-                  <td>
+                  <td class="text-nowrap">{val.noteapply}</td>
+                  <td class="text-nowrap">
                     <button
                       type="button"
                       class="btn btn-success"
                       key={key}
-                      onClick={() => {if (window.confirm('ต้องการยืนยันวิชา: '+val.title))replyTAsuccess(val.AID)}}
-                      
+                      onClick={() => {if (window.confirm('ต้องการยืนยันวิชา: '+val.title))replyTAsuccess(val.AID,val.CID,val.hrperweek,val.lvl)}}
+                      style={{width:"70px"}}
                     >
                       ยืนยัน
                     </button>
@@ -264,7 +360,10 @@ function officerNisitRequest(props) {
                       type="button"
                       class="btn btn-danger"
                       key={key}
-                      onClick={() => {if (window.confirm('ต้องการยืนยันวิชา: '+val.title))replyTAfail(val.userID,val.id)} }
+                      onClick={() => {
+                        replyTAfail(val.AID,val.CID,val.name);
+                      }}
+                      style={{width:"70px",margin:"0 0 0 10px"}}
                       
                     >
                       ยกเลิก
@@ -274,10 +373,12 @@ function officerNisitRequest(props) {
                 </tr>
               );
             })}
+            {load  && <h2 style={{color:"red"}}>กำลังโหลด...</h2>}
+            {!load && courses && !courses.length && <h2 style={{color:"red"}}>ไม่มีคำร้อง</h2>}
           </tbody>
         </table>
         <ModalCourse val={courseValue} />
-        <ModalDetailNisit val={nisitValue}  />
+        <ModalDetailNisit val={nisitValue} role={props.nisit.roleID} />
         <ModalDetailTeacher val={owner} />
         
       </div>
