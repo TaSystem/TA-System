@@ -15,6 +15,8 @@ function DeputyDeanRequest(props) {
   const [session, loading] = useSession();
   const [teacherValue,setTeacherValue] = useState([]);
   const [success, setSuccess] = useState(null);
+  const [yearNow, setYearNow] = useState([]);
+  const [load, setLoad] = useState(false);
 
   useEffect(() => {
     if (session) {
@@ -25,9 +27,16 @@ function DeputyDeanRequest(props) {
   
   useEffect(() => {
     async function getCourses() {
+      setLoad(true);
       const response = await Axios.get(`/courses/teacher-reply/${3}`);
       setCourseList(response.data);
+      setLoad(false);
     }
+    async function getYear() {
+      const response = await Axios.get("/setdate/getNow");
+      setYearNow(response.data);
+    }
+    getYear();
     getCourses();
   }, []);
 
@@ -65,7 +74,7 @@ function DeputyDeanRequest(props) {
       });
     }
     else{
-      console.log("cancle")
+      console.log("")
     }
   }
 
@@ -130,6 +139,16 @@ const showModalTeacher =  (val) =>{
   return (
     <div className="container">
       <h1>รายวิชาที่ยื่นขอเปิดรับ TA (รองคณบดี)</h1>
+      <h3>
+      ปี{" "}
+        {yearNow != null && yearNow.length != 0
+          ? yearNow[0].year
+          : "loading..."}{" "}
+        เทอม{" "}
+        {yearNow != null && yearNow.length != 0
+          ? yearNow[0].term
+          : "loading..."}
+      </h3>
       <div className="input-group mb-3">
         <input
           type="text"
@@ -141,15 +160,16 @@ const showModalTeacher =  (val) =>{
             setMajor(e.target.value);
           }}/>
       </div>
-      <div className="information">
       {success && (
             <div className="alert alert-success" role="alert">
               {" "}
               {success}{" "}
             </div>
       )}
-        <table className="table table-bordered">
-          <thead>
+      จำนวนคำร้อง: {courseList != null && courseList.length != 0 ? courseList.length : 0}
+      <div className="table-responsive" style={{maxHeight:"70vh",maxWidth:"80vw",marginTop:"1vh"}}>
+        <table className="table table-hover table-bordered" cellspacing="0" style={{textAlign:"center"}}>
+          <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
             <tr>
               <th rowSpan="2">ลำดับ</th>
               <th rowSpan="2">รหัสคำขอ</th>
@@ -213,6 +233,8 @@ const showModalTeacher =  (val) =>{
                 </tr>
               );
             })}
+             {load  && <h2 style={{color:"red"}}>กำลังโหลด...</h2>}
+            {!load && courseList && !courseList.length && <h2 style={{color:"red"}}>ไม่มีคำร้อง</h2>}
           </tbody>
         </table>
         <ModalDetailTeacher val={teacherValue}  />

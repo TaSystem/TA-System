@@ -17,13 +17,21 @@ function officerSASuccess(props) {
   const [session, loading] = useSession();
   const [search, setSearch] = useState(null);
   const [major, setMajor] = useState("All");
+  const [yearNow, setYearNow] = useState([]);
+  const [load, setLoad] = useState(false);
 
   useEffect(() => {
     async function getUsers() {
+      setLoad(true);
       const response = await Axios.get(`/users/users-SA`);
       setUsers(response.data);
-      console.log(response.data);
+      setLoad(false);
     }
+    async function getYear() {
+      const response = await Axios.get("/setdate/getNow");
+      setYearNow(response.data);
+    }
+    getYear();
     
     getUsers();
   }, []);
@@ -74,7 +82,9 @@ function officerSASuccess(props) {
       {
         name:val.name,
         lastname:val.lastname,
-        workHour:val.sumHour
+        workHour:val.sumHour,
+        year:val.year,
+        term:val.term
       });
   };
 
@@ -92,13 +102,15 @@ function officerSASuccess(props) {
       tel: val.tel,
       nameBank: val.nameBank,
       idBank: val.idBank,
+      fileCardStudent:val.fileCardStudent,
+      fileBookBank:val.fileBookBank
     });
   };
 
   if (typeof window !== "undefined" && loading) return null;
 
   if (!session) {
-    console.log("in that case");
+    //console.log("in that case");
     return (
       <div>
         <h2>You aren't signed in, please sign in first</h2>
@@ -111,6 +123,16 @@ function officerSASuccess(props) {
       <h1>นิสิตSA(เจ้าหน้าที่)</h1>
       
       <div className="information">
+      <h3>
+      ปี{" "}
+        {yearNow != null && yearNow.length != 0
+          ? yearNow[0].year
+          : "loading..."}{" "}
+        เทอม{" "}
+        {yearNow != null && yearNow.length != 0
+          ? yearNow[0].term
+          : "loading..."}
+      </h3>
         <div className="input-group mb-3">
           <input
             type="text"
@@ -125,8 +147,8 @@ function officerSASuccess(props) {
           />
         </div>
         จำนวนนิสิต:{users != null && users.length != 0 ? users.length : 0}
-        <table className="table table-bordered">
-          <thead>
+        <table className="table table-hover table-bordered" cellspacing="0" style={{textAlign:"center"}}>
+          <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
             <tr>
               <th rowSpan="2">ลำดับ</th>
               <th rowSpan="2">ชื่อ-สกุล</th>
@@ -179,11 +201,14 @@ function officerSASuccess(props) {
                 </tr>
               );
             })}
+            {load  && <h2 style={{color:"red"}}>กำลังโหลด...</h2>}
+            {!load && users && !users.length && <h2 style={{color:"red"}}>ไม่มีนิสิตSA</h2>}
+            
           </tbody>
         </table>
         
         <ModalCoursesSA courses={courses} user={nameModal} />
-        <ModalDetailNisit val={nisitValue} />
+        <ModalDetailNisit val={nisitValue} role={props.nisit.roleID} />
       </div>
     </div>
   );

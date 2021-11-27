@@ -31,6 +31,13 @@ const options = {
         return false;
       }
     },
+    // redirect({ url, baseUrl   }) {
+    //   console.log("redirect ",url ,baseUrl)
+    //   if (url.startsWith(baseUrl)) return console.log("fff ",url)
+    //   // Allows relative callback URLs
+    //   else if (url.startsWith("/signin")) return new URL(url, baseUrl).toString()
+    //   return console.log("fffs ",baseUrl)
+    // }
   },
   pages: {
     signIn: "/signin",

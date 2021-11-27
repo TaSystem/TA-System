@@ -1,16 +1,17 @@
-import Axios from "../../config/Axios";
+import Axios from "../../../config/Axios";
 import React, { useState, useEffect } from "react";
-import SelectMajor from "../../components/SelectMajor";
-import ModalCourse from "../../components/ModalCourse";
-import ModalDetailTeacher from "../../components/ModalDetailTeacher";
-import ModalHistoryReply from "../../components/ModalHistoryReply";
-import ModalCourseNisitSA from "../../components/ModalCourseNisitSA";
+import SelectMajor from "../../../components/SelectMajor";
+import ModalCourse from "../../../components/ModalCourse";
+import ModalDetailTeacher from "../../../components/ModalDetailTeacher";
+import ModalHistoryReply from "../../../components/ModalHistoryReply";
+import ModalCourseNisitSA from "../../../components/ModalCourseNisitSA";
 import Link from "next/link";
 import { useSession } from "next-auth/client";
 import { connect } from "react-redux";
-import { getDetailNisit } from "../../redux/actions/nisitAction";
+import { getDetailNisit } from "../../../redux/actions/nisitAction";
+import { useRouter } from "next/router";
 
-function officerCourseSuccess(props) {
+function provostCourseSuccess(props) {
   const [courseList, setCourseList] = useState([]);
   const [users, setUsers] = useState([]);
   const [course, setCourse] = useState([]);
@@ -23,26 +24,28 @@ function officerCourseSuccess(props) {
   const [yearNow, setYearNow] = useState([]);
   const [load, setLoad] = useState(false);
   const [session, loading] = useSession();
+  const router = useRouter();
 
-  useEffect(() => {
-    async function getCourses() {
-      setLoad(true);
-      const response = await Axios.get(`/courses/teacher-reply/${5}`);
-      setCourseList(response.data);
-      //console.log("resposne: ", response.data);
-      setLoad(false);
-    }
-    async function getYear() {
-      const response = await Axios.get("/setdate/getNow");
-      setYearNow(response.data);
-    }
-    getYear();
-    getCourses();
-  }, []);
 
   useEffect(() => {
     if (session) {
       props.getDetailNisit(session.user.email);
+      async function getCourses() {
+        setLoad(true);
+        const response = await Axios.post(`/courses/course-success`, {
+          role: props.nisit.roleID,
+          email: props.nisit.email,
+        });
+        setCourseList(response.data);
+        // console.log("resposne: ", response.data);
+        setLoad(false);
+      }
+      async function getYear() {
+        const response = await Axios.get("/setdate/getNow");
+        setYearNow(response.data);
+      }
+      getYear();
+      getCourses();
     }
   }, [loading]);
 
@@ -141,11 +144,15 @@ function officerCourseSuccess(props) {
     });
   };
 
-  //จำนวนที่ลงใส่หน้านี้
+  const addHourWorks = (id) => {
+    return router.push(`/provost/provostCourseSuccess/${id}`);
+  };
+
+  
 
   return (
     <div className="container">
-      <h1>รายวิชาที่เปิดรับ SA ได้(เจ้าหน้าที่)</h1>
+      <h1>รายวิชาที่เปิดรับ SA ได้</h1>
       <h3>
         ปี{" "}
         {yearNow != null && yearNow.length != 0
@@ -163,18 +170,18 @@ function officerCourseSuccess(props) {
           placeholder="รหัสวิชา/ชื่อวิชา/อาจารย์"
           onChange={(e) => setSearch(e.target.value)}
         />
-        <SelectMajor
+        {props.nisit.roleID==1&&<SelectMajor
           onChange={(e) => {
             setMajor(e.target.value);
           }}
-        />
+        />}
       </div>
       รายวิชาทั้งหมด:{" "}
       {courseList != null && courseList.length != 0 ? courseList.length : 0}{" "}
       วิชา
       <div
         className="table-responsive"
-        style={{ maxHeight: "70vh", maxWidth: "80vw", marginTop: "1vh" }}
+        style={{ maxHeight: "65vh", maxWidth: "80vw", marginTop: "1vh" }}
       >
         <table
           className="table table-hover table-bordered"
@@ -277,16 +284,14 @@ function officerCourseSuccess(props) {
                     </Link>
                   </td>
                   <td>
-                        <button
-                          type="button"
-                          className="btn btn-primary text-nowrap"
-                          data-bs-toggle="modal"
-                          data-bs-target="#exampleModal"
-                          // onClick={() => setValue(val)}
-                        >
-                          เวลาปฎิบัติงาน
-                        </button>
-                      </td>
+                    <button
+                      type="button"
+                      className="btn btn-primary text-nowrap"
+                      onClick={() => addHourWorks(val.AID)}
+                    >
+                      เวลาปฎิบัติงาน
+                    </button>
+                  </td>
                 </tr>
               );
             })}
@@ -315,4 +320,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(officerCourseSuccess);
+)(provostCourseSuccess);

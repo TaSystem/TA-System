@@ -9,7 +9,7 @@ export default function SelectMajor(props) {
     <>
       <select
         name="major"
-        className="form-contro"
+        className="form-select"
         onChange={props.onChange}
       >
         <option defaultValue="All" disabled selected hidden>

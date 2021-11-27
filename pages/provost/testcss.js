@@ -2,9 +2,18 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
 import { useSession } from "next-auth/client";
+import ApplicationNisitSA from '../../components/form/ApplicationNisitSA'
 
 function testcss(props) {
-
+  const data = {
+    name: "ปิยวงศ์ มหัทธนสวัสดิ์",
+    nisitId: "6130300557",
+    major: "วิศวกรรมคอมพิวเตอร์และสารสนเทศ",
+    year: "2564",
+    tel: "0889325235",
+    bank: "กรุงไทย",
+    accountNumber: "2442472028"
+  };
     const [session, loading] = useSession();
     useEffect(() => {
       if (session) {
@@ -12,19 +21,15 @@ function testcss(props) {
       }
   
     }, [loading]);
-
+    
     
     return (
-        <div style={{justifyContent:'center',display:'flex',flexDirection:'column'}}>
-            <div style={{flex:'1',backgroundColor:'red'}}>
-                a
-            </div>
-            <div style={{flex:'2',backgroundColor:'blue'}}>
-                b
-            </div>
-            <div style={{flex:'3',backgroundColor:'black'}}>
-                c
-            </div>
+        <div style={{display:'flex'}}>
+
+          <ApplicationNisitSA {...data}/>
+
+
+          
         </div>
     )
 }

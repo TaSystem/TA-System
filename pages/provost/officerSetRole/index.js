@@ -8,12 +8,15 @@ import { getDetailNisit } from "../../../redux/actions/nisitAction";
 function officerSetRole(props) {
   const [userList, setUserList] = useState([]);
   const [roles, setRoles] = useState([]);
-  const [email,setEmail] = useState(null);
+  const [email, setEmail] = useState(null);
   const [name, setName] = useState(null);
   const [lastname, setLastname] = useState(null);
   const [department, setDepartment] = useState(null);
   const [tel, setTel] = useState(null);
   const [roleID, setRoleID] = useState(null);
+  const [search, setSearch] = useState(null);
+  const [err, setErr] = useState(null);
+  const [success, setSuccess] = useState(null);
   const router = useRouter();
   const [session, loading] = useSession();
 
@@ -36,32 +39,104 @@ function officerSetRole(props) {
     }
   }, [loading]);
 
+  function Filter(userList) {
+    return userList?.filter((user) => {
+      if (!search) {
+        return user;
+      } else if (user.name?.toLowerCase().includes(search.toLowerCase())) {
+        return user;
+      } else if (user.lastname?.toLowerCase().includes(search.toLowerCase())) {
+        return user;
+      } else if (user.email?.toLowerCase().includes(search.toLowerCase())) {
+        return user;
+      } else if (
+        user.department?.toLowerCase().includes(search.toLowerCase())
+      ) {
+        return user;
+      }
+    });
+  }
+
   const edit = (id) => {
     return router.push(`/provost/officerSetRole/${id}`);
   };
 
+  const del = async (email) => {
+    setErr(null);
+    setSuccess(null);
+    await Axios.delete(`/users/delete/${email}`).then((response) => {
+      setSuccess(response.data);
+      setUserList(
+        userList.filter((val) => {
+          return val.email !== email;
+        })
+      );
+    });
+  };
+
   const setRole = async () => {
-    console.log (email)
+    // console.log(email);
     await Axios.post("/users/set-role", {
       email: email,
       name: name,
       lastname: lastname,
       department: department,
-      tel :tel,
-      roleID:roleID
-    })
+      tel: tel,
+      roleID: roleID,
+    }).then((res) => {
+        setSuccess(res.data.message);
+        setUserList(res.data.data);
+      
+    });
   };
+
+  // console.log("in INdex is ", session);
 
   return (
     <div className="container">
       <h2>บุคลากร</h2>
-      <div className="table-responsive">
-        <table className="table table-bordered">
-          <thead>
+      <input
+        type="text"
+        className="form-control mb-3"
+        placeholder="ชื่อ-นามสกุล/อีเมลล์/ตำแหน่ง/สาขา"
+        onChange={(e) => setSearch(e.target.value)}
+      />
+      จำนวนบุคลากร:{" "}
+      {userList != null && userList.length != 0 ? userList.length : 0} คน
+      {success && (
+        <div className="alert alert-success" role="alert">
+          {" "}
+          {success}{" "}
+        </div>
+      )}
+      {err && (
+            <div className="alert alert-danger" role="alert">
+              {" "}
+              {err}
+              {" "}
+            </div>
+      )}
+      <div
+        className="table-responsive"
+        style={{ maxHeight: "70vh", maxWidth: "80vw", marginTop: "1vh" }}
+      >
+        <table
+          className="table table-hover table-bordered"
+          cellspacing="0"
+          style={{ textAlign: "center" }}
+        >
+          <thead
+            style={{
+              position: "sticky",
+              top: 0,
+              background: "#7a0117",
+              color: "#fff",
+              fontWeight: "400",
+            }}
+          >
             <tr>
               <th rowSpan="2">ลำดับ</th>
               <th rowSpan="2">อีเมลล์</th>
-              <th rowSpan="2">ชื่ออีเมลล์</th>
               <th rowSpan="2">ชื่อ-สกุล</th>
               <th rowSpan="2">ภาควิชา</th>
               <th rowSpan="2">เบอร์โทรศัพท์</th>
@@ -70,27 +145,35 @@ function officerSetRole(props) {
             </tr>
           </thead>
           <tbody>
-            {userList.map((val, key) => {
+            {Filter(userList).map((val, key) => {
               return (
                 <tr key={key}>
                   <td>{key + 1}</td>
                   <td>{val.email}</td>
-                  <td>{val.name_email}</td>
-                  <td>
+
+                  <td class="text-nowrap">
                     {val.name} {val.lastname}
                   </td>
-                  <td>{val.department}</td>
+                  <td class="text-nowrap">{val.department}</td>
                   <td>{val.tel}</td>
                   <td>{val.title}</td>
-                  <td>
+                  <td class="text-nowrap">
                     <button
                       type="button"
                       className="btn btn-primary"
                       onClick={() => edit(val.UID)}
+                      style={{ marginRight: "10px" }}
                     >
                       แก้ไข
                     </button>
-                    <button type="button" className="btn btn-danger">
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      onClick={() => {
+                        if (window.confirm("ยืนยันการลบบุคลากร"))
+                          del(val.email);
+                      }}
+                    >
                       ลบ
                     </button>
                   </td>
@@ -109,7 +192,7 @@ function officerSetRole(props) {
                   }}
                 />
               </td>
-              <td></td>
+
               <td>
                 <div class="input-group">
                   <input
@@ -131,9 +214,13 @@ function officerSetRole(props) {
                 </div>
               </td>
               <td>
-                <select class="form-select" name="departmentSelect" onChange={(e) => {
+                <select
+                  class="form-select"
+                  name="departmentSelect"
+                  onChange={(e) => {
                     setDepartment(e.target.value);
-                  }}>
+                  }}
+                >
                   <option value={null} disabled selected hidden>
                     เลือกสาขาวิชา
                   </option>
@@ -182,12 +269,7 @@ function officerSetRole(props) {
                     setRoleID(e.target.value);
                   }}
                 >
-                  <option
-                    value={null}
-                    disabled
-                    selected
-                    hidden
-                  >
+                  <option value={null} disabled selected hidden>
                     เลือกตำแหน่ง
                   </option>
 
@@ -197,16 +279,17 @@ function officerSetRole(props) {
                 </select>
               </td>
               <td>
-                <button type="button" className="btn btn-success" onClick={setRole}>
+                <button
+                  type="button"
+                  className="btn btn-success"
+                  onClick={setRole}
+                >
                   เพิ่ม
                 </button>
               </td>
             </tr>
           </tbody>
         </table>
-        <button type="button" className="btn btn-success">
-          เพิ่มบุลลากร
-        </button>
       </div>
     </div>
   );

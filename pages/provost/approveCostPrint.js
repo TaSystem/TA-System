@@ -39,7 +39,7 @@ const header = [
 
   const renderBody = () => {
     return csv1.map((item) => {
-      console.log('item = ', item);
+      // console.log('item = ', item);
       return (
         <tr>
           {header.map((h) => {

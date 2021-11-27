@@ -3,7 +3,7 @@ import React from "react";
 export default function ModalDetailTeacher(props) {
  
 
-  console.log(props.val)
+  //console.log(props.val)
 
   return (
     <div
@@ -14,9 +14,9 @@ export default function ModalDetailTeacher(props) {
       aria-hidden="true"
       
     >
-      <div className="modal-dialog">
+      <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
-          <div className="modal-header" style={{ backgroundColor: "blue" }}>
+          <div className="modal-header" style={{ backgroundColor: "#7a0117" }}>
             <h5
               className="modal-title"
               id="exampleModalLabel"
@@ -24,13 +24,7 @@ export default function ModalDetailTeacher(props) {
             >
               #ข้อมูลอาจารย์ {props.val.email}
             </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-              style={{ backgroundColor: "red" }}
-            ></button>
+            
           </div>
           <div className="modal-body">
             <p>อีเมลล์:  {props.val.email}    &emsp; ชื่ออีเมลล์: {props.val.name_email}</p>
@@ -41,7 +35,7 @@ export default function ModalDetailTeacher(props) {
           <div class="modal-footer">
             <button
               type="button"
-              class="btn btn-secondary"
+              class="btn btn-danger"
               data-bs-dismiss="modal"
             >
               ปิด

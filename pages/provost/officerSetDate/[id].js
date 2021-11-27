@@ -5,11 +5,11 @@ import DatePicker from '../../../components/DatePickers';
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import { red } from "@material-ui/core/colors";
+import { connect } from "react-redux";
+import { getDetailNisit } from "../../../redux/actions/nisitAction"; 
 
-const setDatestop = () => {
+const setDatestop = (props) => {
   
-  
-
   const [dates,setDate] = useState(null);
   const [titleDay, setTitleDay] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
@@ -26,7 +26,7 @@ const setDatestop = () => {
 
 
   useEffect(() => {
-  
+
     async function getDate(){
         const response = await Axios.get(`/setdate/date-study/${id}`);
         const responseSelect = await Axios.get(`/setdate/date-select/${id}`);
@@ -36,6 +36,12 @@ const setDatestop = () => {
     getDate(); 
     
   },[router]);
+
+  useEffect(() => {
+    if (session) {
+      props.getDetailNisit(session.user.email)
+    }
+  }, [loading]);
 
   const setDateStop = async () => {
     if (!titleDay) {
@@ -76,15 +82,15 @@ const setDatestop = () => {
       <h2>ตั้งค่าวันหยุด</h2>
       <h3>ปี:{dateSelect&& dateSelect.length != 0 ?dateSelect[0].year:"loading..."}  เทอม:{dateSelect&& dateSelect.length != 0 ?dateSelect[0].term:"loading..."} </h3>
       <h4>วันที่เปิดเรียน: {dateSelect&& dateSelect.length != 0 ?<Dateformat date={dateSelect[0].openDate}/>:"loading..."} วันที่ปิดเรียน: {dateSelect&& dateSelect.length != 0 ?<Dateformat date={dateSelect[0].closeDate}/>:"loading..."}</h4>
-      <div className="table-responsive">
       {success && (
             <div className="alert alert-success" role="alert">
               {" "}
               {success}{" "}
             </div>
-          )}
-      <table className="table table-bordered">
-          <thead>
+        )}
+      <div className="table-responsive" className="table-responsive" style={{maxHeight:"65vh",marginTop:"1vh"}}>
+      <table className="table table-hover table-borderless" cellspacing="0" style={{textAlign:"center"}} >
+          <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
             <tr>
               <th rowSpan="2">#</th>
               <th rowSpan="2">หยุดเนื่องในวัน</th>
@@ -181,4 +187,13 @@ const setDatestop = () => {
   
   );
 }
-export default setDatestop;
+
+const mapStateToProps = (state) => ({
+  nisit: state.nisit.nisit,
+});
+
+const mapDispatchToProps = {
+  getDetailNisit: getDetailNisit,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(setDatestop);

@@ -19,7 +19,7 @@ export default function ModalTeacher(props) {
               type="button"
               className="btn btn-danger"
               data-bs-dismiss="modal"
-              
+              style={{width:"130px"}}
             >
               ปิด
             </button>
@@ -28,6 +28,7 @@ export default function ModalTeacher(props) {
               className="btn btn-success"
               data-bs-dismiss="modal"
               onClick={() => applyTa()}
+              style={{width:"130px"}}
             >
               ขอนิสิตช่วยงาน
             </button>
@@ -43,6 +44,7 @@ export default function ModalTeacher(props) {
               type="button"
               className="btn btn-danger"
               data-bs-dismiss="modal"
+              style={{width:"130px"}}
             >
               ปิด
             </button>
@@ -68,9 +70,9 @@ export default function ModalTeacher(props) {
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div className="modal-dialog">
+      <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
-          <div className="modal-header" style={{ backgroundColor: "blue" }}>
+          <div className="modal-header" style={{ backgroundColor: "#7a0117" }}>
             <h5
               className="modal-title"
               id="exampleModalLabel"
@@ -78,13 +80,6 @@ export default function ModalTeacher(props) {
             >
               #ข้อมูลรายวิชา
             </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-              style={{ backgroundColor: "red" }}
-            ></button>
           </div>
           <div className="modal-body">
             <p>ชื่อวิชา: {props.val.title}</p>

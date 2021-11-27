@@ -18,8 +18,8 @@ const MyResponsivePie = ({ data /* see data tab */ }) => (
         borderColor={{ from: 'color', modifiers: [ [ 'darker', '0.3' ] ] }}
         arcLinkLabelsSkipAngle={10}
         arcLinkLabelsTextColor="#000000"
-        arcLinkLabelsDiagonalLength={36}
-        arcLinkLabelsStraightLength={36}
+        arcLinkLabelsDiagonalLength={16}
+        arcLinkLabelsStraightLength={16}
         arcLinkLabelsColor={{ from: 'color' }}
         arcLabelsTextColor={{ from: 'color', modifiers: [ [ 'darker', '9' ] ] }}
         defs={[
@@ -93,29 +93,29 @@ const MyResponsivePie = ({ data /* see data tab */ }) => (
             }
         ]}
         legends={[
-            {
-                anchor: 'bottom',
-                direction: 'row',
-                justify: false,
-                translateX: -30,
-                translateY: 70,
-                itemsSpacing: 45,
-                itemWidth: 50,
-                itemHeight: 10,
-                itemTextColor: '#999',
-                itemDirection: 'left-to-right',
-                itemOpacity: 1,
-                symbolSize: 20,
-                symbolShape: 'circle',
-                effects: [
-                    {
-                        on: 'hover',
-                        style: {
-                            itemTextColor: '#000'
-                        }
-                    }
-                ]
-            }
+            // {
+            //     anchor: 'bottom',
+            //     direction: 'row',
+            //     justify: false,
+            //     translateX: -30,
+            //     translateY: 70,
+            //     itemsSpacing: 45,
+            //     itemWidth: 50,
+            //     itemHeight: 10,
+            //     itemTextColor: '#999',
+            //     itemDirection: 'left-to-right',
+            //     itemOpacity: 1,
+            //     symbolSize: 20,
+            //     symbolShape: 'circle',
+            //     effects: [
+            //         {
+            //             on: 'hover',
+            //             style: {
+            //                 itemTextColor: '#000'
+            //             }
+            //         }
+            //     ]
+            // }
         ]}
     />
 )

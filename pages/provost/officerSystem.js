@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
-
 function officerSystem(props) {
   const [systemTeacher, setSystemTeacher] = useState(null);
   const [systemStudent, setSystemStudent] = useState(null);
@@ -68,11 +67,12 @@ function officerSystem(props) {
   return (
     <div className="container">
       <h2>Systems</h2>
-      <h3>ระบบอาจารย์: {systemTeacher?"เปิด":"ปิด"} ระบบนิสิต: {systemStudent?"เปิด":"ปิด"}</h3>
+      <h3>ระบบอาจารย์: {systemTeacher?"เปิด":"ปิด"}</h3>
       <div class="information">
         <button type="button" class={systemTeacher?"btn btn-danger":"btn btn-success"} onClick={()=>{if (window.confirm(systemTeacher?"ต้องการปิดระบบใช่หรือไม่":"ต้องการเปิดระบบใช่หรือไม่")) handleTeacherSystem()}}>
           {systemTeacher?"ปิดระบบรับสมัครอารจารย์":"เปิดระบบรับสมัครอารจารย์"}
         </button>
+        <h3> ระบบนิสิต: {systemStudent?"เปิด":"ปิด"}</h3>
         <button type="button" class={systemStudent?"btn btn-danger":"btn btn-success"} onClick={()=>{if (window.confirm(systemTeacher?"ต้องการปิดระบบใช่หรือไม่":"ต้องการเปิดระบบใช่หรือไม่")) handleStudentSystem()}}>
           {systemStudent?"ปิดระบบรับสมัครนักเรียน":"เปิดระบบรับสมัครนักเรียน"}
         </button>

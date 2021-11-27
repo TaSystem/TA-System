@@ -18,9 +18,9 @@ export default function ModalCoursesSA(props) {
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div className="modal-dialog" style={{ maxWidth: "70%" }}>
+      <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: "70%" }}>
         <div className="modal-content">
-          <div className="modal-header" style={{ backgroundColor: "blue" }}>
+          <div className="modal-header" style={{ backgroundColor: "#7a0117" }}>
             <h5
               className="modal-title"
               id="exampleModalLabel"
@@ -28,13 +28,7 @@ export default function ModalCoursesSA(props) {
             >
               #รายวิชาที่รับผิดชอบ
             </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-              style={{ backgroundColor: "red" }}
-            ></button>
+            
           </div>
           <div className="modal-body">
             <p>
@@ -43,8 +37,8 @@ export default function ModalCoursesSA(props) {
               
             </p>
             <p>จำนวนนิสิตที่ลงทะเบียนสำเร็จ: {props.users != null && props.users.length != 0 ? props.users.length : 0} คน</p>
-            <table className="table table-bordered">
-              <thead>
+            <table className="table table-bordered table-striped" cellspacing="0" style={{textAlign:"center"}}>
+              <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
                 <tr>
                   <th rowSpan="2">ลำดับ</th>
                   <th rowSpan="2">ชื่อ-สกุล</th>
@@ -76,7 +70,7 @@ export default function ModalCoursesSA(props) {
           <div class="modal-footer">
             <button
               type="button"
-              class="btn btn-secondary"
+              class="btn btn-danger"
               data-bs-dismiss="modal"
             >
               ปิด

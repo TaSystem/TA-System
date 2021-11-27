@@ -19,9 +19,9 @@ export default function ModalCourse(props) {
       aria-hidden="true"
       
     >
-      <div className="modal-dialog">
+      <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
-          <div className="modal-header" style={{ backgroundColor: "blue" }}>
+          <div className="modal-header" style={{ backgroundColor: "#7a0117" }}>
             <h5
               className="modal-title"
               id="exampleModalLabel"
@@ -29,13 +29,7 @@ export default function ModalCourse(props) {
             >
               #ข้อมูลรายวิชา
             </h5>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-              style={{ backgroundColor: "red" }}
-            ></button>
+            
           </div>
           <div className="modal-body">
             <p>ชื่อวิชา: {props.val != null && props.val.length != 0 ? props.val.title : "loading..."}</p>
@@ -61,7 +55,7 @@ export default function ModalCourse(props) {
           <div class="modal-footer">
             <button
               type="button"
-              class="btn btn-secondary"
+              class="btn btn-danger"
               data-bs-dismiss="modal"
             >
               ปิด

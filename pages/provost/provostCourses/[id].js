@@ -2,7 +2,11 @@ import React, { useEffect,useState } from "react";
 import Axios from "../../../config/Axios";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
-const requestTAs = () => {
+import { connect } from "react-redux";
+import { getDetailNisit } from "../../../redux/actions/nisitAction"; 
+
+
+const requestTAs = (props) => {
   
   const [number1,setNumber1] = useState(0);
   const [number2,setNumber2] = useState(0);
@@ -15,30 +19,41 @@ const requestTAs = () => {
   const {id} = router.query;
   const [session, loading] = useSession();
 
+
   useEffect(() => {
-  
     async function getCourse(){
         const response = await Axios.get(`/courses/request/${id}`);
         setCourse(response.data);
-        
     }
     getCourse(); 
-    
   },[router]);
 
-  const applyTA = async () =>{
+  useEffect(() => {
+    if (session) {
+      props.getDetailNisit(session.user.email)
+    }
+
+  }, [loading]);
+
+  const hourTA =(d,p)=>{
+    if(d&&p) return 5
+    else if(d && !p)  return 2
+    else if(p && !d)  return 3
+  }
+
+  const applyTA = async (hr) =>{
     let total = parseInt(number1 ) + parseInt(number2);
-    console.log("total: ",total);
-    console.log("numberTA: ",course[0].numberTA);
+    // console.log("total: ",total);
+    // console.log("numberTA: ",course[0].numberTA);
     setSuccess(null);
     setError(null);
     if(total <= course[0].numberTA){
       await Axios.post("/apply/teacher-apply", {
       email:session.user.email ,
-      
       courseID: id,
       number1:number1,
       number2:number2,
+      hrperweek:hr,
       status: 1,
       noteapply:note
     }).then((res) => {
@@ -109,7 +124,7 @@ const requestTAs = () => {
             <input className="form-control" type="text" placeholder="โน้ต" onChange={(e) => {setNote(e.target.value);}}/>
           </div>
         </div>
-        {course != null && course.length != 0 ? <button  type="button" className="btn btn-success" onClick={applyTA}> ส่งคำร้อง </button>: "loading..."}
+        {course != null && course.length != 0 ? <button  type="button" className="btn btn-success" onClick={applyTA(hourTA(course[0].sec_D,course[0].sec_P))}> ส่งคำร้อง </button>: "loading..."}
         
       </div>
           
@@ -118,4 +133,13 @@ const requestTAs = () => {
     </div>
   );
 }
-export default requestTAs;
+
+const mapStateToProps = (state) => ({
+  nisit: state.nisit.nisit,
+});
+
+const mapDispatchToProps = {
+  getDetailNisit: getDetailNisit,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(requestTAs);

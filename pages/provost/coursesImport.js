@@ -44,13 +44,31 @@ function Courses(props) {
     e.preventDefault(); //prevent the form from submitting
     let formData = new FormData();
     //
-
-    formData.append("major", major);
-    formData.append("year", year);
-    formData.append("term", term);
-    formData.append("filename", selectedFiles[0]);
-    //Clear the error message
-    await Axios.post("/courses/single-upload", formData, {
+    setError(null);
+    if(!major){
+      setError("กรุณาเลือกสาขาวิชา");
+    }
+    else if(!year){
+      setError("กรุณาเลือกปีการศึกษา");
+    }
+    // else if(typeof year != "number"){
+    //   setError("กรุณากรอกปีการศึกษาเป็นตัวเลข");
+    // }
+    else if(year.toString().length !== 4){
+      setError("กรอกปีการศึกษาได้ 4 ตัว");
+    }
+    else if(!term){
+      setError("กรุณาเลือกภาคเรียนการศึกษา");
+    }
+    else if(!selectedFiles[0]){
+      setError("กรุณาอัพโหลดไฟล์");
+    }
+    else{
+      formData.append("major", major);
+      formData.append("year", year);
+      formData.append("term", term);
+      formData.append("filename", selectedFiles[0]);
+      await Axios.post("/courses/single-upload", formData, {
       onUploadProgress: (data) => {
         //Set the progress value to show the progress bar
         setProgress(Math.round((100 * data.loaded) / data.total));
@@ -60,7 +78,7 @@ function Courses(props) {
         return router.push("/provost");
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
         const { code } = error?.response?.data;
         switch (code) {
           case "FILE_MISSING":
@@ -71,13 +89,14 @@ function Courses(props) {
             break;
         }
       });
+    }
   };
 
 
   if (typeof window !== "undefined" && loading) return null;
 
   if (!session) {
-    console.log("in that case");
+    // console.log("in that case");
     return (
       <div>
         <h2>You aren't signed in, please sign in first</h2>
