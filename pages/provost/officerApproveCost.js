@@ -137,12 +137,33 @@ function officerApproveCost(props) {
     }
   }
 
-  const updateNumberReal = async (id) => {
+  const updateNumberReal = async (CID) => {
     await Axios.put("/courses/updateNumber", {
-      id: id,
-      numberReal: numberReal[id],
+      id: CID,
+      numberReal: numberReal[CID],
     }).then((response) => {
-      setCourseList(response.data);
+      setCourseList(
+        courseList.map((val) =>  { 
+          return val.CID === CID?{
+            AID : val.AID,
+            courseID:val.courseID,
+            title:val.title,
+            sec_D:val.sec_D,
+            sec_P:val.sec_P,
+            major:val.major,
+            number_D:val.number_D,
+            number_P:val.number_P,
+            numberReal:numberReal[CID],
+            teacher:val.teacher,
+            name:val.name,
+            lastname:val.lastname,
+            number1:val.number1,
+            number2:val.number2,
+
+          } : val ;
+        })
+      )
+      
     });
   };
 
@@ -151,6 +172,7 @@ function officerApproveCost(props) {
     setHistoryReply(response.data);
     setApplyID(id);
   }
+
   const showModalCourse =  (val) =>{
     setCourseValue({
       CID:val.CID,
@@ -165,13 +187,15 @@ function officerApproveCost(props) {
       end_D:val.end_D,
       end_P:val.end_P,
       number_D:val.number_D,
-      number_D:val.number_P,
+      number_P:val.number_P,
+      numberReal:val.numberReal,
       level:val.level,
       major:val.major,
       teacher:val.teacher
       
     });
   }
+
   const showModalTeacher =  (val) =>{
     setTeacherValue({
       CID:val.CID,
@@ -385,14 +409,14 @@ function officerApproveCost(props) {
         ดาวโหลดสารอนุมัติค่าใช้จ่าย(PDF)
       </button>}
         content={() => componentRef.current}
-      />):(<button className="btn btn-danger"  onClick = {()=>{alert('กรุณาเลือกสาขา')}}>ดาวโหลดข้อมูลเอกสารค่าใช้จ่าย(PDF) </button>)}
+      />):(<button className="btn btn-danger"  disabled onClick = {()=>{alert('กรุณาเลือกสาขา')}}>เลือกสาขาเพื่อดาวโหลดเอกสารค่าใช้จ่าย(PDF) </button>)}
         
         <div style={{ display: 'none' }}>
         <ComponentToPrint ref={componentRef} />
         </div>
         {/* <br/> */}
        
-        { (data?.length >0) ? (  <CSVLink filename = {'เอกสารอนุมัติค่าใช้จ่าย.csv'} headers = {header} data ={data} disabled onClick = {()=>{console.log('')}} className="btn btn-success">ดาวโหลดข้อมูลเอกสารค่าใช้จ่าย(EXCEL) </CSVLink>):(<button className="btn btn-success" style={{margin:"0 50px"}} onClick = {()=>{alert('กรุณาเลือกสาขา')}}>ดาวโหลดข้อมูลเอกสารค่าใช้จ่าย(EXCEL) </button>)}
+        { (data?.length >0) ? (  <CSVLink filename = {'เอกสารอนุมัติค่าใช้จ่าย.csv'} headers = {header} data ={data} disabled onClick = {()=>{console.log('')}} className="btn btn-success">ดาวโหลดข้อมูลเอกสารค่าใช้จ่าย(EXCEL) </CSVLink>):(<button className="btn btn-success" disabled style={{margin:"0 50px"}} onClick = {()=>{alert('กรุณาเลือกสาขา')}}>เลือกสาขาเพื่อดาวโหลดเอกสารค่าใช้จ่าย(EXCEL) </button>)}
       
         
         <p style={{color:"red"}} > *1.ยกเลิกคนที่ไม่ต้องการ 2.ปริ้นเอกสารอนุมัติค่าใช้จ่าย 3.กรอกจำนวนที่ลง 4.กดตรวจสอบ </p>
@@ -411,7 +435,7 @@ function officerApproveCost(props) {
               {error}{" "}
             </div>
         )}
-        จำนวนคำร้อง: {courseList != null && courseList.length != 0 ? courseList.length : 0}
+        จำนวนคำร้อง: {courseList != null && courseList.length != 0 ? Filter(courseList).length : 0}
       <div className="table-responsive" style={{maxHeight:"65vh",maxWidth:"75vw",marginTop:"1vh"}}>
         <table className="table table-hover table-bordered" cellspacing="0" style={{textAlign:"center"}}>
           <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
@@ -420,7 +444,7 @@ function officerApproveCost(props) {
               <th rowSpan="2">รหัสคำขอ</th>
               <th rowSpan="2">รหัสวิชา</th>
               <th rowSpan="2">ชื่อวิชา</th>
-              <th colSpan="2">หมู่เรียน</th>
+              
               <th rowSpan="2">สาขาวิชา</th>
               <th rowSpan="2">จำนวนที่รับ</th>
               <th rowSpan="2">จำนวนที่ลง</th>
@@ -433,8 +457,7 @@ function officerApproveCost(props) {
               <th rowSpan="2">ตอบกลับ</th>
             </tr>
             <tr>
-              <th>บรรยาย</th>
-              <th>ปฎิบัติ</th>
+              
               <th>ป.ตรี</th>
               <th>ป.โท</th>
             </tr>
@@ -459,8 +482,7 @@ function officerApproveCost(props) {
                     </Link>
                   </td>
                   <td>{val.title}</td>
-                  <td>{val.sec_D ? val.sec_D : "-"}</td>
-                  <td>{val.sec_P ? val.sec_P : "-"}</td>
+                  
                   <td>{val.major}</td>
                   <td>{val.number_D ? val.number_D : val.number_P}</td>
                   <td>{val.numberReal ? val.numberReal : "ยังไม่กรอก"}</td>
@@ -470,7 +492,8 @@ function officerApproveCost(props) {
                       className="form-control"
                       type="text"
                       placeholder="จำนวนนิสิต"
-                      value={numberReal[val.CID]}
+                      defaultValue={numberReal[val.CID]}
+                      // defaValue={numberReal[val.CID]}
                       onChange={(e) => {
                         setNumberReal((p) => {
                           let x = p;

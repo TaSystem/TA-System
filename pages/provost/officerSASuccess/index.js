@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from "react";
-import Axios from "../../config/Axios";
-import SelectMajor from "../../components/SelectMajor";
-import ModalCoursesSA from "../../components/ModalCoursesSA";
-import ModalDetailNisit from "../../components/ModalDetailNisit";
+import Axios from "../../../config/Axios";
+import SelectMajor from "../../../components/SelectMajor";
+import ModalCoursesSA from "../../../components/ModalCoursesSA";
+import ModalDetailNisit from "../../../components/ModalDetailNisit";
 import Link from "next/link";
-
 import { signIn, signOut, useSession } from "next-auth/client";
 import { connect } from "react-redux";
-import { getDetailNisit } from "../../redux/actions/nisitAction";
+import { getDetailNisit } from "../../../redux/actions/nisitAction";
+import { useRouter } from "next/router";
 
 function officerSASuccess(props) {
   const [users, setUsers] = useState([]);
-  const [courses,setCourses] = useState([]);
-  const [nameModal,setNameModal] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [nameModal, setNameModal] = useState([]);
   const [nisitValue, setNisitValue] = useState([]);
   const [session, loading] = useSession();
   const [search, setSearch] = useState(null);
   const [major, setMajor] = useState("All");
   const [yearNow, setYearNow] = useState([]);
   const [load, setLoad] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     async function getUsers() {
@@ -32,7 +33,7 @@ function officerSASuccess(props) {
       setYearNow(response.data);
     }
     getYear();
-    
+
     getUsers();
   }, []);
 
@@ -49,9 +50,7 @@ function officerSASuccess(props) {
           return user;
         } else if (user.name.toLowerCase().includes(search.toLowerCase())) {
           return user;
-        } else if (
-          user.lastname.toLowerCase().includes(search.toLowerCase())
-        ) {
+        } else if (user.lastname.toLowerCase().includes(search.toLowerCase())) {
           return user;
         } else if (
           user.idStudent.toLowerCase().includes(search.toLowerCase())
@@ -63,9 +62,7 @@ function officerSASuccess(props) {
           return user;
         } else if (user.name.toLowerCase().includes(search.toLowerCase())) {
           return user;
-        } else if (
-          user.lastname.toLowerCase().includes(search.toLowerCase())
-        ) {
+        } else if (user.lastname.toLowerCase().includes(search.toLowerCase())) {
           return user;
         } else if (
           user.idStudent.toLowerCase().includes(search.toLowerCase())
@@ -78,14 +75,13 @@ function officerSASuccess(props) {
   const showModalCourseSA = async (val) => {
     const response = await Axios.get(`/courses/courses-SA/${val.userID}`);
     setCourses(response.data);
-    setNameModal(
-      {
-        name:val.name,
-        lastname:val.lastname,
-        workHour:val.sumHour,
-        year:val.year,
-        term:val.term
-      });
+    setNameModal({
+      name: val.name,
+      lastname: val.lastname,
+      workHour: val.sumHour,
+      year: val.year,
+      term: val.term,
+    });
   };
 
   const showModalNisit = (val) => {
@@ -93,7 +89,7 @@ function officerSASuccess(props) {
       CID: val.CID,
       email: val.email,
       name_email: val.name_email,
-      name: val.name, 
+      name: val.name,
       lastname: val.lastname,
       idStudent: val.idStudent,
       lvl: val.lvl,
@@ -102,9 +98,13 @@ function officerSASuccess(props) {
       tel: val.tel,
       nameBank: val.nameBank,
       idBank: val.idBank,
-      fileCardStudent:val.fileCardStudent,
-      fileBookBank:val.fileBookBank
+      fileCardStudent: val.fileCardStudent,
+      fileBookBank: val.fileBookBank,
     });
+  };
+
+  const nisitCoursesSA = (id) => {
+    return router.push(`/provost/officerSASuccess/${id}`);
   };
 
   if (typeof window !== "undefined" && loading) return null;
@@ -121,18 +121,18 @@ function officerSASuccess(props) {
   return (
     <div className="container">
       <h1>นิสิตSA(เจ้าหน้าที่)</h1>
-      
+
       <div className="information">
-      <h3>
-      ปี{" "}
-        {yearNow != null && yearNow.length != 0
-          ? yearNow[0].year
-          : "loading..."}{" "}
-        เทอม{" "}
-        {yearNow != null && yearNow.length != 0
-          ? yearNow[0].term
-          : "loading..."}
-      </h3>
+        <h3>
+          ปี{" "}
+          {yearNow != null && yearNow.length != 0
+            ? yearNow[0].year
+            : "loading..."}{" "}
+          เทอม{" "}
+          {yearNow != null && yearNow.length != 0
+            ? yearNow[0].term
+            : "loading..."}
+        </h3>
         <div className="input-group mb-3">
           <input
             type="text"
@@ -146,9 +146,22 @@ function officerSASuccess(props) {
             }}
           />
         </div>
-        จำนวนนิสิต:{users != null && users.length != 0 ? users.length : 0}
-        <table className="table table-hover table-bordered" cellspacing="0" style={{textAlign:"center"}}>
-          <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
+        จำนวนนิสิต:
+        {users != null && users.length != 0 ? Filter(users).length : 0}
+        <table
+          className="table table-hover table-bordered"
+          cellspacing="0"
+          style={{ textAlign: "center" }}
+        >
+          <thead
+            style={{
+              position: "sticky",
+              top: 0,
+              background: "#7a0117",
+              color: "#fff",
+              fontWeight: "400",
+            }}
+          >
             <tr>
               <th rowSpan="2">ลำดับ</th>
               <th rowSpan="2">ชื่อ-สกุล</th>
@@ -157,7 +170,7 @@ function officerSASuccess(props) {
               <th rowSpan="2">สาขาวิชา</th>
               <th rowSpan="2">อีเมลล์</th>
               <th rowSpan="2">เบอร์โทรศัพท์</th>
-              
+
               <th rowSpan="2">จำนวนวิชาที่รับผิดชอบ</th>
             </tr>
           </thead>
@@ -167,7 +180,14 @@ function officerSASuccess(props) {
                 <tr>
                   <td>{key + 1}</td>
                   <td>
-                    {val.name} {val.lastname}
+                    <Link href={`/provost/officerSASuccess/${val.UID}`}>
+                      <a
+                        
+                        
+                      >
+                        {val.name} {val.lastname}
+                      </a>
+                    </Link>
                   </td>
                   <td>
                     <Link href="#">
@@ -179,8 +199,6 @@ function officerSASuccess(props) {
                         {val.idStudent}
                       </a>
                     </Link>
-                    
-                    
                   </td>
                   <td>{val.lvl}</td>
 
@@ -201,12 +219,12 @@ function officerSASuccess(props) {
                 </tr>
               );
             })}
-            {load  && <h2 style={{color:"red"}}>กำลังโหลด...</h2>}
-            {!load && users && !users.length && <h2 style={{color:"red"}}>ไม่มีนิสิตSA</h2>}
-            
+            {load && <h2 style={{ color: "red" }}>กำลังโหลด...</h2>}
+            {!load && users && !users.length && (
+              <h2 style={{ color: "red" }}>ไม่มีนิสิตSA</h2>
+            )}
           </tbody>
         </table>
-        
         <ModalCoursesSA courses={courses} user={nameModal} />
         <ModalDetailNisit val={nisitValue} role={props.nisit.roleID} />
       </div>

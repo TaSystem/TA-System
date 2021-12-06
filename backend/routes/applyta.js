@@ -12,18 +12,16 @@ router.post('/teacher-apply',(req,res)=>{
     let status = req.body.status;
     let noteapply = req.body.noteapply; 
     let id ;
-    console.log(email);
-    let sqlcommand = `INSERT INTO teacherapplyta (userID,courseID,number1,number2,hrperweek,status,noteapply) VALUE (?,?,?,?,?,?) `;
-    // let applyItem = [id,courseID,number1,number2,status,noteapply];
+    
+    let sqlcommand = `INSERT INTO teacherapplyta (userID,courseID,number1,number2,hrperweek,status,noteapply) VALUE (?,?,?,?,?,?,?) `;
+    // let applyItem = [id,courseID,number1,number2,hrperweek,status,noteapply];
 
     db.query("SELECT id FROM users WHERE email= ?",email,(err,result)=>{
         if(err) throw(err)
         else{
-            console.log("result: ",result[0].id)
             id = result[0].id;
-            console.log("id: ",id)
             db.query("SELECT * FROM teacherapplyta WHERE status = 5 AND courseID = ?",courseID,(err,result)=>{
-                console.log("id: ",result)
+                
                 if(err) throw(err)
 
                 else if(!result[0]){
@@ -37,7 +35,7 @@ router.post('/teacher-apply',(req,res)=>{
                                 console.log("กรอกข้อมูลอาจารย์ไม่ครบ !!!");
                             }
                             else{
-                                db.query(sqlcommand,[id,courseID,number1,number2,hrperweek,status,noteapply,id],(err,result)=>{
+                                db.query(sqlcommand,[id,courseID,number1,number2,hrperweek,status,noteapply],(err,result)=>{
                                 if(err) throw(err)
                                 else{
                                     
@@ -76,27 +74,28 @@ router.post('/student-apply',(req,res)=>{
     let applyItem = [userID,courseID,hrperweek,status,noteapply];
     
     let commandCheckHour = `SELECT SUM(A.hrperweek) as sumHour FROM courses AS C,studentapplyta AS A ,users AS U WHERE C.id = A.courseID  AND U.id=A.userID AND  C.year IN (SELECT DISTINCT(year) FROM datestudy  WHERE status = 1) AND C.term IN (SELECT DISTINCT(term) FROM datestudy  WHERE status = 1) AND U.id = ?`;
-
-    db.query(commandCheckHour,userID,(err,result)=>{
+    
+    db.query("SELECT name,lastname,idStudent,level,department,tel,nameBank,idBank,Branch,fileCardStudent,fileBookBank FROM users WHERE id = ?",userID,(err,result)=>{
         if(err) throw(err)
         else{
-            console.log("sumHour: ",result[0].sumHour);
-            console.log("level: ",level)
-            if(result[0].sumHour>=10 && level=="ปริญญาตรี"){
+            
+            if(!result[0].name || !result[0].lastname || !result[0].idStudent || !result[0].level || !result[0].department || !result[0].tel || !result[0].nameBank || !result[0].idBank || !result[0].Branch || !result[0].fileCardStudent || !result[0].fileBookBank){
                 let response = {check:0,
-                                message: level+" ยื่นขอได้ไม่เกิน 10  ชั่วโมง"}
+                    message: "กรอกข้อมูลนิสิตไม่ครบ"}
                 res.send(response);
-                
             }
             else{
 
-                db.query("SELECT name,lastname,idStudent,level,department,tel,nameBank,idBank,Branch,fileCardStudent,fileBookBank FROM users WHERE id = ?",userID,(err,result)=>{
+                db.query(commandCheckHour,userID,(err,result)=>{
                     if(err)throw err
                     else{
-                        if(!result[0].name || !result[0].lastname || !result[0].idStudent || !result[0].level || !result[0].department || !result[0].tel || !result[0].nameBank || !result[0].idBank || !result[0].Branch || !result[0].fileCardStudent || !result[0].fileBookBank){
+                        console.log("sumHour: ",result[0].sumHour);
+                        console.log("level: ",level)
+                        if(result[0].sumHour>10 && level=="ปริญญาตรี"){
                             let response = {check:0,
-                                message: "กรอกข้อมูลนิสิตไม่ครบ"}
+                                            message: level+" ยื่นขอได้ไม่เกิน 10  ชั่วโมง"}
                             res.send(response);
+                            
                         }
                         else{
                             db.query("SELECT courseID FROM `studentapplyta` WHERE userID=? AND courseID = ?",[userID,courseID],(err,result)=>{

@@ -20,7 +20,7 @@ router.get("/:id", (req, res) => {
 router.get("/course/:id", (req, res) => {//รายละเอียดวิชา
     const id = req.params.id;
     db.query(
-      "SELECT * FROM teacherapplyta as TA,courses as C WHERE C.id= TA.courseID AND Ta.id = ?",
+      "SELECT * FROM teacherapplyta as TA,courses as C WHERE C.id= TA.courseID AND TA.id = ?",
       id,
       (err, result) => {
         if (err) throw err;
@@ -32,29 +32,48 @@ router.get("/course/:id", (req, res) => {//รายละเอียดวิ�
   });
 
 router.post("/add", (req, res) => {
-  console.log();
-  let day = req.body.day;
-  let start = req.body.start;
-  let end = req.body.end;
+  
+  let sec_D = req.body.sec_D;
+  let day_D = req.body.day_D;
+  let start_D = req.body.start_D;
+  let end_D = req.body.end_D;
+  let sec_P = req.body.sec_P;
+  let day_P = req.body.day_P;
+  let start_P = req.body.start_P;
+  let end_P = req.body.end_P;
   let hour = req.body.hour;
   let teacherapplytaID = req.body.teacherapplytaID;
+  let sqlcommand,item,checkCount,itemExpenses,sec;
   
 
-  let checkCount = `SELECT COUNT(id) as countID  FROM workinghours WHERE teacherapplytaID = ?`;
-  let itemExpenses = [teacherapplytaID];
+  
 
   let checkHour = `SELECT TA.hrperweek,SUM(WH.hour) as sumHour FROM teacherapplyta as TA,workinghours as WH WHERE  TA.id=WH.teacherapplytaID AND TA.id = ?`;
   let itemHour = [teacherapplytaID];
 
-  let sqlcommand = `INSERT INTO workinghours (day,start,end,hour,teacherapplytaID) VALUES (?,?,?,?,?)`;
-  let item = [day, start, end,hour, teacherapplytaID];
+  if(sec_D){
+    checkCount = `SELECT id FROM workinghours WHERE sec_D = ? AND teacherapplytaID =?`;
+    itemExpenses = [sec_D,teacherapplytaID];
+    sec = sec_D;
+    sqlcommand = `INSERT INTO workinghours (sec_D,day_D,start_D,end_D,hour,teacherapplytaID) VALUES (?,?,?,?,?,?)`;
+    item = [sec_D,day_D, start_D, end_D,hour, teacherapplytaID];
+    console.log("secD");
+  }
+  else{
+    checkCount = `SELECT id FROM workinghours WHERE sec_P = ? AND teacherapplytaID =?`;
+    itemExpenses = [sec_P,teacherapplytaID];
+    sec = sec_P;
+    sqlcommand = `INSERT INTO workinghours (sec_P,day_P,start_P,end_P,hour,teacherapplytaID) VALUES (?,?,?,?,?,?)`;
+    item = [sec_P,day_P, start_P, end_P,hour, teacherapplytaID];
+    console.log("secP");
+  }
 
   db.query(checkCount,itemExpenses, (err, result) => {
     if (err) {
       console.log(err);
-    } else if(result[0].countID>=3){
+    } else if(result[0]){
         let response = {check:0,
-            message: "เพิ่มได้ไม่เกิน 3 วิชา"}
+            message: "มีการเพิ่มหมู่ "+sec+" แล้ว"}
         res.send(response);
     }else {
         db.query(checkHour,itemHour, (err, result) => {

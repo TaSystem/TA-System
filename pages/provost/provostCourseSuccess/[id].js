@@ -3,11 +3,11 @@ import Axios from "../../../config/Axios";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/client";
 import { connect } from "react-redux";
-import { getDetailNisit } from "../../../redux/actions/nisitAction"; 
-
+import { getDetailNisit } from "../../../redux/actions/nisitAction";
 
 const setHourWorks = (props) => {
   const [workingHour, setWorkingHour] = useState(null);
+  const [sec, setSec] = useState(null);
   const [day, setDay] = useState(null);
   const [start, setStart] = useState(null);
   const [end, setEnd] = useState(null);
@@ -17,23 +17,38 @@ const setHourWorks = (props) => {
   const router = useRouter();
   const { id } = router.query;
   const [session, loading] = useSession();
+  const [selectSecs, setSelectSecs] = useState([]);
+  const [dayArray, setDayArray] = useState([]);
+  const [startArray, setStartArray] = useState([]);
+  const [endArray, setEndArray] = useState([]);
 
   useEffect(() => {
     async function getWorkingHour() {
       const response = await Axios.get(`/workinghours/${id}`);
       setWorkingHour(response.data);
     }
+    async function getSecs() {
+      const response = await Axios.get(`/courses/sec/${id}`);
+      setSelectSecs(response.data);
+    }
+
     async function getCourse() {
       const response = await Axios.get(`/workinghours/course/${id}`);
       setCourse(response.data);
+      // const secs =  response.data[0].day.split("_");
+      // setSelectSecs(response.data[0].sec_P);
+      setDayArray(response.data[0].day_P.split("_"));
+      setStartArray(response.data[0].start_P.split("_"));
+      setEndArray(response.data[0].end_P.split("_"));
     }
+    getSecs();
     getCourse();
     getWorkingHour();
   }, [router]);
 
   useEffect(() => {
     if (session) {
-      props.getDetailNisit(session.user.email)
+      props.getDetailNisit(session.user.email);
     }
   }, [loading]);
 
@@ -42,20 +57,23 @@ const setHourWorks = (props) => {
     setSuccess(null);
     let totalHour = parseInt(end) - parseInt(start);
     // console.log("totalHour: ", totalHour);
-    if (!day) {
+    if(!sec){
+      setErr("กรุณาเลือกหมู่ปฎิบัติงาน");
+    }else if (!day) {
       setErr("กรุณาเลือกวันปฎิบัติงาน");
     } else if (!start) {
       setErr("กรุณาเลือกเวลามา");
     } else if (!end) {
       setErr("วันกรุณาเลือกเวลากลับ");
     } else if (totalHour > course[0].hrperweek) {
-      // console.log("เกินเวลา");
-      setErr("เกินเวลาปฎิบัติงาน");
-    } else {
+      setErr("เกิน "+course[0].hrperweek+" ชั่วโมง");
+    } else if(course[0].sec_D==sec){
+      console.log("secD");
       await Axios.post("/workinghours/add", {
-        day: day,
-        start: start,
-        end: end,
+        sec_D:sec,
+        day_D: day,
+        start_D: start,
+        end_D: end,
         hour: totalHour,
         teacherapplytaID: id,
       }).then((res) => {
@@ -64,11 +82,37 @@ const setHourWorks = (props) => {
           setWorkingHour([
             ...workingHour,
             {
-              day: day,
-              start: start,
-              end: end,
-              hour: totalHour,
-              teacherapplytaID: id,
+              sec_D:sec,
+              day_D: day,
+              start_D: start,
+              end_D: end,
+              
+            },
+          ]);
+        } else {
+          setErr(res.data.message);
+        }
+      });
+    }else{
+      console.log("secP");
+      await Axios.post("/workinghours/add", {
+        sec_P:sec,
+        day_P: day,
+        start_P: start,
+        end_P: end,
+        hour: totalHour,
+        teacherapplytaID: id,
+      }).then((res) => {
+        if (res.data.check) {
+          setSuccess(res.data.message);
+          setWorkingHour([
+            ...workingHour,
+            {
+              sec_P:sec,
+              day_P: day,
+              start_P: start,
+              end_P: end,
+              
             },
           ]);
         } else {
@@ -91,7 +135,7 @@ const setHourWorks = (props) => {
     });
   };
 
-  const sec = (d, p) => {
+  const secShow = (d, p) => {
     if (d && p) {
       return d + "," + p;
     } else if (d) {
@@ -100,6 +144,7 @@ const setHourWorks = (props) => {
       return p;
     }
   };
+  
   const hourD = (day, start, end) => {
     if (day && start && end) {
       return "วัน " + day + " เวลา " + start + " - " + end;
@@ -107,11 +152,18 @@ const setHourWorks = (props) => {
       return "-";
     }
   };
+
   const hourP = (day, start, end) => {
     if (day && start && end) {
-      return "วัน " + day + " เวลา " + start + " - " + end;
+      return day.map((val, index) => {
+        return (
+          <h4>
+            เวลาเรียนปฎิบัติ วัน {day[index]} เวลา {start[index]} - {end[index]}{" "}
+          </h4>
+        );
+      });
     } else {
-      return "-";
+      return <h4>เวลาเรียนปฎิบัติ ไม่มี</h4>;
     }
   };
 
@@ -125,7 +177,7 @@ const setHourWorks = (props) => {
         {course && course.length != 0 ? course[0].courseID : "loading..."} หมู่:
         {"  "}
         {course && course.length != 0
-          ? sec(course[0].sec_D, course[0].sec_P)
+          ? secShow(course[0].sec_D, course[0].sec_P.split("_"))
           : "loading..."}
         {"  "}
       </h3>
@@ -135,11 +187,15 @@ const setHourWorks = (props) => {
           ? hourD(course[0].day_D, course[0].start_D, course[0].end_D)
           : "loading..."}
         {"    "}
-        เวลาเรียนปฎิบัติ{" "}
+      </h4>
+
+      <>
         {course && course.length != 0
-          ? hourP(course[0].day_P, course[0].start_P, course[0].end_P)
+          ? hourP(dayArray, startArray, endArray)
           : "loading..."}
-        {"  "}
+      </>
+
+      <h4>
         เวลาปฎิบัติงาน{" "}
         {course && course.length != 0 ? course[0].hrperweek : "loading..."}{" "}
         ชั่วโมง
@@ -150,6 +206,12 @@ const setHourWorks = (props) => {
           {success}{" "}
         </div>
       )}
+      {err && (
+          <div className="alert alert-danger" role="alert">
+            {" "}
+            {err}{" "}
+          </div>
+        )}
       <div
         className="table-responsive"
         style={{ maxHeight: "65vh", marginTop: "1vh" }}
@@ -170,6 +232,7 @@ const setHourWorks = (props) => {
           >
             <tr>
               <th rowSpan="2">#</th>
+              <th rowSpan="2">หมู่</th>
               <th rowSpan="2">วัน</th>
               <th rowSpan="2">เวลามา</th>
               <th rowSpan="2">เวลากลับ</th>
@@ -183,9 +246,10 @@ const setHourWorks = (props) => {
                 return (
                   <tr key={key}>
                     <td>{key + 1} </td>
-                    <td>{val.day}</td>
-                    <td> {val.start} </td>
-                    <td> {val.end} </td>
+                    <td>{val.sec_D?val.sec_D:val.sec_P}</td>
+                    <td>{val.day_D?val.day_D:val.day_P}</td>
+                    <td> {val.start_D?val.start_D:val.start_P} </td>
+                    <td> {val.end_D?val.end_D:val.end_P} </td>
                     <td>
                       <button
                         type="button"
@@ -211,6 +275,27 @@ const setHourWorks = (props) => {
         <form className="row gy-2 gx-3 ">
           <div class="col-auto">
             <label for="closeDate" class="form-label">
+              หมู่เรียน
+            </label>
+            <select
+              name="day"
+              className="form-select"
+              onChange={(e) => {
+                setSec(e.target.value);
+              }}
+            >
+              <option defaultValue="เลือกหมู่เรียน" disabled selected hidden>
+                เลือกหมู่เรียน
+              </option>
+
+              {selectSecs.map((val) => {
+                return <option value={val}>{val}</option>;
+              })}
+            </select>
+
+          </div>
+          <div class="col-auto">
+            <label for="closeDate" class="form-label">
               วันปฎิบัติงาน
             </label>
             <select
@@ -232,6 +317,7 @@ const setHourWorks = (props) => {
               <option value="อาทิตย์">อาทิตย์</option>
             </select>
           </div>
+
           <div class="col-auto">
             <label for="closeDate" class="form-label">
               เวลามา
@@ -307,12 +393,6 @@ const setHourWorks = (props) => {
             </button>
           </div>
         </form>
-        {err && (
-          <div className="alert alert-danger" role="alert">
-            {" "}
-            {err}{" "}
-          </div>
-        )}
       </div>
     </div>
   );

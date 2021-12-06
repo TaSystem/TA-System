@@ -9,9 +9,20 @@ router.get("/:id",async (req, res) => {
         console.log(err);
       } else {
         res.send(result);
-        console.log("history  reply id:"+id);
+        
       }
     });
+});
+router.get("/nisit/:id",async (req, res) => {
+  const id = req.params.id;
+  await db.query("SELECT URT.studentapplyID,URT.status,U.name,U.lastname,U.email,U.tel,R.title FROM userreplystudent as URT,users as U,users_roles as UR,roles as R WHERE URT.userID = U.id AND U.id = UR.userID AND R.id = UR.roleID AND URT.studentapplyID = ?", id, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+      
+    }
+  });
 });
 
 

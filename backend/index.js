@@ -3,6 +3,7 @@ const app = express();
 const port = 3001;
 const cors = require('cors');
 var fs = require('fs');
+var db = require('./config/db');
 
 var users = require('./routes/users');
 var courses = require('./routes/courses');
@@ -35,7 +36,6 @@ app.use('/document', document);
 app.use('/workinghours', workinghours);
 
 
-
 app.get("/download",(req,res)=>{ //ดาวน์โหลดไฟล์ excel.csv เป็น  header
   const file = `${__dirname}/uploads/download/Header-form.csv`;
   res.download(file);
@@ -61,6 +61,52 @@ app.get("/download-filebookbank/:filebookbank",(req,res)=>{
   
   console.log("Filecard downloaded!!!");
 })
+
+app.put("/clear-file", async (req, res) => {
+  let fileCardStudent = req.body.fileCardStudent;
+  let fileBookBank = req.body.fileBookBank;
+  let email = req.body.email;
+  let path=null;
+  
+
+  if(fileCardStudent){
+    db.query("UPDATE users SET fileCardStudent = null  WHERE email = ?", email, (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        try {
+          path = `${__dirname}/uploads/img/${fileCardStudent}`;
+          fs.unlinkSync(path);
+          console.log("ลบไฟล์บัตรนิสิตสำเร็จ!!!");
+          res.send("ลบไฟล์บัตรนิสิตสำเร็จ!!!");
+          //file removed
+        } catch(err) {
+          console.error(err)
+        }
+      }
+    });
+
+  }else{
+    db.query("UPDATE users SET fileBookBank = null  WHERE email = ?", email, (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        // res.send("อัปเดตข้อมูลสำเร็จ");
+        try {
+          path = `${__dirname}/uploads/img/${fileBookBank}`;
+          fs.unlinkSync(path);
+          console.log("ลบไฟล์หน้าธนาคารสำเร็จ!!!!");
+          res.send("ลบไฟล์หน้าธนาคารสำเร็จ!!!!");
+          //file removed
+        } catch(err) {
+          console.error(err)
+        }
+      }
+    });
+
+  }
+
+});
 
 
 app.listen(port, () => {

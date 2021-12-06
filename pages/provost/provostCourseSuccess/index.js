@@ -26,7 +26,6 @@ function provostCourseSuccess(props) {
   const [session, loading] = useSession();
   const router = useRouter();
 
-
   useEffect(() => {
     if (session) {
       props.getDetailNisit(session.user.email);
@@ -93,6 +92,17 @@ function provostCourseSuccess(props) {
     else if (l == 6) return "TR" + id;
   };
 
+  const showSec = (sec_P) => {
+    let arraySec = sec_P.split("_");
+    return arraySec.map((val, index) => {
+      if (arraySec.length == index + 1) {
+        return <>{val}</>;
+      } else {
+        return <>{val},</>;
+      }
+    });
+  };
+
   const showModalHistory = async (id) => {
     const response = await Axios.get(`/historyreply/${id}`);
     setHistoryReply(response.data);
@@ -113,7 +123,8 @@ function provostCourseSuccess(props) {
       end_D: val.end_D,
       end_P: val.end_P,
       number_D: val.number_D,
-      number_D: val.number_P,
+      number_P: val.number_P,
+      numberReal: val.numberReal,
       level: val.level,
       major: val.major,
       teacher: val.teacher,
@@ -148,8 +159,6 @@ function provostCourseSuccess(props) {
     return router.push(`/provost/provostCourseSuccess/${id}`);
   };
 
-  
-
   return (
     <div className="container">
       <h1>รายวิชาที่เปิดรับ SA ได้</h1>
@@ -170,14 +179,18 @@ function provostCourseSuccess(props) {
           placeholder="รหัสวิชา/ชื่อวิชา/อาจารย์"
           onChange={(e) => setSearch(e.target.value)}
         />
-        {props.nisit.roleID==1&&<SelectMajor
-          onChange={(e) => {
-            setMajor(e.target.value);
-          }}
-        />}
+        {props.nisit.roleID == 1 && (
+          <SelectMajor
+            onChange={(e) => {
+              setMajor(e.target.value);
+            }}
+          />
+        )}
       </div>
       รายวิชาทั้งหมด:{" "}
-      {courseList != null && courseList.length != 0 ? courseList.length : 0}{" "}
+      {courseList != null && courseList.length != 0
+        ? Filter(courseList).length
+        : 0}{" "}
       วิชา
       <div
         className="table-responsive"
@@ -224,15 +237,19 @@ function provostCourseSuccess(props) {
                 <tr key={key}>
                   <td>{key + 1}</td>
                   <td>
-                    <Link href="#">
-                      <a
-                        data-bs-toggle="modal"
-                        data-bs-target="#ModalHistoryReply"
-                        onClick={() => showModalHistory(val.AID)}
-                      >
-                        {TeacherapplyID(val.AID)}
-                      </a>
-                    </Link>
+                    {props.nisit.roleID == 1 ? (
+                      <Link href="#">
+                        <a
+                          data-bs-toggle="modal"
+                          data-bs-target="#ModalHistoryReply"
+                          onClick={() => showModalHistory(val.AID)}
+                        >
+                          {TeacherapplyID(val.AID)}
+                        </a>
+                      </Link>
+                    ) : (
+                      TeacherapplyID(val.AID)
+                    )}
                   </td>
                   <td>
                     <Link href="#">
@@ -247,7 +264,7 @@ function provostCourseSuccess(props) {
                   </td>
                   <td>{val.title}</td>
                   <td>{val.sec_D ? val.sec_D : "-"}</td>
-                  <td>{val.sec_P ? val.sec_P : "-"}</td>
+                  <td>{val.sec_P ? showSec(val.sec_P) : "-"}</td>
                   <td>{val.major}</td>
                   <td>{val.number_D ? val.number_D : val.number_P}</td>
                   <td>{val.numberReal ? val.numberReal : "ยังไม่กรอก"}</td>

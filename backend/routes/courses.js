@@ -51,6 +51,28 @@ router.get('/term',(req, res) => {
   });
 });
 
+router.get('/sec/:id',(req, res) => {
+  const id = req.params.id;
+  let array = [];
+  
+  db.query("SELECT C.sec_D,C.sec_P FROM courses as C,teacherapplyta as TA WHERE  C.id =Ta.courseID AND TA.id = ?",id, (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      if(result[0].sec_D){
+        array.push(result[0].sec_D);
+      }
+      if(result[0].sec_P){
+        let secP_Array = result[0].sec_P.split("_");
+        for(let i = 0;i<secP_Array.length;i++){
+        array.push(secP_Array[i]);
+      }}
+      console.log(array);
+      res.send(array);
+    }
+  });
+});
+
 router.get('/student',(req,res)=>{
   db.query("SELECT C.id,C.courseID,C.title,C.sec_D,C.day_D,C.start_D,C.end_D,C.sec_P,C.day_P,C.start_P,C.end_P,C.major,C.teacher FROM courses as C,teacherapplyta as TA WHERE C.id=TA.courseID AND TA.status = 5 AND C.year IN (SELECT DISTINCT(year) FROM datestudy WHERE status = 1) AND C.term IN (SELECT DISTINCT(term) FROM datestudy WHERE status = 1 ) ORDER BY C.courseID", (err,result)=>{
       if(err){
@@ -68,12 +90,23 @@ router.get('/test',(req,res)=>{
   res.sendFile(__dirname+'/index.html');   
 })
 
+router.get("/student-history",(req,res)=>{
+  db.query("SELECT C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.sec_P,C.day_D,C.start_D,C.end_D,C.day_P,C.start_P,C.end_P,C.year,C.term,C.number_D,C.number_P,C.numberReal,A.id as AID,A.status,A.hrperweek,A.noteapply,A.notereply,U.email,U.name_email,U.name,U.lastname,U.idStudent,U.department,U.tel,U.level as lvl,U.nameBank,U.idBank,U.fileCardStudent,U.fileBookBank FROM courses AS C,studentapplyta AS A,users AS U WHERE C.id = A.courseID AND U.id = A.userID",(err,result)=>{
+    if(err){
+      console.log(err);
+    }
+    else{
+      res.send(result);
+    }
+  })
+});
+
 router.get("/teacher-apply/:email",(req,res)=>{
   const email = req.params.email;
 
   let checkRole = `SELECT R.id,R.title FROM users as U,roles as R,users_roles as UR WHERE U.id = UR.userID AND R.id = UR.roleID AND U.email = ?`;
-  let historyUser = `SELECT C.courseID,C.title,C.level,C.major,C.teacher,C.year,C.term,C.major,A.number1,A.number2,A.status,U.email,U.name_email,U.name,U.lastname,U.department,U.tel,R.title as roleTitle FROM courses AS C,teacherapplyta AS A,users AS U,users_roles AS UR,roles AS R WHERE A.userID=U.id AND U.id=UR.userID AND R.id =UR.roleID AND C.id = A.courseID AND U.email = ?`;
-  let historyAdmin = `SELECT C.courseID,C.title,C.level,C.major,C.teacher,C.year,C.term,C.major,A.number1,A.number2,A.status,U.email,U.name_email,U.name,U.lastname,U.department,U.tel,R.title as roleTitle FROM courses AS C,teacherapplyta AS A,users AS U,users_roles AS UR,roles AS R WHERE A.userID=U.id AND U.id=UR.userID AND R.id =UR.roleID AND C.id = A.courseID `;
+  let historyUser = `SELECT C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.number_D,C.sec_P,C.number_P,C.day_D,C.day_P,C.start_D,C.end_D,C.start_P,C.end_P,C.numberReal,C.numberTAReal,C.year,C.term,A.id as AID,A.number1,A.number2,A.status,A.noteapply,A.notereply,U.email,U.name_email,U.name,U.lastname,U.department,U.tel,R.title as roleTitle FROM courses AS C,teacherapplyta AS A,users AS U,users_roles AS UR,roles AS R WHERE A.userID=U.id AND U.id=UR.userID AND R.id =UR.roleID AND C.id = A.courseID AND U.email = ?`;
+  let historyAdmin = `SELECT C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.number_D,C.sec_P,C.number_P,C.day_D,C.day_P,C.start_D,C.end_D,C.start_P,C.end_P,C.numberReal,C.numberTAReal,C.year,C.term,A.id as AID,A.number1,A.number2,A.status,A.noteapply,A.notereply,U.email,U.name_email,U.name,U.lastname,U.department,U.tel,R.title as roleTitle FROM courses AS C,teacherapplyta AS A,users AS U,users_roles AS UR,roles AS R WHERE A.userID=U.id AND U.id=UR.userID AND R.id =UR.roleID AND C.id = A.courseID `;
 
   db.query(checkRole,email,(err,result)=>{
     if(err) throw err
@@ -131,7 +164,7 @@ router.get("/request/:id",async (req, res) => {
 
 router.get('/student-reply/:status',(req,res)=>{
   let status = req.params.status;
-  let sqlcommand = `SELECT C.id as CID,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.number_D,C.sec_P,C.number_P,C.day_D,C.day_P,C.start_D,C.end_D,C.start_P,C.end_P,C.numberReal,A.id as AID,A.status,A.hrperweek,A.noteapply,U.email,U.name_email,U.name,U.lastname,U.idStudent,U.department,U.tel,U.level as lvl,U.nameBank,U.idBank,U.fileCardStudent,U.fileBookBank,R.title as roleTitle,TA.userID,(SELECT U.name FROM teacherapplyta as TA,users as U WHERE U.id = TA.userID AND TA.status = 5 AND TA.courseID = C.id) as ownerName,(SELECT U.lastname FROM teacherapplyta as TA,users as U WHERE U.id = TA.userID AND TA.status = 5 AND TA.courseID = C.id) as ownerLastname FROM courses AS C,studentapplyta AS A,users AS U,users_roles AS UR,roles AS R,teacherapplyta as TA WHERE C.id = A.courseID AND A.userID=U.id AND U.id=UR.userID AND R.id =UR.roleID AND A.courseID = TA.courseID AND C.year IN (SELECT DISTINCT(year) FROM datestudy WHERE status = 1) AND C.term IN (SELECT DISTINCT(term) FROM datestudy WHERE status = 1)  AND A.status = ?`;
+  let sqlcommand = `SELECT C.id as CID,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.number_D,C.sec_P,C.number_P,C.day_D,C.day_P,C.start_D,C.end_D,C.start_P,C.end_P,C.numberReal,A.id as AID,A.status,A.hrperweek,A.noteapply,U.email,U.name_email,U.name,U.lastname,U.idStudent,U.department,U.tel,U.level as lvl,U.nameBank,U.idBank,U.fileCardStudent,U.fileBookBank,R.title as roleTitle,(SELECT U.name FROM teacherapplyta as TA,users as U WHERE U.id = TA.userID AND TA.status = 5 AND TA.courseID = C.id) as ownerName,(SELECT U.lastname FROM teacherapplyta as TA,users as U WHERE U.id = TA.userID AND TA.status = 5 AND TA.courseID = C.id) as ownerLastname FROM courses AS C,studentapplyta AS A,users AS U,users_roles AS UR,roles AS R WHERE C.id = A.courseID AND A.userID=U.id AND U.id=UR.userID AND R.id =UR.roleID AND C.year IN (SELECT DISTINCT(year) FROM datestudy WHERE status = 1) AND C.term IN (SELECT DISTINCT(term) FROM datestudy WHERE status = 1) AND A.status = ?`;
   
   db.query(sqlcommand,status,(err,result)=>{
       if(err){
@@ -176,7 +209,20 @@ router.get('/teacher-reply/:status',(req,res)=>{
 
 router.get("/student-apply-success/:email",(req,res)=>{
   const email = req.params.email;
-  db.query("SELECT C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.sec_P,C.day_D,C.start_D,C.end_D,C.day_P,C.start_P,C.end_P,A.status,A.hrperweek FROM courses AS C,studentapplyta AS A ,users AS U WHERE C.id = A.courseID AND A.status = 3 AND U.id=A.userID AND C.year IN (SELECT DISTINCT(year) FROM datestudy WHERE status = 1) AND C.term IN (SELECT DISTINCT(term) FROM datestudy WHERE status = 1) AND U.email = ?",email,(err,result)=>{
+  db.query("SELECT C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.sec_P,C.day_D,C.start_D,C.end_D,C.day_P,C.start_P,C.end_P,C.number_D,C.number_P,C.numberReal,A.id as AID,A.status,A.hrperweek FROM courses AS C,studentapplyta AS A ,users AS U WHERE C.id = A.courseID AND A.status = 3 AND U.id=A.userID AND C.year IN (SELECT DISTINCT(year) FROM datestudy WHERE status = 1) AND C.term IN (SELECT DISTINCT(term) FROM datestudy WHERE status = 1) AND U.email = ?",email,(err,result)=>{
+    if(err){
+      console.log(err);
+    }
+    else{
+      res.send(result);
+      console.log("course");
+    }
+  })
+});
+
+router.get("/student-request-success/:id",(req,res)=>{
+  const id = req.params.id;
+  db.query("SELECT C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.sec_P,C.day_D,C.start_D,C.end_D,C.day_P,C.start_P,C.end_P,C.number_D,C.number_P,C.numberReal,A.id as AID,A.status,A.hrperweek FROM courses AS C,studentapplyta AS A ,users AS U WHERE C.id = A.courseID AND A.status = 3 AND U.id=A.userID AND C.year IN (SELECT DISTINCT(year) FROM datestudy WHERE status = 1) AND C.term IN (SELECT DISTINCT(term) FROM datestudy WHERE status = 1) AND U.id = ?",id,(err,result)=>{
     if(err){
       console.log(err);
     }
@@ -214,13 +260,13 @@ router.post('/course-success',(req,res)=>{
 
 router.post("/student-apply",(req,res)=>{
     const email = req.body.email;
-    db.query("SELECT C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.sec_P,C.day_D,C.start_D,C.end_D,C.day_P,C.start_P,C.end_P,C.year,C.term,A.status,A.hrperweek FROM courses AS C,studentapplyta AS A,users AS U WHERE C.id = A.courseID AND U.id = A.userID AND U.email = ?",email,(err,result)=>{
+    db.query("SELECT C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.sec_P,C.day_D,C.start_D,C.end_D,C.day_P,C.start_P,C.end_P,C.year,C.term,C.number_D,C.number_P,C.numberReal,A.id as AID,A.status,A.hrperweek,A.noteapply,A.notereply FROM courses AS C,studentapplyta AS A,users AS U WHERE C.id = A.courseID AND U.id = A.userID AND U.email = ?",email,(err,result)=>{
       if(err){
         console.log(err);
       }
       else{
         res.send(result);
-        console.log("hisory reuest:",email);
+        
       }
     })
 });
@@ -231,7 +277,7 @@ router.post('/student-reply',(req,res)=>{
   let email = req.body.email;
   let sqlcommand,item;
   if(roleID==1){
-    sqlcommand = `SELECT C.id as CID,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.number_D,C.sec_P,C.number_P,C.day_D,C.day_P,C.start_D,C.end_D,C.start_P,C.end_P,C.numberReal,A.id as AID,A.status,A.hrperweek,A.noteapply,U.email,U.name_email,U.name,U.lastname,U.idStudent,U.department,U.tel,U.level as lvl,U.nameBank,U.idBank,U.fileCardStudent,U.fileBookBank,R.title as roleTitle,TA.userID,(SELECT U.name FROM teacherapplyta as TA,users as U WHERE U.id = TA.userID AND TA.status = 5 AND TA.courseID = C.id) as ownerName,(SELECT U.lastname FROM teacherapplyta as TA,users as U WHERE U.id = TA.userID AND TA.status = 5 AND TA.courseID = C.id) as ownerLastname FROM courses AS C,studentapplyta AS A,users AS U,users_roles AS UR,roles AS R,teacherapplyta as TA WHERE C.id = A.courseID AND C.year IN (SELECT DISTINCT(year) FROM datestudy  WHERE status = 1) AND C.term IN (SELECT DISTINCT(term) FROM datestudy  WHERE status = 1) AND A.userID=U.id AND U.id=UR.userID AND R.id =UR.roleID AND A.courseID = TA.courseID AND TA.status=5 AND A.status = ?`;
+    sqlcommand = `SELECT C.id as CID,C.courseID,C.title,C.level,C.major,C.teacher,C.sec_D,C.number_D,C.sec_P,C.number_P,C.day_D,C.day_P,C.start_D,C.end_D,C.start_P,C.end_P,C.numberReal,A.id as AID,A.status,A.hrperweek,A.noteapply,U.email,U.name_email,U.name,U.lastname,U.idStudent,U.department,U.tel,U.level as lvl,U.nameBank,U.idBank,U.fileCardStudent,U.fileBookBank,R.title as roleTitle,(SELECT U.id FROM teacherapplyta as TA,users as U WHERE U.id = TA.userID AND TA.status = 5 AND TA.courseID = C.id) as userID,(SELECT U.name FROM teacherapplyta as TA,users as U WHERE U.id = TA.userID AND TA.status = 5 AND TA.courseID = C.id) as ownerName,(SELECT U.lastname FROM teacherapplyta as TA,users as U WHERE U.id = TA.userID AND TA.status = 5 AND TA.courseID = C.id) as ownerLastname FROM courses AS C,studentapplyta AS A,users AS U,users_roles AS UR,roles AS R WHERE C.id = A.courseID AND C.year IN (SELECT DISTINCT(year) FROM datestudy  WHERE status = 1) AND C.term IN (SELECT DISTINCT(term) FROM datestudy  WHERE status = 1) AND A.userID=U.id AND U.id=UR.userID AND R.id =UR.roleID AND  A.status = ?`;
     item =[status];
   }
 
@@ -304,6 +350,7 @@ router.post("/delete",(req,res)=>{ //multiple delete ลบรายวิชา
   
   if(!year){
      sqlcommand = `TRUNCATE TABLE courses`;
+     message = "ลบทั้งหมด";
      console.log("delete all");
   }
   else if(year){
@@ -503,7 +550,9 @@ router.post('/single-upload',(req,res)=>{//อัดโหลดไฟล์เ�
                           central_F,decentral_F,note,level,major,year,term,status,numberTa];
               
 
-                        db.query(insertStatement,items,(err,result,fields)=>{if(err) throw err;})
+                        db.query(insertStatement,items,(err,result,fields)=>{
+                          if(err) throw err;
+                        })
                 }
                 console.log("not pass total "+ unsucess + " Course");
                 console.log("import total "+ success + " Course");
@@ -512,6 +561,8 @@ router.post('/single-upload',(req,res)=>{//อัดโหลดไฟล์เ�
             });
         }
     })
+
+
 });
 
 
@@ -641,7 +692,7 @@ router.put('/updateNumber',(req,res)=>{ //เพิ่มจำนวนนิ�
   });
 });
 
-router.put('/update',(req,res)=>{
+router.put('/update',(req,res)=>{ //ไม่ได้ใช้
     const id = req.body.id,
         courseID = req.body.courseID,
         courseYear = req.body.courseYear,
@@ -686,7 +737,7 @@ router.put('/update',(req,res)=>{
         res.send("User Updated");
       }
     });
-  });
+});
 
 
 

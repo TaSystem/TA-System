@@ -146,6 +146,7 @@ function Courses(props) {
               type="file"
               className="form-control"
               name="filename"
+              accept=".csv"
               onChange={(e) => {
                 setSelectedFiles(e.target.files);
               }}

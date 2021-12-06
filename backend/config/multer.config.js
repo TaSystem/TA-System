@@ -3,10 +3,13 @@ const path = require('path');
 
 // Set The Storage Engine
 const storage = multer.diskStorage({
+    
     destination: './uploads/img/',
     filename: function(req, file, cb){
       cb(null,file.fieldname + '-' + Date.now() + path.extname(file.originalname));
     }
+    
+
   });
   
   // Init Upload
@@ -28,7 +31,7 @@ const storage = multer.diskStorage({
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
     // Check mime
     const mimetype = filetypes.test(file.mimetype);
-  
+    
     if(mimetype && extname){
       return cb(null,true);
     } else {

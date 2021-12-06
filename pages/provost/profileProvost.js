@@ -65,14 +65,7 @@ const profileProvost = (props) => {
   //console.log('in ID is ',session)
   return (
     <div className="container">
-      <h2>
-        {/* อีเมลล์ :{user && user.length != 0 ? user[0].email : "loading..."} */}
-        อีเมลล์ : {user && user.length != 0 ? user[0].email : 'loading...'}
-      </h2>
-      <h3>
-        ชื่ออีเมลล์: {user && user.length != 0 ? user[0].name_email : "loading..."}
-        {/* {user && user.length != 0 ? user[0].name_email : "loading..."} */}
-      </h3>
+      <h1>ข้อมูลอาจารย์ {user && user.length != 0 ? user[0].email : "loading..."} </h1>
       {success && (
           <div className="alert alert-success" role="alert">
             {" "}
@@ -88,9 +81,12 @@ const profileProvost = (props) => {
       )}
       <div className="information">
         <form>
-          <div className="row mb-4">
-            <div className="col">
+          <div className="row mb-4" style={{marginTop:"40px"}}>
+            <div className="col col-md-5">
               <div className="form-outline">
+              <label className="form-label" for="form6Example1">
+                  ชื่อจริง
+                </label>
                 <input
                   type="text"
                   id="form6Example1"
@@ -102,13 +98,13 @@ const profileProvost = (props) => {
                     setName(e.target.value);
                   }}
                 />
-                <label className="form-label" for="form6Example1">
-                  ชื่อจริง
-                </label>
               </div>
             </div>
-            <div className="col">
+            <div className="col col-md-5">
               <div className="form-outline">
+              <label className="form-label" for="form6Example2">
+                  นามสกุล
+                </label>
                 <input
                   type="text"
                   id="form6Example2"
@@ -120,14 +116,32 @@ const profileProvost = (props) => {
                     setLastname(e.target.value);
                   }}
                 />
-                <label className="form-label" for="form6Example2">
-                  นามสกุล
-                </label>
               </div>
             </div>
+            <div className="col col-md-2">
+            <div className="form-outline mb-4">
+          <label className="form-label" for="form6Example4">
+              เบอร์โทร
+            </label>
+            <input
+              type="text"
+              id="form6Example4"
+              className="form-control"
+              defaultValue={tel}
+              onChange={(e) => {
+                setTel(e.target.value);
+              }}
+            />
+            
           </div>
-
+          </div>
+          </div>
+          <div className="row mb-4" style={{marginTop:"50px"}}>
+          <div className="col col-md-6">    
           <div className="form-outline mb-4">
+          <label className="form-label" for="form6Example4">
+              อาจารย์รับผิดชอบระดับการศึกษา
+            </label>
             <select
               class="form-select"
               name="yearSelect"
@@ -148,12 +162,14 @@ const profileProvost = (props) => {
               </option>
 
             </select>
-            <label className="form-label" for="form6Example4">
-              อาจารย์รับผิดชอบระดับการศึกษา
-            </label>
+            
           </div>
-
+          </div>
+          <div className="col col-md-6">
           <div className="form-outline mb-4">
+          <label className="form-label" for="form6Example3">
+              ภาควิชา
+            </label>
             <select
               class="form-select"
               name="yearSelect"
@@ -190,31 +206,15 @@ const profileProvost = (props) => {
                 วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ(ป.ตรี)
               </option>
             </select>
-            <label className="form-label" for="form6Example3">
-              ภาควิชา
-            </label>
+            
           </div>
-
-          <div className="form-outline mb-4">
-            <input
-              type="text"
-              id="form6Example4"
-              className="form-control"
-              defaultValue={tel}
-              onChange={(e) => {
-                setTel(e.target.value);
-              }}
-            />
-            <label className="form-label" for="form6Example4">
-              เบอร์โทร
-            </label>
           </div>
-        
-
+          </div>
 
           <button
             type="submit"
-            className="btn btn-success btn-block mb-4"
+            className="btn btn-success"
+            style={{marginTop:"80px",width:"160px"}}
             onClick={userUpdate}
           >
             บันทึก

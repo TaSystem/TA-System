@@ -363,7 +363,7 @@ function dashboard(props) {
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
   const [yearSearch, setYearSearch] = useState([]);
-  const [numberOfYear, setNumberOfYear] = useState();
+  const [numberOfYear, setNumberOfYear] = useState(3);
   // true data
   const [dataChartTrue, setDataChartTrue] = useState([]);
   const [selectBarDataTrue, setSelectBarDataTrue] = useState([]);
@@ -371,8 +371,9 @@ function dashboard(props) {
   const [dataPieChartTrue, setDataPieChartTrue] = useState([]);
   const [labelTrue, setLabelTrue] = useState("(เลือกที่กราฟเเท่ง)");
   const [yearSearchTrue, setYearSearchTrue] = useState([]);
-  const [numberOfYearTrue, setNumberOfYearTrue] = useState();
+  const [numberOfYearTrue, setNumberOfYearTrue] = useState(3);
   const [startAtTrue, setStartAtTrue] = useState(null);
+
 
   useEffect(() => {
     if (session) {
@@ -380,10 +381,15 @@ function dashboard(props) {
       // setOndata(data);
       // setSelectBarData(datas);
       // setLabel("2565(ภาคปลาย)");
+
       async function getData() {
+        const responseYear = await Axios.get("/courses/year");
         const response = await Axios.get("/cost/dashboard");
         // const response = await Axios.get("/cost/dashboard-expenses");
+        console.log("year ",responseYear.data[0].year)
+        console.log("data ",response.data)
         setDataChart(response.data);
+
         let current = {
           สาขา: response.data[0].major,
           ปี: response.data[0].year,
@@ -391,20 +397,41 @@ function dashboard(props) {
           ค่าใช้จ่าย: response.data[0].sum_cost,
         };
         let sum = 0;
-        // let sumPeople = 0
-        //console.log("current is :", current);
-        response.data.map((dat) => {
-          if (dat.year === current.ปี && dat.term === current.ภาค) {
+        let check = false;
+        let first = true;
+        let resultArr = [];
+        console.log('startAt ' ,responseYear.data[0].year, numberOfYear)
+        response.data.map((dat, idx) => {
+          if (
+            dat.year === current.ปี &&
+            dat.term === current.ภาค &&
+            dat.year >= responseYear.data[0].year &&
+            dat.year <= parseInt(responseYear.data[0].year) + parseInt(numberOfYear - 1)
+          ) {
+            
             sum += dat.sum_cost;
-            // sumPeople += dat.count_TA
-          } else {
-            setDataBarChart((oldArray) => [
-              ...oldArray,
-              {
-                ปีเทอมการศึกษา: `${current.ปี}(${current.ภาค})`,
-                ค่าใช้จ่าย: sum,
-              },
-            ]);
+          } else if (
+            idx + 1 < response.data.length &&
+            dat.year + 1 == responseYear.data[0].year &&
+            first == true
+          ) {
+            current = {
+              สาขา: response.data[0].major,
+              ปี: response.data[idx + 1].year,
+              ภาค: response.data[idx + 1].term,
+              ค่าใช้จ่าย: response.data[0].sum_cost,
+            };
+            first = false;
+          } else if (
+            dat.year >= responseYear.data[0].year &&
+            parseInt(dat.year) <= parseInt(responseYear.data[0].year) + parseInt(numberOfYear - 1)
+          ) {
+            sum != 0
+              ? resultArr.push({
+                  ปีเทอมการศึกษา: `${current.ปี}(${current.ภาค})`,
+                  ค่าใช้จ่าย: sum,
+                })
+              : console.log('');
             current = {
               สาขา: dat.major,
               ปี: dat.year,
@@ -413,12 +440,19 @@ function dashboard(props) {
             };
             sum = dat.sum_cost;
             // sumPeople = dat.count_TA
+            check = true;
           }
+ 
         });
-        setDataBarChart((oldArray) => [
-          ...oldArray,
-          { ปีเทอมการศึกษา: `${current.ปี}(${current.ภาค})`, ค่าใช้จ่าย: sum },
-        ]);
+        if (check)
+          resultArr.push({
+            ปีเทอมการศึกษา: `${current.ปี}(${current.ภาค})`,
+            ค่าใช้จ่าย: sum,
+          }),
+
+        setDataBarChart(resultArr);
+        console.log('result Arr iss ',resultArr)
+
 
         //pie
         // current = {สาขา: response.data[0].major ,ปี: response.data[0].year, ภาค:response.data[0].term, จำนวนคน: response.data[0].count_TA ,ค่าใช้จ่าย:response.data[0].sum_cost}
@@ -444,11 +478,14 @@ function dashboard(props) {
         );
       }
       getData();
+      console.log('dataChart is ',dataChart)
 
       //get data True
       async function getDataTrue() {
         // const response = await Axios.get("/cost/dashboard");
         const response = await Axios.get("/cost/dashboard-expenses");
+        const responseYear = await Axios.get("/courses/year");
+
         setDataChartTrue(response.data);
         let current = {
           สาขา: response.data[0].major,
@@ -457,20 +494,42 @@ function dashboard(props) {
           ค่าใช้จ่าย: response.data[0].sum_cost,
         };
         let sum = 0;
+        let check = false;
+        let first = true;
+        let resultArr = [];
         // let sumPeople = 0
         //console.log("current is :", current);
-        response.data.map((dat) => {
-          if (dat.year === current.ปี && dat.term === current.ภาค) {
+        response.data.map((dat, idx) => {
+          if (
+            dat.year === current.ปี &&
+            dat.term === current.ภาค &&
+            dat.year >= responseYear.data[0].year &&
+            dat.year <= parseInt(responseYear.data[0].year) + parseInt(numberOfYearTrue - 1)
+          ) {
+            
             sum += dat.sum_cost;
-            // sumPeople += dat.count_TA
-          } else {
-            setDataBarChartTrue((oldArray) => [
-              ...oldArray,
-              {
-                ปีเทอมการศึกษา: `${current.ปี}(${current.ภาค})`,
-                ค่าใช้จ่าย: sum,
-              },
-            ]);
+          } else if (
+            idx + 1 < response.data.length &&
+            dat.year + 1 == responseYear.data[0].year &&
+            first == true
+          ) {
+            current = {
+              สาขา: response.data[0].major,
+              ปี: response.data[idx + 1].year,
+              ภาค: response.data[idx + 1].term,
+              ค่าใช้จ่าย: response.data[0].sum_cost,
+            };
+            first = false;
+          } else if (
+            dat.year >= responseYear.data[0].year &&
+            parseInt(dat.year) <= parseInt(responseYear.data[0].year) + parseInt(numberOfYearTrue - 1)
+          ) {
+            sum != 0
+              ? resultArr.push({
+                  ปีเทอมการศึกษา: `${current.ปี}(${current.ภาค})`,
+                  ค่าใช้จ่าย: sum,
+                })
+              : console.log('');
             current = {
               สาขา: dat.major,
               ปี: dat.year,
@@ -479,12 +538,16 @@ function dashboard(props) {
             };
             sum = dat.sum_cost;
             // sumPeople = dat.count_TA
+            check = true;
           }
+ 
         });
-        setDataBarChartTrue((oldArray) => [
-          ...oldArray,
-          { ปีเทอมการศึกษา: `${current.ปี}(${current.ภาค})`, ค่าใช้จ่าย: sum },
-        ]);
+        if (check)
+          resultArr.push({
+            ปีเทอมการศึกษา: `${current.ปี}(${current.ภาค})`,
+            ค่าใช้จ่าย: sum,
+          }),
+          setDataBarChartTrue(resultArr);
 
         //pie
         // current = {สาขา: response.data[0].major ,ปี: response.data[0].year, ภาค:response.data[0].term, จำนวนคน: response.data[0].count_TA ,ค่าใช้จ่าย:response.data[0].sum_cost}
@@ -644,7 +707,7 @@ function dashboard(props) {
     setDataBarChart(resultArr);
   }
 
-  function FilterDataTrue(numberOfYear, startAt) {
+  function FilterDataTrue(numberOfYearTrue, startAt) {
     let currents = {
       สาขา: dataChart[0].major,
       ปี: dataChart[0].year,
@@ -663,11 +726,11 @@ function dashboard(props) {
         dat.year === currents.ปี &&
         dat.term === currents.ภาค &&
         dat.year >= startAt &&
-        dat.year <= parseInt(startAt) + parseInt(numberOfYear - 1)
+        dat.year <= parseInt(startAt) + parseInt(numberOfYearTrue - 1)
       ) {
         sum += dat.sum_cost;
         // sumPeople += dat.count_TA
-        // console.log("E!",parseInt(startAt)+parseInt(numberOfYear-1))
+        // console.log("E!",parseInt(startAt)+parseInt(numberOfYearTrue-1))
       } else if (
         idx + 1 < dataChart.length &&
         dat.year + 1 == startAt &&
@@ -683,7 +746,7 @@ function dashboard(props) {
         first = false;
       } else if (
         dat.year >= startAt &&
-        parseInt(dat.year) <= parseInt(startAt) + parseInt(numberOfYear - 1)
+        parseInt(dat.year) <= parseInt(startAt) + parseInt(numberOfYearTrue - 1)
       ) {
         // resultArr.push({ปีเทอมการศึกษา:`${dataChart[14].year}(${dataChart[14].term})`,ค่าใช้จ่าย:sum, จำนวนคน :sumPeople})
         //   if(sum == 0) {

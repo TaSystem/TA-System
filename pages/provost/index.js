@@ -4,7 +4,6 @@ import { signIn, signOut, useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
 import { useRouter } from "next/router";
-import Navbar from '../../components/Navbar'
 import Table from '../../components/TablePagination'
 
 function index(props) {
@@ -196,12 +195,19 @@ function index(props) {
 
   }, [loading]);
 
-  const deleteCourse = async (id) =>{
+  const del = async (id) => {
+    setSuccess(null);
     await Axios.delete(`/courses/delete/${id}`).then((response) => {
-      setCourses(response.data.data);
       setSuccess(response.data.message);
+      setCourses(
+        courses.filter((val) => {
+          return val.id !== id;
+        })
+      );
     });
-  }
+
+  }; 
+
   const deleteCourseList = async () =>{
     await Axios.post("/courses/delete",{
       year:year,
@@ -388,10 +394,14 @@ function index(props) {
       <button type="submit" className="btn btn-success" onClick={()=>addCourses()} style={{margin:"2vh 0", marginRight:"50px"}}>
           เพิ่มรายวิชา
         </button>
-        <button type="submit" className="btn btn-danger" onClick={()=>{if (window.confirm('ลบวิชาที่ ปีการศึกษา '+year+" ภาคเรียน "+term+" สาขา "+major))deleteCourseList()}}>
+        {year?<button type="submit" className="btn btn-danger" onClick={()=>{if (window.confirm('ลบวิชาที่ ปีการศึกษา '+year+" ภาคเรียน "+term+" สาขา "+major))deleteCourseList()}}>
           ลบวิชารายวิชา
-        </button>
+        </button>:<button type="submit" className="btn btn-danger" onClick={()=>{if (window.confirm('ลบวิชาที่ ปีการศึกษา '+year+" ภาคเรียน "+term+" สาขา "+major))deleteCourseList()}}>
+          ลบวิชารายวิชาทั้งหมด
+        </button>}
+        <span style={{color:"red"}}>*เลือกปี เทอม ภาควิชาที่ต้องการจะลบ ***ถ้าไม่เลือกจะเป็นการลบทั้งหมด</span>
       </div>
+      
       {success && (
             <div className="alert alert-success" role="alert">
               {" "}
@@ -400,7 +410,7 @@ function index(props) {
       )}
 
       <div className="table-responsive" style={{maxHeight:"65vh",maxWidth:"75vw",marginTop:"1vh"}}>
-        <Table columns={columns} data={Filter(courses)} />
+        <Table columns={columns} data={Filter(courses)}  del ={(id)=>del(id)} />
       </div>
     </div>
   );

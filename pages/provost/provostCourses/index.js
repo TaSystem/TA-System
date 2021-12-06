@@ -1,9 +1,12 @@
 import Axios from "../../../config/Axios";
 import React, { useState, useEffect } from "react";
-import Modal from "../../../components/ModalTeacher";
+
+import ModalCourse from "../../../components/ModalCourse";
+import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../../redux/actions/nisitAction";
+import { useRouter } from "next/router";
 
 function coursesTeacher(props) {
   //ขอเลือกระดับได้
@@ -14,9 +17,11 @@ function coursesTeacher(props) {
   const [yearNow, setYearNow] = useState([]);
   const [load, setLoad] = useState(false);
   const [session, loading] = useSession(); //ชื่อมันซ้ำ
+  const [courseValue,setCourseValue] = useState([]);
+  const router = useRouter();
   var syStatus =
     system != null && system.length != 0 ? system[0].status : "loading...";
-  
+
   useEffect(() => {
     async function getCourses() {
       setLoad(true);
@@ -53,13 +58,47 @@ function coursesTeacher(props) {
         return course;
       } else if (course.teacher.toLowerCase().includes(search.toLowerCase())) {
         return course;
-      }
-      else if (course.major.toLowerCase().includes(search.toLowerCase())) {
+      } else if (course.major.toLowerCase().includes(search.toLowerCase())) {
         return course;
       }
-      
     });
   }
+
+  const applyTa = async (id) => {
+    return router.push(`/provost/provostCourses/${id}`);
+  };
+
+  const showModalCourse = (val) => {
+    setCourseValue({
+      CID:val.CID,
+      title:val.title,
+      courseID:val.courseID,
+      sec_D:val.sec_D,
+      sec_P:val.sec_P,
+      day_D:val.day_D,
+      day_P:val.day_P,
+      start_D:val.start_D,
+      start_P:val.start_P,
+      end_D:val.end_D,
+      end_P:val.end_P,
+      number_D:val.number_D,
+      number_P:val.number_P,
+      numberReal:val.numberReal,
+      level:val.level,
+      major:val.major,
+      teacher:val.teacher
+    });
+  };
+  const showSec = (sec_P) => {
+    let arraySec = sec_P?.split("_");
+    return arraySec?.map((val, index) => {
+      if (arraySec.length == index + 1) {
+        return <>{val}</>;
+      } else {
+        return <>{val},</>;
+      }
+    });
+  };
 
   if (typeof window !== "undefined" && loading) return null;
 
@@ -99,85 +138,104 @@ function coursesTeacher(props) {
         onChange={(e) => setSearch(e.target.value)}
       />
       จำนวน:{" "}
-      {courseList != null && courseList.length != 0 ? courseList.length : 0}{" "}
+      {courseList != null && courseList.length != 0
+        ? Filter(courseList).length
+        : 0}{" "}
       วิชา
-      <div className="table-responsive" style={{maxHeight:"65vh",marginTop:"1vh"}}>
-        
-          <table className="table table-hover table-borderless" cellspacing="0" style={{textAlign:"center"}}>
-            <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
-              <tr>
-                <th rowSpan="2">ลำดับ</th>
-                <th rowSpan="2">รหัสวิชา</th>
-                <th rowSpan="2">ชื่อวิชา</th>
-                <th colSpan="2">หมู่เรียน</th>
-                <th rowSpan="2">ระดับ</th>
-                <th rowSpan="2">สาขาวิชา</th>
-                <th rowSpan="2">อาจารย์ผู้สอน</th>
-                <th colSpan="2" class="text-nowrap">จำนวนนิสิต</th>
-                <th rowSpan="2">ข้อมูล/ลงทะเบียน</th>
-                <th rowSpan="2">สถานะ</th>
-              </tr>
+      <div
+        className="table-responsive"
+        style={{ maxHeight: "65vh", marginTop: "1vh" }}
+      >
+        <table
+          className="table table-hover table-borderless"
+          cellspacing="0"
+          style={{ textAlign: "center" }}
+        >
+          <thead
+            style={{
+              position: "sticky",
+              top: 0,
+              background: "#7a0117",
+              color: "#fff",
+              fontWeight: "400",
+            }}
+          >
+            <tr>
+              <th rowSpan="2">ลำดับ</th>
+              <th rowSpan="2">รหัสวิชา</th>
+              <th rowSpan="2">ชื่อวิชา</th>
+              <th colSpan="2">หมู่เรียน</th>
+              <th rowSpan="2">ระดับ</th>
+              <th rowSpan="2">สาขาวิชา</th>
+              <th rowSpan="2">อาจารย์ผู้สอน</th>
+              <th colSpan="2" class="text-nowrap">
+                จำนวนนิสิต
+              </th>
+              <th rowSpan="2">ข้อมูล/ขอนิสิตช่วยงาน</th>
+              
+            </tr>
 
-              <tr>
-                <th>บรรยาย</th>
-                <th>ปฎิบัติ</th>
-                <th>รับ</th>
-                <th>ลง</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Filter(courseList).map((val, key) => {
-                  return (
-                    <tr key={key}>
-                      <td>{key + 1}</td>
-                      <td>{val.courseID}</td>
-                      <td>{val.title}</td>
-                      <td>{val.sec_D ? val.sec_D : "-"}</td>
-                      <td>{val.sec_P ? val.sec_P : "-"}</td>
-                      <td class="text-nowrap">{val.level}</td>
-                      <td>{val.major}</td>
-                      <td>{val.teacher}</td>
-                      <td>{val.number_D ? val.number_D : val.number_P}</td>
-                      <td>{val.numberReal ? val.numberReal : 0}</td>
-                      <td>
-                        <button
-                          type="button"
-                          className="btn btn-primary text-nowrap"
-                          data-bs-toggle="modal"
-                          data-bs-target="#exampleModal"
-                          onClick={() => setValue(val)}
-                        >
-                          ข้อมูล/ลงทะเบียน
-                        </button>
-                      </td>
-                      {val.status ? (
-                        <td>
-                          {" "}
-                          <p
-                            class="text-nowrap"
-                            style={{ color: "green",borderRadius:"6px",padding:"5px" }}
-                          >
-                            ขอSAได้
-                          </p>{" "}
-                        </td>
-                      ) : (
-                        <td>
-                          {" "}
-                          <p class="text-nowrap" style={{ color: "red",borderRadius:"6px",padding:"5px"}}>
-                            ขอSAไม่ได้
-                          </p>{" "}
-                        </td>
-                      )}
-                    </tr>
-                  );
-                })}
-                {load  && <h2 style={{color:"red"}}>กำลังโหลด...</h2>}
-                {!load && courseList && !courseList.length && <h2 style={{color:"red"}}>ไม่มีรายวิชาที่เปิดสอน</h2>}
-                
-            </tbody>
-          </table>
-         
-        <Modal val={value} />
+            <tr>
+              <th>บรรยาย</th>
+              <th>ปฎิบัติ</th>
+              <th>รับ</th>
+              <th>ลง</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Filter(courseList).map((val, key) => {
+              return (
+                <tr key={key}>
+                  <td>{key + 1}</td>
+                  <td>
+                    <Link href="#">
+                      <a
+                        data-bs-toggle="modal"
+                        data-bs-target="#ModalCourse"
+                        onClick={() => showModalCourse(val)}
+                      >
+                        {val.courseID}
+                      </a>
+                    </Link>
+                  </td>
+                  <td>{val.title}</td>
+                  <td>{val.sec_D ? val.sec_D : "-"}</td>
+                  <td>{val.sec_P ? showSec(val.sec_P) : "-"}</td>
+                  <td class="text-nowrap">{val.level}</td>
+                  <td>{val.major}</td>
+                  <td>{val.teacher}</td>
+                  <td>{val.number_D ? val.number_D : val.number_P}</td>
+                  <td>{val.numberReal ? val.numberReal : 0}</td>
+                  <td>
+                    {val.status ?<button
+                      type="button"
+                      className="btn btn-primary text-nowrap"
+                      
+                      onClick={() => applyTa(val.id)}
+                    >
+                      ขอนิสิตช่วยงาน
+                    </button>:<button
+                      type="button"
+                      className="btn btn-danger text-nowrap"
+                      disabled
+                    >
+                      ขอนิสิตช่วยงานไม่ได้
+                    </button>}
+                  </td>
+                  
+                    
+                  
+                </tr>
+              );
+            })}
+            {load && <h2 style={{ color: "red" }}>กำลังโหลด...</h2>}
+            {!load && courseList && !courseList.length && (
+              <h2 style={{ color: "red" }}>ไม่มีรายวิชาที่เปิดสอน</h2>
+            )}
+          </tbody>
+        </table>
+        <ModalCourse val={courseValue} />
+        
       </div>
     </div>
   );
