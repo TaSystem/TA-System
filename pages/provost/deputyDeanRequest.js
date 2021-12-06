@@ -6,6 +6,7 @@ import { getDetailNisit } from "../../redux/actions/nisitAction";
 import SelectMajor from "../../components/SelectMajor";
 import Link from "next/link";
 import ModalDetailTeacher from "../../components/ModalDetailTeacher";
+import ModalCourse from "../../components/ModalCourse";
 
 function DeputyDeanRequest(props) {
   const [courseList, setCourseList] = useState([]);
@@ -13,18 +14,18 @@ function DeputyDeanRequest(props) {
   const [major, setMajor] = useState("All");
   const [level, setLevel] = useState("All");
   const [session, loading] = useSession();
-  const [teacherValue,setTeacherValue] = useState([]);
+  const [teacherValue, setTeacherValue] = useState([]);
   const [success, setSuccess] = useState(null);
   const [yearNow, setYearNow] = useState([]);
   const [load, setLoad] = useState(false);
+  const [courseValue, setCourseValue] = useState([]);
 
   useEffect(() => {
     if (session) {
-      props.getDetailNisit(session.user.email)
+      props.getDetailNisit(session.user.email);
     }
-
   }, [loading]);
-  
+
   useEffect(() => {
     async function getCourses() {
       setLoad(true);
@@ -40,10 +41,10 @@ function DeputyDeanRequest(props) {
     getCourses();
   }, []);
 
-  async function replyTAsuccess(course,AID) {
+  async function replyTAsuccess(course, AID) {
     await Axios.put("/reply/teacher-reply", {
-      email:session.user.email,
-      applyTaId:AID,
+      email: session.user.email,
+      applyTaId: AID,
       courseID: course,
       status: 4,
     }).then((res) => {
@@ -55,15 +56,15 @@ function DeputyDeanRequest(props) {
       setSuccess(res.data.message);
     });
   }
-  async function replyTAfail(course,AID,title) {
-    let notereply = prompt("เหตุผลที่ยกเลิกวิชา "+title);
-    if(notereply != null){
+  async function replyTAfail(course, AID, title) {
+    let notereply = prompt("เหตุผลที่ยกเลิกวิชา " + title);
+    if (notereply != null) {
       await Axios.put("/reply/teacher-reply", {
-        email:session.user.email,
-        applyTaId:AID,
+        email: session.user.email,
+        applyTaId: AID,
         courseID: course,
         status: 0,
-        notereply:notereply
+        notereply: notereply,
       }).then((res) => {
         setCourseList(
           courseList.filter((val) => {
@@ -72,9 +73,8 @@ function DeputyDeanRequest(props) {
         );
         setSuccess(res.data.message);
       });
-    }
-    else{
-      console.log("")
+    } else {
+      console.log("");
     }
   }
 
@@ -94,8 +94,7 @@ function DeputyDeanRequest(props) {
         ) {
           return course;
         }
-      }
-      else if (course.major == major) {
+      } else if (course.major == major) {
         if (!search) {
           return course;
         } else if (course.title.toLowerCase().includes(search.toLowerCase())) {
@@ -113,34 +112,55 @@ function DeputyDeanRequest(props) {
     });
   }
 
-  const TeacherapplyID = (id) =>{
+  const TeacherapplyID = (id) => {
     let l = id.toString().length;
-    if(l==1) return "TR00000"+id;
-    else if(l==2) return "TR0000"+id;
-    else if(l==3) return "TR000"+id;
-    else if(l==4) return "TR00"+id;
-    else if(l==5) return "TR0"+id;
-    else if(l==6) return "TR"+id;
-}
-const showModalTeacher =  (val) =>{
-  setTeacherValue({
-    CID:val.CID,
-    email:val.email,
-    name_email:val.name_email,
-    name:val.name,
-    lastname:val.lastname,
-    department:val.department,
-    roleTitle:val.roleTitle,
-    tel:val.tel,
-  });
-  
-}
+    if (l == 1) return "TR00000" + id;
+    else if (l == 2) return "TR0000" + id;
+    else if (l == 3) return "TR000" + id;
+    else if (l == 4) return "TR00" + id;
+    else if (l == 5) return "TR0" + id;
+    else if (l == 6) return "TR" + id;
+  };
+  const showModalTeacher = (val) => {
+    setTeacherValue({
+      CID: val.CID,
+      email: val.email,
+      name_email: val.name_email,
+      name: val.name,
+      lastname: val.lastname,
+      department: val.department,
+      roleTitle: val.roleTitle,
+      tel: val.tel,
+    });
+  };
+
+  const showModalCourse = (val) => {
+    setCourseValue({
+      CID: val.CID,
+      title: val.title,
+      courseID: val.courseID,
+      sec_D: val.sec_D,
+      sec_P: val.sec_P,
+      day_D: val.day_D,
+      day_P: val.day_P,
+      start_D: val.start_D,
+      start_P: val.start_P,
+      end_D: val.end_D,
+      end_P: val.end_P,
+      number_D: val.number_D,
+      number_P: val.number_P,
+      numberReal: val.numberReal,
+      level: val.level,
+      major: val.major,
+      teacher: val.teacher,
+    });
+  };
 
   return (
     <div className="container">
       <h1>รายวิชาที่ยื่นขอเปิดรับ TA (รองคณบดี)</h1>
       <h3>
-      ปี{" "}
+        ปี{" "}
         {yearNow != null && yearNow.length != 0
           ? yearNow[0].year
           : "loading..."}{" "}
@@ -156,26 +176,46 @@ const showModalTeacher =  (val) =>{
           placeholder="รหัสวิชา/ชื่อวิชา/อาจารย์"
           onChange={(e) => setSearch(e.target.value)}
         />
-        <SelectMajor onChange={(e) => {
+        <SelectMajor
+          onChange={(e) => {
             setMajor(e.target.value);
-          }}/>
+          }}
+        />
       </div>
       {success && (
-            <div className="alert alert-success" role="alert">
-              {" "}
-              {success}{" "}
-            </div>
+        <div className="alert alert-success" role="alert">
+          {" "}
+          {success}{" "}
+        </div>
       )}
-      จำนวนคำร้อง: {courseList != null && courseList.length != 0 ? courseList.length : 0}
-      <div className="table-responsive" style={{maxHeight:"70vh",maxWidth:"80vw",marginTop:"1vh"}}>
-        <table className="table table-hover table-bordered" cellspacing="0" style={{textAlign:"center"}}>
-          <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
+      จำนวนคำร้อง:{" "}
+      {courseList != null && courseList.length != 0
+        ? Filter(courseList).length
+        : 0}
+      <div
+        className="table-responsive"
+        style={{ maxHeight: "70vh", maxWidth: "80vw", marginTop: "1vh" }}
+      >
+        <table
+          className="table table-hover table-bordered"
+          cellspacing="0"
+          style={{ textAlign: "center" }}
+        >
+          <thead
+            style={{
+              position: "sticky",
+              top: 0,
+              background: "#7a0117",
+              color: "#fff",
+              fontWeight: "400",
+            }}
+          >
             <tr>
               <th rowSpan="2">ลำดับ</th>
               <th rowSpan="2">รหัสคำขอ</th>
               <th rowSpan="2">รหัสวิชา</th>
               <th rowSpan="2">ชื่อวิชา</th>
-              <th colSpan="2">หมู่เรียน</th>
+
               <th rowSpan="2">ระดับ</th>
               <th rowSpan="2">สาขาวิชา</th>
               <th rowSpan="2">อาจารย์ผู้สอน</th>
@@ -185,8 +225,6 @@ const showModalTeacher =  (val) =>{
               <th rowSpan="2">ตอบกลับ</th>
             </tr>
             <tr>
-              <th>บรรยาย</th>
-              <th>ปฎิบัติ</th>
               <th>ป.ตรี</th>
               <th>ป.โท</th>
             </tr>
@@ -197,35 +235,52 @@ const showModalTeacher =  (val) =>{
                 <tr key={key}>
                   <td>{key + 1}</td>
                   <td>{TeacherapplyID(val.AID)}</td>
-                  <td>{val.courseID}</td>
+                  <td>
+                    <Link href="#">
+                      <a
+                        data-bs-toggle="modal"
+                        data-bs-target="#ModalCourse"
+                        onClick={() => showModalCourse(val)}
+                      >
+                        {val.courseID}
+                      </a>
+                    </Link>
+                  </td>
                   <td>{val.title}</td>
-                  <td>{val.sec_D ? val.sec_D : "-"}</td>
-                  <td>{val.sec_P ? val.sec_P : "-"}</td>
+
                   <td>{val.level}</td>
                   <td>{val.major}</td>
                   <td>{val.teacher}</td>
-                  <td><Link href="#">
-                      <a  data-bs-toggle="modal" data-bs-target="#ModalDetailTeacher"  onClick={()=>showModalTeacher(val)}>
+                  <td>
+                    <Link href="#">
+                      <a
+                        data-bs-toggle="modal"
+                        data-bs-target="#ModalDetailTeacher"
+                        onClick={() => showModalTeacher(val)}
+                      >
                         {val.name} {val.lastname}
                       </a>
-                    </Link> </td>
+                    </Link>{" "}
+                  </td>
                   <td>{val.number1}</td>
                   <td>{val.number2}</td>
                   <td>{val.noteapply}</td>
-                  
+
                   <td>
                     <button
                       type="button"
                       class="btn btn-success"
-                      onClick={()=>{if (window.confirm('ต้องการยืนยันวิชา: '+val.title))replyTAsuccess(val.CID,val.AID)}}
-                      
+                      onClick={() => {
+                        if (window.confirm("ต้องการยืนยันวิชา: " + val.title))
+                          replyTAsuccess(val.CID, val.AID);
+                      }}
                     >
                       ยืนยัน
                     </button>
                     <button
                       type="button"
                       class="btn btn-danger"
-                      onClick={() =>  replyTAfail(val.CID,val.AID,val.title) }
+                      onClick={() => replyTAfail(val.CID, val.AID, val.title)}
                     >
                       ยกเลิก
                     </button>
@@ -233,12 +288,14 @@ const showModalTeacher =  (val) =>{
                 </tr>
               );
             })}
-             {load  && <h2 style={{color:"red"}}>กำลังโหลด...</h2>}
-            {!load && courseList && !courseList.length && <h2 style={{color:"red"}}>ไม่มีคำร้อง</h2>}
+            {load && <h2 style={{ color: "red" }}>กำลังโหลด...</h2>}
+            {!load && courseList && !courseList.length && (
+              <h2 style={{ color: "red" }}>ไม่มีคำร้อง</h2>
+            )}
           </tbody>
         </table>
-        <ModalDetailTeacher val={teacherValue}  />
-        
+        <ModalCourse val={courseValue} />
+        <ModalDetailTeacher val={teacherValue} />
       </div>
     </div>
   );

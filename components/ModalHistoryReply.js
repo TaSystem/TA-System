@@ -10,6 +10,100 @@ export default function ModalDetailTeacher(props) {
     else if (l == 5) return "TR0" + props.AID;
     else if (l == 6) return "TR" + props.AID;
   };
+  const condition = (status) => {
+    if (status === 1) {
+      return (
+        <td>
+          <p
+            style={{
+              backgroundColor: "#E3E726",
+              color: "white",
+              borderRadius: "6px",
+              padding: "3px",
+            }}
+          >
+            รอดำเนินการจากเจ้าหน้าที
+          </p>{" "}
+        </td>
+      );
+    } else if (status === 2) {
+      return (
+        <td>
+          <p
+            style={{
+              backgroundColor: "#E3E726",
+              color: "white",
+              borderRadius: "6px",
+              padding: "3px",
+            }}
+          >
+            เจ้าหน้าทียืนยัน
+            
+          </p>{" "}
+        </td>
+      );
+    } else if (status === 3) {
+      return (
+        <td>
+          <p
+            style={{
+              backgroundColor: "#E3E726",
+              color: "white",
+              borderRadius: "6px",
+              padding: "3px",
+            }}
+          >
+            หัวหน้าภาคยืนยัน
+          </p>{" "}
+        </td>
+      );
+    } else if (status === 4) {
+      return (
+        <td>
+          <p
+            style={{
+              backgroundColor: "#E3E726",
+              color: "white",
+              borderRadius: "6px",
+              padding: "3px",
+            }}
+          >
+            คณบดียืนยัน
+          </p>{" "}
+        </td>
+      );
+    } else if (status === 5) {
+      return (
+        <td>
+          <p
+            style={{
+              backgroundColor: "#0E7ADD",
+              color: "white",
+              borderRadius: "6px",
+              padding: "3px",
+            }}
+          >
+            เจ้าหน้าทียืนยัน
+          </p>{" "}
+        </td>
+      );
+    } else {
+      return (
+        <td>
+          <p
+            style={{
+              backgroundColor: "#DD0E0E",
+              color: "white",
+              borderRadius: "6px",
+              padding: "3px",
+            }}
+          >
+            ถูกยกเลิก
+          </p>{" "}
+        </td>
+      );
+    }
+  };
 
   return (
     <div
@@ -35,7 +129,7 @@ export default function ModalDetailTeacher(props) {
           </div>
           <div className="modal-body">
             <p>รหัสคำขอ: {applyID()} </p>
-            <table className="table table-bordered" cellspacing="0" style={{textAlign:"center"}}>
+            <table className="table table-hover table-bordered" cellspacing="0" style={{textAlign:"center"}}>
               <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
                 <tr>
                   <th rowSpan="2">ขั้นตอน</th>
@@ -53,7 +147,7 @@ export default function ModalDetailTeacher(props) {
                 {props.history.map((val, key) => {
                   return (
                     <tr key={key}>
-                      <td>{val.status}</td>
+                      <td>{condition(val.status)}</td>
 
                       <td>
                         {val.name} {val.lastname}

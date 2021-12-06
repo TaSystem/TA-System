@@ -6,8 +6,6 @@ import { connect } from "react-redux";
 import { getDetailNisit } from "../redux/actions/nisitAction";
 import ENGBadge from '../img/unnamed.jpg';
 import Image from "next/image";
-import styles from '../styles/navbar.module.css';
-
 const Navbar = (props) => {
   const [session, loading] = useSession();
   const router = useRouter();
@@ -26,28 +24,28 @@ const Navbar = (props) => {
               <p class="text-white text-decoration-none" style={{margin:"0 0 0 1.5vw",fontWeight:600,fontSize:"45px",marginBlock:0,cursor:"none"  }}>SA</p>
           </div>
           <hr/>
-          <ul class={`nav nav-pills flex-column mb-auto ${styles.sidebarHover}`} id="navbarNavAltMarkup" 
+          <ul class={`nav nav-pills flex-column mb-auto`} id="navbarNavAltMarkup" 
           
           >
 
               <Link href="/nisit">
                 <a class={`nav-item nav-link text-white `} >รายวิชาที่เป็นSA </a>
               </Link>
-              <Link href="/nisit/historyRequest">
-                <a class="nav-item nav-link text-white">รายวิชาที่ยื่นขอ </a>
-              </Link>
+              
               <Link href="/nisit/requestTA">
                 <a class="nav-item nav-link text-white">ลงทะเบียนSA </a>
               </Link>
-
-              <Link href="/nisit/registerNisit">
+              <Link href="/nisit/historyRequest">
+                <a class="nav-item nav-link text-white">ประวัติการยื่นคำร้อง </a>
+              </Link>
+              {/* <Link href="/nisit/registerNisit">
                 <a class="nav-item nav-link text-white">กรอกข้อมูลนิสิต </a>
               </Link>
               <Link href="/nisit/addBank">
                 <a class="nav-item nav-link text-white">กรอกข้อมูลธนาคาร</a>
-              </Link>
+              </Link> */}
               <Link href="/nisit/profileNisit">
-                <a class="nav-item nav-link text-white">กรอกข้อมูล</a>
+                <a class="nav-item nav-link text-white">ข้อมูลส่วนตัว</a>
               </Link>
               
               </ul>
@@ -72,7 +70,7 @@ const Navbar = (props) => {
           <hr/>
           <ul class="nav nav-pills flex-column mb-auto" id="navbarNavAltMarkup">
           <Link href="/provost/provostCourses">
-                <a class="nav-item nav-link text-white">รายวิชาที่เปิดสอน</a>
+                <a class="nav-item nav-link text-white">รายวิชาที่เปิดสอน/ขอนิสิตช่วยงาน</a>
               </Link>
               <Link href="/provost/provostCourseSuccess">
                 <a class="nav-item nav-link text-white">รายวิชาที่เปิดรับSAได้ </a>
@@ -81,10 +79,10 @@ const Navbar = (props) => {
                 <a class="nav-item nav-link text-white">คำร้องนิสิต </a>
               </Link>
               <Link href="/provost/provostHItoryApply">
-                <a class="nav-item nav-link text-white">ประวัติยื่นคำร้อง </a>
+                <a class="nav-item nav-link text-white">ประวัติการยื่นคำร้อง</a>
               </Link>
               <Link href="/provost/profileProvost">
-                <a class="nav-item nav-link text-white">กรอกข้อมูลส่วนตัว</a>
+                <a class="nav-item nav-link text-white">ข้อมูลส่วนตัว</a>
               </Link>
               </ul>
               <hr/>
@@ -153,25 +151,25 @@ const Navbar = (props) => {
           <hr/>
           <ul class="nav nav-pills flex-column mb-auto" id="navbarNavAltMarkup">
           <Link href="/provost/provostCourses">
-                <a class="nav-item nav-link text-white">รายวิชาที่เปิดสอน </a>
+                <a class="nav-item nav-link text-white">รายวิชาที่เปิดสอน/ขอนิสิตช่วยงาน</a>
               </Link>
               <Link href="/provost/provostCourseSuccess">
                 <a class="nav-item nav-link text-white">รายวิชาที่เปิดรับSAได้ </a>
               </Link>
               <Link href="/provost/deputyDeanRequest">
-                <a class="nav-item nav-link text-white">คำร้องอาจารย์ </a>
+                <a class="nav-item nav-link text-white">คำร้องอาจารย์</a>
               </Link>
               <Link href="/provost/provostNisitRequest">
-                <a class="nav-item nav-link text-white">คำร้องนิสิต </a>
+                <a class="nav-item nav-link text-white">คำร้องนิสิต</a>
               </Link>
               <Link href="/provost/provostHItoryApply">
-                <a class="nav-item nav-link text-white">ประวัติยื่นคำร้อง </a>
+                <a class="nav-item nav-link text-white">ประวัติการยื่นคำร้อง</a>
               </Link>
               <Link href="/provost/dashboard">
                 <a class="nav-item nav-link text-white">แดชบอร์ด </a>
               </Link>
               <Link href="/provost/profileProvost">
-                <a class="nav-item nav-link text-white">กรอกข้อมูลส่วนตัว</a>
+                <a class="nav-item nav-link text-white">ข้อมูลส่วนตัว</a>
               </Link>
               
               </ul>
@@ -248,22 +246,22 @@ const Navbar = (props) => {
           <hr/>
           <ul class="nav nav-pills flex-column mb-auto" id="navbarNavAltMarkup">
               <Link href="/provost/provostCourses">
-                <a class="nav-item nav-link text-white">รายวิชาที่เปิดสอน</a>
+                <a class="nav-item nav-link text-white">รายวิชาที่เปิดสอน/ขอนิสิตช่วยงาน</a>
               </Link>
               <Link href="/provost/provostCourseSuccess">
                 <a class="nav-item nav-link text-white">รายวิชาที่เปิดรับSAได้ </a>
               </Link>
               <Link href="/provost/provostNisitRequest">
-                <a class="nav-item nav-link text-white">คำร้องนิสิต </a>
+                <a class="nav-item nav-link text-white">คำร้องนิสิต</a>
               </Link>
               <Link href="/provost/provostHItoryApply">
-                <a class="nav-item nav-link text-white">ประวัติยื่นคำร้อง </a>
+                <a class="nav-item nav-link text-white">ประวัติการยื่นคำร้อง</a>
               </Link>
               <Link href="/provost/dashboard">
                 <a class="nav-item nav-link text-white">แดชบอร์ด </a>
               </Link>
               <Link href="/provost/profileProvost">
-                <a class="nav-item nav-link text-white">กรอกข้อมูลส่วนตัว</a>
+                <a class="nav-item nav-link text-white">ข้อมูลส่วนตัว</a>
               </Link>
               </ul>
               <hr/>
@@ -347,17 +345,15 @@ const Navbar = (props) => {
                 <a class="nav-item nav-link text-white">รายวิชาทั้งหมด </a>
               </Link>
               <Link href="/provost/provostCourses">
-                <a class="nav-item nav-link text-white">รายวิชาที่เปิดสอน </a>
+                <a class="nav-item nav-link text-white">รายวิชาที่เปิดสอน/ขอนิสิตช่วยงาน </a>
               </Link>
               <Link href="/provost/provostCourseSuccess">
                 <a class="nav-item nav-link text-white">รายวิชาที่เปิดรับSAได้ </a>
               </Link>
-              <Link href="/provost/provostHItoryApply">
-                <a class="nav-item nav-link text-white">รายวิชาทั้งหมดที่ยื่นขอSA </a>
-              </Link>
+              
                 </ul>
               </div>
-              
+               
               <button class="d-flex btn btn-toggle rounded collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse1" aria-expanded="false" style={{color:"#fff",textAlign:"left",padding:"0.5rem 1rem"}}>
               <p class="flex-grow-1" style={{marginBottom:0}}>คำร้องอาจารย์/ค่าใช้จ่าย</p> <img src="https://cdn-icons-png.flaticon.com/512/151/151858.png" style={{filter:"brightness(0) invert(1)",width:"12px",marginTop:"7px"}} />
               </button>
@@ -386,18 +382,26 @@ const Navbar = (props) => {
                 <a class="nav-item nav-link text-white">คำร้องนิสิต(อาจารย์) </a>
               </Link>
               <Link href="/provost/officerNisitRequest">
-                <a class="nav-item nav-link text-white">คำร้องนิสิต(เจ้าหน้าที่) </a>
+                <a class="nav-item nav-link text-white">คำร้องนิสิต(เจ้าหน้าที่)/อนุมัติหลักการ </a>
               </Link>
               <Link href="/provost/officerSASuccess">
                 <a class="nav-item nav-link text-white">รายชื่อนิสิตSA(เจ้าหน้าที่) </a>
               </Link>
                 </ul>
               </div>
-              
-              
-              <Link href="/provost/dashboard">
-                <a class="nav-item nav-link text-white">แดชบอร์ด </a>
+              <button class="d-flex btn btn-toggle rounded collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse4" aria-expanded="false" style={{color:"#fff",textAlign:"left",padding:"0.5rem 1rem"}}>
+              <p class="flex-grow-1" style={{marginBottom:0}}>ประวัติยื่นคำร้อง</p> <img src="https://cdn-icons-png.flaticon.com/512/151/151858.png" style={{filter:"brightness(0) invert(1)",width:"12px",marginTop:"7px"}} />
+              </button>
+              <div class="collapse" id="dashboard-collapse4">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small" style={{marginLeft:"15px",fontSize:"14px"}}>             
+              <Link href="/provost/provostHItoryApply">
+                <a class="nav-item nav-link text-white">ประวัติยื่นคำร้องอาจารย์</a>
               </Link>
+              <Link href="/provost/officerNisitHistory">
+                <a class="nav-item nav-link text-white">ประวัติยื่นคำร้องนิสิต</a>
+              </Link>
+                </ul>
+              </div>
               <button class="d-flex btn btn-toggle rounded collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse3" aria-expanded="false" style={{color:"#fff",textAlign:"left",padding:"0.5rem 1rem"}}>
               <p class="flex-grow-1" style={{marginBottom:0}}>ตั้งค่า</p> <img src="https://cdn-icons-png.flaticon.com/512/151/151858.png" style={{filter:"brightness(0) invert(1)",width:"12px",marginTop:"7px"}} />
               </button>
@@ -414,8 +418,11 @@ const Navbar = (props) => {
                 </Link>
                 </ul>
               </div>
+              <Link href="/provost/dashboard">
+                <a class="nav-item nav-link text-white">แดชบอร์ด </a>
+              </Link>
               <Link href="/provost/profileProvost">
-                <a class="nav-item nav-link text-white">กรอกข้อมูลส่วนตัว</a>
+                <a class="nav-item nav-link text-white">ข้อมูลส่วนตัว</a>
               </Link>
               </ul>
               <hr/>
@@ -506,7 +513,7 @@ const Navbar = (props) => {
         // </nav>
       );
       }
-      else if(props.nisit.roleID >= 6){
+      else if(props.nisit.roleID >= 6){//หัวหน้าภาค
         return (
           <nav class="d-flex flex-column flex-shrink-0 p-3 text-white" style={{width:"280px",padding:"2vw",height:"calc(100vh - 0px)",position:"fixed",top:0,left:0,zIndex:1,background:"#7a0117"}} >
           <div style={{width:"280px",display:"flex",textAlign:"center"}}>
@@ -518,7 +525,7 @@ const Navbar = (props) => {
           <hr/>
           <ul class="nav nav-pills flex-column mb-auto" id="navbarNavAltMarkup">
           <Link href="/provost/provostCourses">
-                <a class="nav-item nav-link text-white">รายวิชาที่เปิดสอน </a>
+                <a class="nav-item nav-link text-white">รายวิชาที่เปิดสอน/ขอนิสิตช่วยงาน </a>
               </Link>
               <Link href="/provost/provostCourseSuccess">
                 <a class="nav-item nav-link text-white">รายวิชาที่เปิดรับSAได้ </a>
@@ -530,10 +537,10 @@ const Navbar = (props) => {
                 <a class="nav-item nav-link text-white">คำร้องนิสิต </a>
               </Link>
               <Link href="/provost/provostHItoryApply" >
-                <a class="nav-item nav-link text-white">ประวัติยื่นคำร้อง </a>
+                <a class="nav-item nav-link text-white">ประวัติการยื่นคำร้อง</a>
               </Link>
               <Link href="/provost/profileProvost">
-                <a class="nav-item nav-link text-white">กรอกข้อมูลส่วนตัว</a>
+                <a class="nav-item nav-link text-white">ข้อมูลส่วนตัว</a>
               </Link>
               </ul>
               <hr/>

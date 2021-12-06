@@ -114,7 +114,8 @@ function officerNisitRequest(props) {
       end_D:val.end_D,
       end_P:val.end_P,
       number_D:val.number_D,
-      number_D:val.number_P,
+      number_P:val.number_P,
+      numberReal:val.numberReal,
       level:val.level,
       major:val.major,
       teacher:val.teacher
@@ -163,7 +164,7 @@ function officerNisitRequest(props) {
     else if(l==4) return "SR00"+id;
     else if(l==5) return "SR0"+id;
     else if(l==6) return "SR"+id;
-}
+  }
 
 const replyTAsuccess = async (AID,CID,hrperweek,lvl) => {
   setError(null);
@@ -237,7 +238,7 @@ const replyTAfail = async (AID,CID,title) => {
           ? yearNow[0].term
           : "loading..."}
       </h3>
-      <div className="input-group mb-3">
+      <div className="input-group mb-3" style={{ maxHeight: "70vh", maxWidth: "75vw", marginTop: "1vh" }}>
         {/* {console.log('eiei')} */}
       <input
           type="text"
@@ -274,6 +275,7 @@ const replyTAfail = async (AID,CID,title) => {
           2.พิมพ์เอกสารตามภาควิชานั้นๆโดยการเลือก
           3.หลังพิมเอกสารยืนยันคำร้องนิสิตคนนั้นจะเป็น SA 
         </samll>
+        <p for="table" style={{marginTop:"10px"}}>จำนวนคำร้อง:{courses != null && courses.length != 0 ? Filter(courses).length : 0}</p>
       {success && (
             <div className="alert alert-success" role="alert">
               {" "}
@@ -287,8 +289,10 @@ const replyTAfail = async (AID,CID,title) => {
               {" "}
             </div>
       )}
-      
-       <p for="table" style={{marginTop:"10px"}}>จำนวนคำร้อง:{courses != null && courses.length != 0 ? courses.length : 0}</p>
+      <div
+        className="table-responsive"
+        style={{ maxHeight: "58vh", maxWidth: "75vw", marginTop: "1vh" }}
+      >
         <table id="table"className="table table-hover table-bordered" cellspacing="0" style={{textAlign:"center"}}>
           <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
             <tr>
@@ -296,7 +300,7 @@ const replyTAfail = async (AID,CID,title) => {
               <th rowSpan="2" class="text-nowrap">รหัสคำขอ</th>
               <th rowSpan="2">รหัสวิชา</th>
               <th rowSpan="2">ชื่อวิชา</th>
-              <th colSpan="2">หมู่เรียน</th>
+              
               <th rowSpan="2">สาขาวิชา</th>
               <th rowSpan="2">อาจารย์</th>
               <th rowSpan="2" class="text-nowrap">อาจารย์เจ้าของวิชา</th>
@@ -304,10 +308,7 @@ const replyTAfail = async (AID,CID,title) => {
               <th rowSpan="2">เหตุผล</th>
               <th rowSpan="2">ตอบกลับคำร้อง</th>
             </tr>
-            <tr>
-              <th>บรรยาย</th>
-              <th>ปฎิบัติ</th>
-            </tr>
+            
           </thead>
           <tbody>
             {Filter(courses).map((val, key) => {
@@ -324,8 +325,7 @@ const replyTAfail = async (AID,CID,title) => {
                   </td>
                   <td>{val.title}</td>
                   
-                  <td>{val.sec_D ? val.sec_D : "-"}</td>
-                  <td>{val.sec_P ? val.sec_P : "-"}</td>
+                  
                   <td>{val.major}</td>
                   <td>{val.teacher}</td>
                   <td> 
@@ -377,6 +377,7 @@ const replyTAfail = async (AID,CID,title) => {
             {!load && courses && !courses.length && <h2 style={{color:"red"}}>ไม่มีคำร้อง</h2>}
           </tbody>
         </table>
+        </div>
         <ModalCourse val={courseValue} />
         <ModalDetailNisit val={nisitValue} role={props.nisit.roleID} />
         <ModalDetailTeacher val={owner} />

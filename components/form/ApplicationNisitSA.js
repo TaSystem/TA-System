@@ -1,33 +1,37 @@
 import React from "react";
 import styles from "./form.style.module.css";
-function ApplicationNisitSA(props) {
-  //console.log('props123 = ',props)
+const ApplicationNisitSA = React.forwardRef((props,ref)=> {
+  console.log('props123 = ',props)
   const {
     name = "",
-    nisitId = "",
-    major = "",
+    idStudent = "",
+    departmentNisit = "",
     year = "",
+    term ="",
+    department="",
+    nisitYear='',
     tel = "",
     bank = "",
-    accountNumber = ""
+    accountNumber = "",
+    tableDatas=[]
   } = props;
   const header = [
     { text: "ลำดับที่", key: "number" },
-    { text: "รหัสวิชา", key: "subjectId" },
+    { text: "รหัสวิชา", key: "courseId" },
     { text: "ชื่อวิชา", key: "subjectName" },
     { text: "หมู่เรียน", key: "sec" },
     { text: "วันที่ปฎิบัติงาน/n(จันทร์ - อาทิตย์)", key: "day" },
     { text: "เวลาที่ปฎิบัติงาน", key: "time" },
-    { text: "จำนวนชั่วโมงที่/nปฎิบัติงาน/สัปดาห์", key: "hour" }
+    { text: "จำนวนชั่วโมงที่/nปฎิบัติงาน/สัปดาห์", key: "hrperweek" }
   ];
   const item = {
     number: "",
-    subjectId: "",
+    courseId: "",
     subjectName: "",
     sec: "",
     day: "",
     time: "",
-    hour: ""
+    hrperweek: ""
   };
   const data = new Array(5).fill(1).map((i) => item);
   return (
@@ -35,19 +39,20 @@ function ApplicationNisitSA(props) {
       style={{
         width: "297mm",
         height: "210mm",
-        border: "1px solid black",
+        // border: "1px solid black",
         padding: "28px",
         display: "flex",
         flexDirection: "column"
         // justifyContent: "space-between"
       }}
+      ref = {ref}
     >
       {" "}
       <div>
         <p className={styles.headerText}>
-          ใบสมัครนิสิตช่วยงานปฎิบัติงาน ภาควิชาวิศวกรรมคอมพิวเตอร์123
+          {`ใบสมัครนิสิตช่วยงานปฎิบัติงาน ภาควิชา${department}`}
         </p>
-        <p className={styles.headerText}>{`ประจำภาคปลาย ปีการศึกษา ${year}`}</p>
+        <p className={styles.headerText}>{`ประจำภาค${term} ปีการศึกษา ${year}`}</p>
         <p className={styles.headerText}>
           คณะวิศกรรมศาสตร์ศรีราชา มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตศรีราชา
         </p>
@@ -57,13 +62,13 @@ function ApplicationNisitSA(props) {
           {`ชื่อ -
           นามสกุล.............${name}...................................................................
           รหัสประจำตัวนิสิต
-          ..........${nisitId}................................`}
+          ..........${idStudent}................................`}
         </p>
         <p className={styles.bodyText}>
-          {/* major */}
-          {`ภาควิชา.......................${major}..........................................................................
+          {/* departmentNisit */}
+          {`ภาควิชา.......................${departmentNisit}..........................................................................
           ชั้นปี
-          ......${year}..........................`}
+          ......${nisitYear}..........................`}
         </p>
         <p className={styles.bodyText}>
           {` เบอร์โทรศัพท์.........${tel}..............................................
@@ -81,13 +86,14 @@ function ApplicationNisitSA(props) {
             </th>
           ))}
         </tr>
+        
 
-        {data.map((d) => (
+        {tableDatas?.map((d) => (
           // arr[0] = key
           // arr[1] = val
           <tr className={styles.trStyle}>
             {Object.entries(d).map((arr, idx) => (
-              <td className={styles.bodyCell}>{arr[1]}</td>
+              <td className={styles.bodyCell}><p style = {{textAlign:'center'}}>{arr[1]}</p></td>
             ))}
           </tr>
         ))}
@@ -139,6 +145,6 @@ function ApplicationNisitSA(props) {
       </div>
     </div>
   );
-}
+})
 
 export default ApplicationNisitSA;

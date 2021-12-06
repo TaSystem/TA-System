@@ -102,7 +102,7 @@ function officerSetRole(props) {
         onChange={(e) => setSearch(e.target.value)}
       />
       จำนวนบุคลากร:{" "}
-      {userList != null && userList.length != 0 ? userList.length : 0} คน
+      {userList != null && userList.length != 0 ? Filter(userList).length : 0} คน
       {success && (
         <div className="alert alert-success" role="alert">
           {" "}
@@ -180,10 +180,13 @@ function officerSetRole(props) {
                 </tr>
               );
             })}
-            <tr>
-              <td></td>
-              <td>
-                <input
+            
+          </tbody>
+        </table>
+      </div>
+      <div class="row" style={{marginTop:"40px"}}>
+        <div class="col" >
+      <input
                   type="text"
                   className="form-control"
                   placeholder="อีเมลล์"
@@ -191,10 +194,9 @@ function officerSetRole(props) {
                     setEmail(e.target.value);
                   }}
                 />
-              </td>
-
-              <td>
-                <div class="input-group">
+                </div>
+                <div class="col">
+      <div class="input-group">
                   <input
                     type="text"
                     className="form-control"
@@ -212,9 +214,9 @@ function officerSetRole(props) {
                     }}
                   />
                 </div>
-              </td>
-              <td>
-                <select
+                </div>
+                <div class="col">
+      <select
                   class="form-select"
                   name="departmentSelect"
                   onChange={(e) => {
@@ -250,9 +252,9 @@ function officerSetRole(props) {
                     วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ(ป.ตรี)
                   </option>
                 </select>
-              </td>
-              <td>
-                <input
+                </div>
+                <div class="col">
+      <input
                   type="text"
                   className="form-control"
                   placeholder="เบอร์โทรศัพท์"
@@ -260,9 +262,10 @@ function officerSetRole(props) {
                     setTel(e.target.value);
                   }}
                 />
-              </td>
-              <td>
-                <select
+                </div>
+                <div class="col">
+                  
+      <select
                   class="form-select"
                   name="yearSelect"
                   onChange={(e) => {
@@ -277,20 +280,17 @@ function officerSetRole(props) {
                     return <option value={val.id}>{val.title}</option>;
                   })}
                 </select>
-              </td>
-              <td>
-                <button
+                </div>
+                <div class="col">
+      <button
                   type="button"
                   className="btn btn-success"
                   onClick={setRole}
                 >
                   เพิ่ม
                 </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                </div>
+                </div>
     </div>
   );
 }

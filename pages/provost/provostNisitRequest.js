@@ -247,7 +247,7 @@ function provostNisitRequest(props) {
             </div>
       )}
         จำนวนคำร้อง:
-        {courses != null && courses.length != 0 ? courses.length : 0}
+        {courses != null && courses.length != 0 ? Filter(courses).length : 0}
         <table className="table table-hover table-bordered" cellspacing="0" style={{textAlign:"center"}}>
           <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
             <tr>
@@ -255,7 +255,7 @@ function provostNisitRequest(props) {
               <th rowSpan="2">รหัสคำขอ</th>
               <th rowSpan="2">รหัสวิชา</th>
               <th rowSpan="2">ชื่อวิชา</th>
-              <th colSpan="2">หมู่เรียน</th>
+              
               <th rowSpan="2">สาขาวิชา</th>
               <th rowSpan="2">อาจารย์</th>
               <th rowSpan="2">อาจารย์เจ้าของวิชา</th>
@@ -263,10 +263,7 @@ function provostNisitRequest(props) {
               <th rowSpan="2">เหตุผล</th>
               <th rowSpan="2">ตอบกลับคำร้อง</th>
             </tr>
-            <tr>
-              <th>บรรยาย</th>
-              <th>ปฎิบัติ</th>
-            </tr>
+            
           </thead>
           <tbody>
             {Filter(courses).map((val, key) => {
@@ -287,8 +284,7 @@ function provostNisitRequest(props) {
                   </td>
                   <td>{val.title}</td>
 
-                  <td>{val.sec_D ? val.sec_D : "-"}</td>
-                  <td>{val.sec_P ? val.sec_P : "-"}</td>
+                  
                   <td>{val.major}</td>
                   <td>{val.teacher}</td>
                   <td>

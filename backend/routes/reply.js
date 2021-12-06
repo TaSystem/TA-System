@@ -244,20 +244,27 @@ router.put("/student-reply", (req, res) => {
                   }
                 }
               );
-            }else if(status == 3){
-              
-              db.query(sqlcommand, applyItem, (err, result) => {
-                if (err) {
-                  console.log(err);
-                } else {
-                    let respose = {
-                      message: "ยืนยันสำเร็จ!!!",
-                      data: result,
-                    };
-                    res.send(respose);
+            } else if (status == 3) {
+              db.query(
+                "INSERT INTO userreplystudent value (?,?,?)",
+                [id, userID, status],
+                (err, result) => {
+                  if (err) throw err;
+                  else {
+                    db.query(sqlcommand, applyItem, (err, result) => {
+                      if (err) {
+                        console.log(err);
+                      } else {
+                        let respose = {
+                          message: "ยืนยันสำเร็จ!!!",
+                          data: result,
+                        };
+                        res.send(respose);
+                      }
+                    });
+                  }
                 }
-              });
-
+              );
             } else if (result[0].CountTA >= result[0].numberTAReal) {
               let response = {
                 check: 0,
@@ -276,11 +283,11 @@ router.put("/student-reply", (req, res) => {
                       if (err) {
                         console.log(err);
                       } else {
-                          let respose = {
-                            message: "ยืนยันสำเร็จ!!!",
-                            data: result,
-                          };
-                          res.send(respose);
+                        let respose = {
+                          message: "ยืนยันสำเร็จ!!!",
+                          data: result,
+                        };
+                        res.send(respose);
                       }
                     });
                   }
@@ -305,6 +312,25 @@ router.put("/student-reply-note", (req, res) => {
       console.log(err);
     } else {
       res.send("student reply note!!!");
+    }
+  });
+});
+
+router.delete("/delete/student-request/:id",(req,res)=>{ //ลบทีละตัว
+  const id = req.params.id;
+  db.query("DELETE FROM studentapplyta WHERE id = ?",id,(err,result)=>{
+    if(err) throw(err);
+    else{
+      res.send("ลบสำเร็จ");
+    }
+  });
+});
+router.delete("/delete/teacher-request/:id",(req,res)=>{ //ลบทีละตัว
+  const id = req.params.id;
+  db.query("DELETE FROM teacherapplyta WHERE id = ?",id,(err,result)=>{
+    if(err) throw(err);
+    else{
+      res.send("ลบสำเร็จ");
     }
   });
 });

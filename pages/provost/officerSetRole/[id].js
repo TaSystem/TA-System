@@ -104,6 +104,9 @@ const requestTAs = (props) => {
           <div className="row mb-4">
             <div className="col">
               <div className="form-outline">
+              <label className="form-label" for="form6Example1">
+                  ชื่อจริง
+                </label>
                 <input
                   type="text"
                   id="form6Example1"
@@ -114,14 +117,14 @@ const requestTAs = (props) => {
                     // console.log('setName ',e.target.value)
                     setName(e.target.value);
                   }}
-                />
-                <label className="form-label" for="form6Example1">
-                  ชื่อจริง
-                </label>
+                />            
               </div>
             </div>
             <div className="col">
               <div className="form-outline">
+              <label className="form-label" for="form6Example2">
+                  นามสกุล
+                </label>
                 <input
                   type="text"
                   id="form6Example2"
@@ -133,14 +136,15 @@ const requestTAs = (props) => {
                     setLastname(e.target.value);
                   }}
                 />
-                <label className="form-label" for="form6Example2">
-                  นามสกุล
-                </label>
+                
               </div>
             </div>
           </div>
 
           <div className="form-outline mb-4">
+          <label className="form-label" for="form6Example4">
+              อาจารย์รับผิดชอบระดับการศึกษา
+            </label>
             {/* <input
               type="text"
               id="form6Example4"
@@ -171,12 +175,13 @@ const requestTAs = (props) => {
               </option>
 
             </select>
-            <label className="form-label" for="form6Example4">
-              อาจารย์รับผิดชอบระดับการศึกษา
-            </label>
+            
           </div>
 
           <div className="form-outline mb-4">
+          <label className="form-label" for="form6Example3">
+              ภาควิชา
+            </label>
             <select
               class="form-select"
               name="yearSelect"
@@ -213,12 +218,13 @@ const requestTAs = (props) => {
                 วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ(ป.ตรี)
               </option>
             </select>
-            <label className="form-label" for="form6Example3">
-              ภาควิชา
-            </label>
+            
           </div>
 
           <div className="form-outline mb-4">
+          <label className="form-label" for="form6Example4">
+              เบอร์โทร
+            </label>
             <input
               type="text"
               id="form6Example4"
@@ -228,12 +234,13 @@ const requestTAs = (props) => {
                 setTel(e.target.value);
               }}
             />
-            <label className="form-label" for="form6Example4">
-              เบอร์โทร
-            </label>
+            
           </div>
 
           <div className="form-outline mb-4">
+          <label className="form-label" for="form6Example5">
+              ตำแหน่ง
+            </label>
             <select
               class="form-select"
               name="yearSelect"
@@ -254,9 +261,7 @@ const requestTAs = (props) => {
                 return <option value={val.id}>{val.title}</option>;
               })}
             </select>
-            <label className="form-label" for="form6Example5">
-              ตำแหน่ง
-            </label>
+            
           </div>
 
           {/* <button

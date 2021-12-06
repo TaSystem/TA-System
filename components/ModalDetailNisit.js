@@ -43,9 +43,9 @@ export default function ModalDetailNisit(props) {
         <div>
           <p>ชิ่อธนาคาร: {props.val.nameBank}     &emsp; เลขบัญชี: {props.val.idBank}</p>
           {/* <p>ชิ่อธนาคาร: {props.val.fileCardStudent}     &emsp; เลขบัญชี: {props.val.fileBookBank}</p> */}
-            <button class="btn btn-secondary" onClick={downloadCard} >ดาวน์โหลดไฟล์บัตรนิสิต </button>
+            {props.val.fileCardStudent?<button class="btn btn-secondary" onClick={downloadCard} >ดาวน์โหลดไฟล์บัตรนิสิต </button>:<button class="btn btn-secondary"  disabled >ไม่มีไฟล์บัตรนิสิต </button>}
             &emsp;
-            <button class="btn btn-secondary"  onClick={downloadBookBank} >ดาวน์โหลดไฟล์หน้าสมุดธนาคาร </button>
+            {props.val.fileBookBank?<button class="btn btn-secondary"  onClick={downloadBookBank} >ดาวน์โหลดไฟล์หน้าสมุดธนาคาร </button>:<button class="btn btn-secondary"  disabled >ไม่มีไฟล์หน้าสมุดธนาคาร </button>}
           
           {/* <Image src={require(`../backend/uploads/img/${props.val.fileCardStudent}`)} alt="fileCardStudent" width={220} height={220} />
           <Image src={require(`../backend/uploads/img/${props.val.fileBookBank}`)} alt="fileCardStudent" width={220} height={220} /> */}

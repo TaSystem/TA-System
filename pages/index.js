@@ -64,12 +64,12 @@ function Page(props) {
       )}
       {session && (
         <>
-          {/* <Navbar/> */}
+          {/* <Navbar/>
           Signed in as {session.user.email} <br />
           <button>
             <Link href="/nisit/registerNisit">To the Register</Link>
           </button>
-          <button onClick={() => signOut()}>Sign out</button>
+          <button onClick={() => signOut()}>Sign out</button> */}
         </>
       )}
     </>

@@ -40,10 +40,20 @@ const requestTAs = (props) => {
     else if(d && !p)  return 2
     else if(p && !d)  return 3
   }
+  const showSec = (sec_P) => {
+    let arraySec = sec_P?.split("_");
+    return arraySec?.map((val, index) => {
+      if (arraySec.length == index + 1) {
+        return <>{val}</>;
+      } else {
+        return <>{val},</>;
+      }
+    });
+  };
 
   const applyTA = async (hr) =>{
-    let total = parseInt(number1 ) + parseInt(number2);
-    // console.log("total: ",total);
+    let total = parseInt(number1?number1:0) + parseInt(number2?number2:0);
+    console.log("total: ",total);
     // console.log("numberTA: ",course[0].numberTA);
     setSuccess(null);
     setError(null);
@@ -51,8 +61,8 @@ const requestTAs = (props) => {
       await Axios.post("/apply/teacher-apply", {
       email:session.user.email ,
       courseID: id,
-      number1:number1,
-      number2:number2,
+      number1:number1?number1:0,
+      number2:number2?number2:0,
       hrperweek:hr,
       status: 1,
       noteapply:note
@@ -88,7 +98,10 @@ const requestTAs = (props) => {
             <h4>รหัสวิชา: {course != null && course.length != 0 ? course[0].courseID : "loading..."} </h4>
           </div>
           <div class="col">
-            <h4>หมู่เรียน: {course != null && course.length != 0 ? sec(course[0].sec_D,course[0].sec_P) : "loading..."} </h4>
+            <h4>หมู่เรียน: {course != null && course.length != 0 ? course[0].sec_D : "loading..."}
+            {course != null && course.length != 0 && course[0].sec_D && course[0].sec_P ?",":""}
+            {course != null && course.length != 0 ? showSec(course[0].sec_P) : "loading..."}
+             </h4>
           </div>
         </div>
         <div className="row align-items-center">
@@ -115,16 +128,16 @@ const requestTAs = (props) => {
       )}
         <div className="row align-items-center">
           <div class="col">
-            <input className="form-control" type="text"  placeholder="จำนวนนิสิตปริญญาตรี"  onChange={(e) => {setNumber1(e.target.value);}} />
+            <input className="form-control" type="number"  placeholder="จำนวนนิสิตปริญญาตรี"  onChange={(e) => {setNumber1(e.target.value);}} />
           </div>
           <div class="col">
-            <input className="form-control" type="text"  placeholder="จำนวนนิสิตปริญญาโท" onChange={(e) => {setNumber2(e.target.value);}} />
+            <input className="form-control" type="number"  placeholder="จำนวนนิสิตปริญญาโท" onChange={(e) => {setNumber2(e.target.value);}} />
           </div>
           <div class="col">
             <input className="form-control" type="text" placeholder="โน้ต" onChange={(e) => {setNote(e.target.value);}}/>
           </div>
         </div>
-        {course != null && course.length != 0 ? <button  type="button" className="btn btn-success" onClick={applyTA(hourTA(course[0].sec_D,course[0].sec_P))}> ส่งคำร้อง </button>: "loading..."}
+        {course != null && course.length != 0 ? <button  type="button" className="btn btn-success" onClick={()=>applyTA(hourTA(course[0].sec_D,course[0].sec_P))}> ส่งคำร้อง </button>: "loading..."}
         
       </div>
           

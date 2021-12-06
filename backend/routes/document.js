@@ -240,7 +240,7 @@ router.get('/getCSVApprove1/:major', (req, res) => {
   const year = 2564;
   const term = 'ต้น';
 
-  db.query(
+  db.query( 
     `SELECT c.courseID,c.title,c.teacher,c.sec_D,c.day_D,c.start_D,c.end_D,c.sec_P,c.day_P,c.start_P,c.end_P,c.numberReal,u.idStudent,u.name,u.lastname,u.level,u.nameBank,u.idBank,u.Branch,u.tel FROM users as u INNER JOIN studentapplyta as s ON s.userID = u.id INNER JOIN courses as c ON s.courseID = c.id WHERE s.status = 2 AND c.year = ? and c.term = ?and c.major = ?`,
     [year, term, major],
     function (error, results, fields) {
@@ -262,6 +262,7 @@ router.get('/getCSVApprove/:major', (req, res) => {
     `SELECT c.courseID,c.title,c.teacher,c.sec_D,c.day_D,c.start_D,c.end_D,c.sec_P,c.day_P,c.start_P,c.end_P,c.numberReal,u.idStudent,u.name,u.lastname,u.level,u.nameBank,u.idBank,u.Branch,u.tel FROM users as u INNER JOIN studentapplyta as s ON s.userID = u.id INNER JOIN courses as c ON s.courseID = c.id WHERE s.status = 2 AND c.year = ? and c.term = ?and c.major = ?`,
     [year, term, major],
     function (error, results, fields) {
+      console.log('results = ',results)
       let st1 = [],
         st2 = [];
       // st1 = ปตรี st2 = ปโท
