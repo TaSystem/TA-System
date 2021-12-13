@@ -1,22 +1,22 @@
-import Axios from "../../../config/Axios";
-import React, { useState, useEffect } from "react";
-import SelectMajor from "../../../components/SelectMajor";
-import ModalCourse from "../../../components/ModalCourse";
-import ModalDetailTeacher from "../../../components/ModalDetailTeacher";
-import ModalHistoryReply from "../../../components/ModalHistoryReply";
-import ModalCourseNisitSA from "../../../components/ModalCourseNisitSA";
-import Link from "next/link";
-import { useSession } from "next-auth/client";
-import { connect } from "react-redux";
-import { getDetailNisit } from "../../../redux/actions/nisitAction";
-import { useRouter } from "next/router";
+import Axios from '../../../config/Axios';
+import React, { useState, useEffect } from 'react';
+import SelectMajor from '../../../components/SelectMajor';
+import ModalCourse from '../../../components/ModalCourse';
+import ModalDetailTeacher from '../../../components/ModalDetailTeacher';
+import ModalHistoryReply from '../../../components/ModalHistoryReply';
+import ModalCourseNisitSA from '../../../components/ModalCourseNisitSA';
+import Link from 'next/link';
+import { useSession } from 'next-auth/client';
+import { connect } from 'react-redux';
+import { getDetailNisit } from '../../../redux/actions/nisitAction';
+import { useRouter } from 'next/router';
 
 function provostCourseSuccess(props) {
   const [courseList, setCourseList] = useState([]);
   const [users, setUsers] = useState([]);
   const [course, setCourse] = useState([]);
   const [search, setSearch] = useState(null);
-  const [major, setMajor] = useState("All");
+  const [major, setMajor] = useState('All');
   const [applyID, setApplyID] = useState([]);
   const [historyReply, setHistoryReply] = useState([]);
   const [courseValue, setCourseValue] = useState([]);
@@ -31,16 +31,25 @@ function provostCourseSuccess(props) {
       props.getDetailNisit(session.user.email);
       async function getCourses() {
         setLoad(true);
-        const response = await Axios.post(`/courses/course-success`, {
-          role: props.nisit.roleID,
-          email: props.nisit.email,
+        await Axios.post('/users/profiledetail', {
+          email: session.user.email,
+        }).then(async (res) => {
+          // console.log('res is ', res.data);
+          await Axios.post(`/courses/student-reply`, {
+            status: 1,
+            roleID: res.data[0].roleID,
+            email: res.data[0].email,
+          }).then((res) => {
+            // console.log('res.data is ', res.data);
+            setCourseList(res.data);
+          });
         });
-        setCourseList(response.data);
         // console.log("resposne: ", response.data);
         setLoad(false);
       }
+
       async function getYear() {
-        const response = await Axios.get("/setdate/getNow");
+        const response = await Axios.get('/setdate/getNow');
         setYearNow(response.data);
       }
       getYear();
@@ -50,7 +59,7 @@ function provostCourseSuccess(props) {
 
   function Filter(courses) {
     return courses.filter((course) => {
-      if (major == "All") {
+      if (major == 'All') {
         if (!search) {
           return course;
         } else if (course.title.toLowerCase().includes(search.toLowerCase())) {
@@ -84,16 +93,16 @@ function provostCourseSuccess(props) {
 
   const TeacherapplyID = (id) => {
     let l = id.toString().length;
-    if (l == 1) return "TR00000" + id;
-    else if (l == 2) return "TR0000" + id;
-    else if (l == 3) return "TR000" + id;
-    else if (l == 4) return "TR00" + id;
-    else if (l == 5) return "TR0" + id;
-    else if (l == 6) return "TR" + id;
+    if (l == 1) return 'TR00000' + id;
+    else if (l == 2) return 'TR0000' + id;
+    else if (l == 3) return 'TR000' + id;
+    else if (l == 4) return 'TR00' + id;
+    else if (l == 5) return 'TR0' + id;
+    else if (l == 6) return 'TR' + id;
   };
 
   const showSec = (sec_P) => {
-    let arraySec = sec_P.split("_");
+    let arraySec = sec_P.split('_');
     return arraySec.map((val, index) => {
       if (arraySec.length == index + 1) {
         return <>{val}</>;
@@ -163,14 +172,14 @@ function provostCourseSuccess(props) {
     <div className="container">
       <h1>รายวิชาที่เปิดรับ SA ได้</h1>
       <h3>
-        ปี{" "}
+        ปี{' '}
         {yearNow != null && yearNow.length != 0
           ? yearNow[0].year
-          : "loading..."}{" "}
-        เทอม{" "}
+          : 'loading...'}{' '}
+        เทอม{' '}
         {yearNow != null && yearNow.length != 0
           ? yearNow[0].term
-          : "loading..."}
+          : 'loading...'}
       </h3>
       <div className="input-group mb-3">
         <input
@@ -187,27 +196,27 @@ function provostCourseSuccess(props) {
           />
         )}
       </div>
-      รายวิชาทั้งหมด:{" "}
+      รายวิชาทั้งหมด:{' '}
       {courseList != null && courseList.length != 0
         ? Filter(courseList).length
-        : 0}{" "}
+        : 0}{' '}
       วิชา
       <div
         className="table-responsive"
-        style={{ maxHeight: "65vh", maxWidth: "80vw", marginTop: "1vh" }}
+        style={{ maxHeight: '65vh', maxWidth: '80vw', marginTop: '1vh' }}
       >
         <table
           className="table table-hover table-bordered"
           cellspacing="0"
-          style={{ textAlign: "center" }}
+          style={{ textAlign: 'center' }}
         >
           <thead
             style={{
-              position: "sticky",
+              position: 'sticky',
               top: 0,
-              background: "#7a0117",
-              color: "#fff",
-              fontWeight: "400",
+              background: '#7a0117',
+              color: '#fff',
+              fontWeight: '400',
             }}
           >
             <tr>
@@ -263,11 +272,11 @@ function provostCourseSuccess(props) {
                     </Link>
                   </td>
                   <td>{val.title}</td>
-                  <td>{val.sec_D ? val.sec_D : "-"}</td>
-                  <td>{val.sec_P ? showSec(val.sec_P) : "-"}</td>
+                  <td>{val.sec_D ? val.sec_D : '-'}</td>
+                  <td>{val.sec_P ? showSec(val.sec_P) : '-'}</td>
                   <td>{val.major}</td>
                   <td>{val.number_D ? val.number_D : val.number_P}</td>
-                  <td>{val.numberReal ? val.numberReal : "ยังไม่กรอก"}</td>
+                  <td>{val.numberReal ? val.numberReal : 'ยังไม่กรอก'}</td>
 
                   <td>{val.teacher}</td>
                   <td>
@@ -312,9 +321,9 @@ function provostCourseSuccess(props) {
                 </tr>
               );
             })}
-            {load && <h2 style={{ color: "red" }}>กำลังโหลด...</h2>}
+            {load && <h2 style={{ color: 'red' }}>กำลังโหลด...</h2>}
             {!load && courseList && !courseList.length && (
-              <h2 style={{ color: "red" }}>ไม่มีรายวิชา</h2>
+              <h2 style={{ color: 'red' }}>ไม่มีรายวิชา</h2>
             )}
           </tbody>
         </table>

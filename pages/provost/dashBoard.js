@@ -1,346 +1,346 @@
-import MyResponsivePie from "../../components/MyResponsivePie";
-import MyResponsiveBar from "../../components/MyResponsiveBar";
-import React, { useState, useEffect, useRef } from "react";
-import { connect } from "react-redux";
-import { getDetailNisit } from "../../redux/actions/nisitAction";
-import { useSession } from "next-auth/client";
-import SelectMajor from "../../components/SelectMajor";
-import Axios from "../../config/Axios";
+import MyResponsivePie from '../../components/MyResponsivePie';
+import MyResponsiveBar from '../../components/MyResponsiveBar';
+import React, { useState, useEffect, useRef } from 'react';
+import { connect } from 'react-redux';
+import { getDetailNisit } from '../../redux/actions/nisitAction';
+import { useSession } from 'next-auth/client';
+import SelectMajor from '../../components/SelectMajor';
+import Axios from '../../config/Axios';
 
 const data = [
   {
-    id: "industrial",
-    label: "industrial",
+    id: 'industrial',
+    label: 'industrial',
     value: 113,
-    name: "2564(ภาคต้น)",
+    name: '2564(ภาคต้น)',
   },
   {
-    id: "Computer",
-    label: "Computer",
+    id: 'Computer',
+    label: 'Computer',
     value: 213,
-    name: "2564(ภาคต้น)",
+    name: '2564(ภาคต้น)',
   },
   {
-    id: "Civil",
-    label: "Civil",
+    id: 'Civil',
+    label: 'Civil',
     value: 504,
-    name: "2564(ภาคต้น)",
+    name: '2564(ภาคต้น)',
   },
   {
-    id: "Robotic",
-    label: "Robotic",
+    id: 'Robotic',
+    label: 'Robotic',
     value: 531,
-    name: "2564(ภาคต้น)",
+    name: '2564(ภาคต้น)',
   },
   {
-    id: "Electric",
-    label: "Electric",
+    id: 'Electric',
+    label: 'Electric',
     value: 206,
-    name: "2564(ภาคต้น)",
+    name: '2564(ภาคต้น)',
   },
   {
-    id: "Mechanical",
-    label: "Mechanical",
+    id: 'Mechanical',
+    label: 'Mechanical',
     value: 120,
-    name: "2564(ภาคต้น)",
+    name: '2564(ภาคต้น)',
   },
   {
-    id: "Mechanical and Production",
-    label: "Mechanical and Production",
+    id: 'Mechanical and Production',
+    label: 'Mechanical and Production',
     value: 270,
-    name: "2564(ภาคต้น)",
+    name: '2564(ภาคต้น)',
   },
 
   //
   {
-    id: "industrial",
-    label: "industrial",
+    id: 'industrial',
+    label: 'industrial',
     value: 513,
-    name: "2564(ภาคฤดูร้อน)",
+    name: '2564(ภาคฤดูร้อน)',
   },
   {
-    id: "Computer",
-    label: "Computer",
+    id: 'Computer',
+    label: 'Computer',
     value: 273,
-    name: "2564(ภาคฤดูร้อน)",
+    name: '2564(ภาคฤดูร้อน)',
   },
   {
-    id: "Civil",
-    label: "Civil",
+    id: 'Civil',
+    label: 'Civil',
     value: 614,
-    name: "2564(ภาคฤดูร้อน)",
+    name: '2564(ภาคฤดูร้อน)',
   },
   {
-    id: "Robotic",
-    label: "Robotic",
+    id: 'Robotic',
+    label: 'Robotic',
     value: 431,
-    name: "2564(ภาคฤดูร้อน)",
+    name: '2564(ภาคฤดูร้อน)',
   },
   {
-    id: "Electric",
-    label: "Electric",
+    id: 'Electric',
+    label: 'Electric',
     value: 306,
-    name: "2564(ภาคฤดูร้อน)",
+    name: '2564(ภาคฤดูร้อน)',
   },
   {
-    id: "Mechanical",
-    label: "Mechanical",
+    id: 'Mechanical',
+    label: 'Mechanical',
     value: 420,
-    name: "2564(ภาคฤดูร้อน)",
+    name: '2564(ภาคฤดูร้อน)',
   },
   {
-    id: "Mechanical and Production",
-    label: "Mechanical and Production",
+    id: 'Mechanical and Production',
+    label: 'Mechanical and Production',
     value: 470,
-    name: "2564(ภาคฤดูร้อน)",
+    name: '2564(ภาคฤดูร้อน)',
   },
   //
   {
-    id: "industrial",
-    label: "industrial",
+    id: 'industrial',
+    label: 'industrial',
     value: 313,
-    name: "2564(ภาคปลาย)",
+    name: '2564(ภาคปลาย)',
   },
   {
-    id: "Computer",
-    label: "Computer",
+    id: 'Computer',
+    label: 'Computer',
     value: 413,
-    name: "2564(ภาคปลาย)",
+    name: '2564(ภาคปลาย)',
   },
   {
-    id: "Civil",
-    label: "Civil",
+    id: 'Civil',
+    label: 'Civil',
     value: 304,
-    name: "2564(ภาคปลาย)",
+    name: '2564(ภาคปลาย)',
   },
   {
-    id: "Robotic",
-    label: "Robotic",
+    id: 'Robotic',
+    label: 'Robotic',
     value: 431,
-    name: "2564(ภาคปลาย)",
+    name: '2564(ภาคปลาย)',
   },
   {
-    id: "Electric",
-    label: "Electric",
+    id: 'Electric',
+    label: 'Electric',
     value: 606,
-    name: "2564(ภาคปลาย)",
+    name: '2564(ภาคปลาย)',
   },
   {
-    id: "Mechanical",
-    label: "Mechanical",
+    id: 'Mechanical',
+    label: 'Mechanical',
     value: 520,
-    name: "2564(ภาคปลาย)",
+    name: '2564(ภาคปลาย)',
   },
   {
-    id: "Mechanical and Production",
-    label: "Mechanical and Production",
+    id: 'Mechanical and Production',
+    label: 'Mechanical and Production',
     value: 470,
-    name: "2564(ภาคปลาย)",
+    name: '2564(ภาคปลาย)',
   },
   //
   {
-    id: "industrial",
-    label: "industrial",
+    id: 'industrial',
+    label: 'industrial',
     value: 413,
-    name: "2565(ภาคต้น)",
+    name: '2565(ภาคต้น)',
   },
   {
-    id: "Computer",
-    label: "Computer",
+    id: 'Computer',
+    label: 'Computer',
     value: 613,
-    name: "2565(ภาคต้น)",
+    name: '2565(ภาคต้น)',
   },
   {
-    id: "Civil",
-    label: "Civil",
+    id: 'Civil',
+    label: 'Civil',
     value: 704,
-    name: "2565(ภาคต้น)",
+    name: '2565(ภาคต้น)',
   },
   {
-    id: "Robotic",
-    label: "Robotic",
+    id: 'Robotic',
+    label: 'Robotic',
     value: 231,
-    name: "2565(ภาคต้น)",
+    name: '2565(ภาคต้น)',
   },
   {
-    id: "Electric",
-    label: "Electric",
+    id: 'Electric',
+    label: 'Electric',
     value: 406,
-    name: "2565(ภาคต้น)",
+    name: '2565(ภาคต้น)',
   },
   {
-    id: "Mechanical",
-    label: "Mechanical",
+    id: 'Mechanical',
+    label: 'Mechanical',
     value: 820,
-    name: "2565(ภาคต้น)",
+    name: '2565(ภาคต้น)',
   },
   {
-    id: "Mechanical and Production",
-    label: "Mechanical and Production",
+    id: 'Mechanical and Production',
+    label: 'Mechanical and Production',
     value: 370,
-    name: "2565(ภาคต้น)",
+    name: '2565(ภาคต้น)',
   },
   //
   {
-    id: "industrial",
-    label: "industrial",
+    id: 'industrial',
+    label: 'industrial',
     value: 713,
-    name: "2565(ภาคฤดูร้อน)",
+    name: '2565(ภาคฤดูร้อน)',
   },
   {
-    id: "Computer",
-    label: "Computer",
+    id: 'Computer',
+    label: 'Computer',
     value: 213,
-    name: "2565(ภาคฤดูร้อน)",
+    name: '2565(ภาคฤดูร้อน)',
   },
   {
-    id: "Civil",
-    label: "Civil",
+    id: 'Civil',
+    label: 'Civil',
     value: 504,
-    name: "2565(ภาคฤดูร้อน)",
+    name: '2565(ภาคฤดูร้อน)',
   },
   {
-    id: "Robotic",
-    label: "Robotic",
+    id: 'Robotic',
+    label: 'Robotic',
     value: 531,
-    name: "2565(ภาคฤดูร้อน)",
+    name: '2565(ภาคฤดูร้อน)',
   },
   {
-    id: "Electric",
-    label: "Electric",
+    id: 'Electric',
+    label: 'Electric',
     value: 206,
-    name: "2565(ภาคฤดูร้อน)",
+    name: '2565(ภาคฤดูร้อน)',
   },
   {
-    id: "Mechanical",
-    label: "Mechanical",
+    id: 'Mechanical',
+    label: 'Mechanical',
     value: 420,
-    name: "2565(ภาคฤดูร้อน)",
+    name: '2565(ภาคฤดูร้อน)',
   },
   {
-    id: "Mechanical and Production",
-    label: "Mechanical and Production",
+    id: 'Mechanical and Production',
+    label: 'Mechanical and Production',
     value: 970,
-    name: "2565(ภาคฤดูร้อน)",
+    name: '2565(ภาคฤดูร้อน)',
   },
   //
   {
-    id: "industrial",
-    label: "industrial",
+    id: 'industrial',
+    label: 'industrial',
     value: 313,
-    name: "2565(ภาคปลาย)",
+    name: '2565(ภาคปลาย)',
   },
   {
-    id: "Computer",
-    label: "Computer",
+    id: 'Computer',
+    label: 'Computer',
     value: 413,
-    name: "2565(ภาคปลาย)",
+    name: '2565(ภาคปลาย)',
   },
   {
-    id: "Civil",
-    label: "Civil",
+    id: 'Civil',
+    label: 'Civil',
     value: 204,
-    name: "2565(ภาคปลาย)",
+    name: '2565(ภาคปลาย)',
   },
   {
-    id: "Robotic",
-    label: "Robotic",
+    id: 'Robotic',
+    label: 'Robotic',
     value: 731,
-    name: "2565(ภาคปลาย)",
+    name: '2565(ภาคปลาย)',
   },
   {
-    id: "Electric",
-    label: "Electric",
+    id: 'Electric',
+    label: 'Electric',
     value: 906,
-    name: "2565(ภาคปลาย)",
+    name: '2565(ภาคปลาย)',
   },
   {
-    id: "Mechanical",
-    label: "Mechanical",
+    id: 'Mechanical',
+    label: 'Mechanical',
     value: 520,
-    name: "2565(ภาคปลาย)",
+    name: '2565(ภาคปลาย)',
   },
   {
-    id: "Mechanical and Production",
-    label: "Mechanical and Production",
+    id: 'Mechanical and Production',
+    label: 'Mechanical and Production',
     value: 670,
-    name: "2565(ภาคปลาย)",
+    name: '2565(ภาคปลาย)',
   },
 ];
 
 const datas = [
   {
-    id: "industrial",
-    label: "industrial",
+    id: 'industrial',
+    label: 'industrial',
     value: 313,
-    name: "2565(ภาคปลาย)",
+    name: '2565(ภาคปลาย)',
   },
   {
-    id: "Computer",
-    label: "Computer",
+    id: 'Computer',
+    label: 'Computer',
     value: 413,
-    name: "2565(ภาคปลาย)",
+    name: '2565(ภาคปลาย)',
   },
   {
-    id: "Civil",
-    label: "Civil",
+    id: 'Civil',
+    label: 'Civil',
     value: 204,
-    name: "2565(ภาคปลาย)",
+    name: '2565(ภาคปลาย)',
   },
   {
-    id: "Robotic",
-    label: "Robotic",
+    id: 'Robotic',
+    label: 'Robotic',
     value: 731,
-    name: "2565(ภาคปลาย)",
+    name: '2565(ภาคปลาย)',
   },
   {
-    id: "Electric",
-    label: "Electric",
+    id: 'Electric',
+    label: 'Electric',
     value: 906,
-    name: "2565(ภาคปลาย)",
+    name: '2565(ภาคปลาย)',
   },
   {
-    id: "Mechanical",
-    label: "Mechanical",
+    id: 'Mechanical',
+    label: 'Mechanical',
     value: 520,
-    name: "2565(ภาคปลาย)",
+    name: '2565(ภาคปลาย)',
   },
   {
-    id: "Mechanical and Production",
-    label: "Mechanical and Production",
+    id: 'Mechanical and Production',
+    label: 'Mechanical and Production',
     value: 670,
-    name: "2565(ภาคปลาย)",
+    name: '2565(ภาคปลาย)',
   },
 ];
 
 const dataBar = [
   {
-    ปีเทอมการศึกษา: "2564(ภาคต้น)",
+    ปีเทอมการศึกษา: '2564(ภาคต้น)',
     ค่าใช้จ่าย: 7480,
     จำนวนคน: 5,
   },
   {
-    ปีเทอมการศึกษา: "2564(ภาคฤดูร้อน)",
+    ปีเทอมการศึกษา: '2564(ภาคฤดูร้อน)',
     ค่าใช้จ่าย: 7180,
     จำนวนคน: 6,
   },
   {
-    ปีเทอมการศึกษา: "2564(ภาคปลาย)",
+    ปีเทอมการศึกษา: '2564(ภาคปลาย)',
     ค่าใช้จ่าย: 9742,
     จำนวนคน: 9,
   },
   {
-    ปีเทอมการศึกษา: "2565(ภาคต้น)",
+    ปีเทอมการศึกษา: '2565(ภาคต้น)',
     ค่าใช้จ่าย: 7880,
     จำนวนคน: 8,
   },
   {
-    ปีเทอมการศึกษา: "2565(ภาคฤดูร้อน)",
+    ปีเทอมการศึกษา: '2565(ภาคฤดูร้อน)',
     ค่าใช้จ่าย: 4490,
     จำนวนคน: 5,
   },
   {
-    ปีเทอมการศึกษา: "2565(ภาคปลาย)",
+    ปีเทอมการศึกษา: '2565(ภาคปลาย)',
     ค่าใช้จ่าย: 3488,
     จำนวนคน: 7,
   },
@@ -353,7 +353,7 @@ function dashboard(props) {
   const [selectBarData, setSelectBarData] = useState([]);
   const [dataBarChart, setDataBarChart] = useState([]);
   const [dataPieChart, setDataPieChart] = useState([]);
-  const [label, setLabel] = useState("(เลือกที่กราฟเเท่ง)");
+  const [label, setLabel] = useState('(เลือกที่กราฟเเท่ง)');
   const today = new Date();
   const [startAt, setStartAt] = useState(null);
   const [major, setMajor] = useState(null);
@@ -369,11 +369,10 @@ function dashboard(props) {
   const [selectBarDataTrue, setSelectBarDataTrue] = useState([]);
   const [dataBarChartTrue, setDataBarChartTrue] = useState([]);
   const [dataPieChartTrue, setDataPieChartTrue] = useState([]);
-  const [labelTrue, setLabelTrue] = useState("(เลือกที่กราฟเเท่ง)");
+  const [labelTrue, setLabelTrue] = useState('(เลือกที่กราฟเเท่ง)');
   const [yearSearchTrue, setYearSearchTrue] = useState([]);
   const [numberOfYearTrue, setNumberOfYearTrue] = useState(3);
   const [startAtTrue, setStartAtTrue] = useState(null);
-
 
   useEffect(() => {
     if (session) {
@@ -383,11 +382,11 @@ function dashboard(props) {
       // setLabel("2565(ภาคปลาย)");
 
       async function getData() {
-        const responseYear = await Axios.get("/courses/year");
-        const response = await Axios.get("/cost/dashboard");
+        const responseYear = await Axios.get('/courses/year');
+        const response = await Axios.get('/cost/dashboard');
         // const response = await Axios.get("/cost/dashboard-expenses");
-        console.log("year ",responseYear.data[0].year)
-        console.log("data ",response.data)
+        console.log('year ', responseYear.data[0].year);
+        console.log('data ', response.data);
         setDataChart(response.data);
 
         let current = {
@@ -400,15 +399,15 @@ function dashboard(props) {
         let check = false;
         let first = true;
         let resultArr = [];
-        console.log('startAt ' ,responseYear.data[0].year, numberOfYear)
+        console.log('startAt ', responseYear.data[0].year, numberOfYear);
         response.data.map((dat, idx) => {
           if (
             dat.year === current.ปี &&
             dat.term === current.ภาค &&
             dat.year >= responseYear.data[0].year &&
-            dat.year <= parseInt(responseYear.data[0].year) + parseInt(numberOfYear - 1)
+            dat.year <=
+              parseInt(responseYear.data[0].year) + parseInt(numberOfYear - 1)
           ) {
-            
             sum += dat.sum_cost;
           } else if (
             idx + 1 < response.data.length &&
@@ -424,7 +423,8 @@ function dashboard(props) {
             first = false;
           } else if (
             dat.year >= responseYear.data[0].year &&
-            parseInt(dat.year) <= parseInt(responseYear.data[0].year) + parseInt(numberOfYear - 1)
+            parseInt(dat.year) <=
+              parseInt(responseYear.data[0].year) + parseInt(numberOfYear - 1)
           ) {
             sum != 0
               ? resultArr.push({
@@ -442,17 +442,14 @@ function dashboard(props) {
             // sumPeople = dat.count_TA
             check = true;
           }
- 
         });
         if (check)
           resultArr.push({
             ปีเทอมการศึกษา: `${current.ปี}(${current.ภาค})`,
             ค่าใช้จ่าย: sum,
           }),
-
-        setDataBarChart(resultArr);
-        console.log('result Arr iss ',resultArr)
-
+            setDataBarChart(resultArr);
+        console.log('result Arr iss ', resultArr);
 
         //pie
         // current = {สาขา: response.data[0].major ,ปี: response.data[0].year, ภาค:response.data[0].term, จำนวนคน: response.data[0].count_TA ,ค่าใช้จ่าย:response.data[0].sum_cost}
@@ -478,13 +475,13 @@ function dashboard(props) {
         );
       }
       getData();
-      console.log('dataChart is ',dataChart)
+      console.log('dataChart is ', dataChart);
 
       //get data True
       async function getDataTrue() {
         // const response = await Axios.get("/cost/dashboard");
-        const response = await Axios.get("/cost/dashboard-expenses");
-        const responseYear = await Axios.get("/courses/year");
+        const response = await Axios.get('/cost/dashboard-expenses');
+        const responseYear = await Axios.get('/courses/year');
 
         setDataChartTrue(response.data);
         let current = {
@@ -504,9 +501,10 @@ function dashboard(props) {
             dat.year === current.ปี &&
             dat.term === current.ภาค &&
             dat.year >= responseYear.data[0].year &&
-            dat.year <= parseInt(responseYear.data[0].year) + parseInt(numberOfYearTrue - 1)
+            dat.year <=
+              parseInt(responseYear.data[0].year) +
+                parseInt(numberOfYearTrue - 1)
           ) {
-            
             sum += dat.sum_cost;
           } else if (
             idx + 1 < response.data.length &&
@@ -522,7 +520,9 @@ function dashboard(props) {
             first = false;
           } else if (
             dat.year >= responseYear.data[0].year &&
-            parseInt(dat.year) <= parseInt(responseYear.data[0].year) + parseInt(numberOfYearTrue - 1)
+            parseInt(dat.year) <=
+              parseInt(responseYear.data[0].year) +
+                parseInt(numberOfYearTrue - 1)
           ) {
             sum != 0
               ? resultArr.push({
@@ -540,14 +540,13 @@ function dashboard(props) {
             // sumPeople = dat.count_TA
             check = true;
           }
- 
         });
         if (check)
           resultArr.push({
             ปีเทอมการศึกษา: `${current.ปี}(${current.ภาค})`,
             ค่าใช้จ่าย: sum,
           }),
-          setDataBarChartTrue(resultArr);
+            setDataBarChartTrue(resultArr);
 
         //pie
         // current = {สาขา: response.data[0].major ,ปี: response.data[0].year, ภาค:response.data[0].term, จำนวนคน: response.data[0].count_TA ,ค่าใช้จ่าย:response.data[0].sum_cost}
@@ -576,7 +575,7 @@ function dashboard(props) {
     }
 
     async function getYear() {
-      const response = await Axios.get("/courses/year");
+      const response = await Axios.get('/courses/year');
       setYearSearch(response.data);
       //console.log("Year is ", response.data);
     }
@@ -596,7 +595,7 @@ function dashboard(props) {
   const addExpenses = async () => {
     setSuccess(null);
     setError(null);
-    await Axios.post("/cost/add-expenses/", {
+    await Axios.post('/cost/add-expenses/', {
       major: major,
       year: year,
       term: term,
@@ -695,16 +694,16 @@ function dashboard(props) {
         ค่าใช้จ่าย: sum,
       }),
         //console.log("e%");
-    // console.log(
-    //   "result is :",
-    //   resultArr,
-    //   "and DataChart is ",
-    //   dataChart,
-    //   "number is ",
-    //   numberOfYear,
-    //   startAt
-    // );
-    setDataBarChart(resultArr);
+        // console.log(
+        //   "result is :",
+        //   resultArr,
+        //   "and DataChart is ",
+        //   dataChart,
+        //   "number is ",
+        //   numberOfYear,
+        //   startAt
+        // );
+        setDataBarChart(resultArr);
   }
 
   function FilterDataTrue(numberOfYearTrue, startAt) {
@@ -759,7 +758,7 @@ function dashboard(props) {
               ปีเทอมการศึกษา: `${currents.ปี}(${currents.ภาค})`,
               ค่าใช้จ่าย: sum,
             })
-          : console.log("sum is ", sum);
+          : console.log('sum is ', sum);
         currents = {
           สาขา: dat.major,
           ปี: dat.year,
@@ -781,7 +780,7 @@ function dashboard(props) {
         ปีเทอมการศึกษา: `${currents.ปี}(${currents.ภาค})`,
         ค่าใช้จ่าย: sum,
       }),
-        console.log("e%");
+        console.log('e%');
     // console.log(
     //   "result is :",
     //   resultArr,
@@ -809,78 +808,79 @@ function dashboard(props) {
   return (
     <div>
       <h1>แดชบอร์ด</h1>
-      <div style={{ display: "flex;", flexDirection: "column" }}>
-        <div style={{ display: "flex", width: "100%" }}>
+      <div style={{ display: 'flex;', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', width: '100%' }}>
           <div
             style={{
-              display: "flex",
-              backgroundColor: "white",
+              display: 'flex',
+              backgroundColor: 'white',
               // width: "100%",
-              flex: "1",
-              margin: "10px",
-              padding:"20px",
-              flexDirection: "column",
+              flex: '1',
+              margin: '10px',
+              padding: '20px',
+              flexDirection: 'column',
             }}
           >
             <h4>ค่าใช้จ่ายในแต่ละเทอม</h4>
 
-            <div style={{ display: "flex",margin:"10px 0 20px 0"}}>
+            <div style={{ display: 'flex', margin: '10px 0 20px 0' }}>
               <div>
-              <p style={{ paddingRight: "5px", alignSelf:'center' }}>ต้องการดูกี่ปี </p>
-              <select
-                name="numberOfYear"
-                onChange={(e) => {
-                  setNumberOfYear(e.target.value);
-                }}
-                style={{fontSize:"1rem"}}
+                <p style={{ paddingRight: '5px', alignSelf: 'center' }}>
+                  ต้องการดูกี่ปี{' '}
+                </p>
+                <select
+                  name="numberOfYear"
+                  onChange={(e) => {
+                    setNumberOfYear(e.target.value);
+                  }}
+                  style={{ fontSize: '1rem' }}
+                >
+                  <option value="All" disabled selected hidden>
+                    ปีการศึกษากี่ปี
+                  </option>
 
-              >
-                <option value="All" disabled selected hidden>
-                  ปีการศึกษากี่ปี
-                </option>
-
-                <option value={1}>1</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-              </select>
-                </div>
-                <div style={{margin:"0 15px"}}>
-              <p style={{ paddingRight: "5px" , alignSelf:'center'}}>เลือกปีที่ต้องการเริ่มดู </p>
-              <select
-                name="year"
-                onChange={(e) => {
-                  setStartAt(e.target.value);
-                }}
-                style={{fontSize:"1rem"}}
-
-              >
-                <option value="All" disabled selected hidden>
-                  ปีการศึกษาตั้งเเต่
-                </option>
-                {yearSearch != null
-                  ? yearSearch.map((data, index) => {
-                      return <option value={data.year}>{data.year}</option>;
-                    })
-                  : loading}
-              </select>
+                  <option value={1}>1</option>
+                  <option value={2}>2</option>
+                  <option value={3}>3</option>
+                </select>
+              </div>
+              <div style={{ margin: '0 15px' }}>
+                <p style={{ paddingRight: '5px', alignSelf: 'center' }}>
+                  เลือกปีที่ต้องการเริ่มดู{' '}
+                </p>
+                <select
+                  name="year"
+                  onChange={(e) => {
+                    setStartAt(e.target.value);
+                  }}
+                  style={{ fontSize: '1rem' }}
+                >
+                  <option value="All" disabled selected hidden>
+                    ปีการศึกษาตั้งเเต่
+                  </option>
+                  {yearSearch != null
+                    ? yearSearch.map((data, index) => {
+                        return <option value={data.year}>{data.year}</option>;
+                      })
+                    : loading}
+                </select>
               </div>
               <button
                 className="btn btn-success"
                 onClick={() => FilterData(numberOfYear, startAt)}
-                style={{padding:"0px 20px",margin:"39px 0 0 0"}}
-              > 
+                style={{ padding: '0px 20px', margin: '39px 0 0 0' }}
+              >
                 ยืนยัน
               </button>
-              
             </div>
 
             <div
               style={{
-                display: "flex",
-                justifyContent: "center",
-                width: "550px",
-                height: "450px",
-                backgroundColor: "white",
+                display: 'flex',
+                justifyContent: 'center',
+                width: '550px',
+                height: '450px',
+                backgroundColor: 'white',
               }}
             >
               <MyResponsiveBar
@@ -904,13 +904,13 @@ function dashboard(props) {
 
           <div
             style={{
-              display: "flex",
-              backgroundColor: "white",
+              display: 'flex',
+              backgroundColor: 'white',
               // width: "100%",
-              flex: "2",
-              margin: "10px 10px 10px 0px",
-              padding:"20px",
-              flexDirection: "column",
+              flex: '2',
+              margin: '10px 10px 10px 0px',
+              padding: '20px',
+              flexDirection: 'column',
             }}
           >
             <h4>
@@ -919,12 +919,12 @@ function dashboard(props) {
 
             <div
               style={{
-                display: "flex",
-                width: "100%",
-                height: "450px",
-                backgroundColor: "white",
-                alignItems: "center",
-                margin:"30px 0",
+                display: 'flex',
+                width: '100%',
+                height: '450px',
+                backgroundColor: 'white',
+                alignItems: 'center',
+                margin: '30px 0',
               }}
             >
               <MyResponsivePie data={selectBarData} />
@@ -933,74 +933,78 @@ function dashboard(props) {
         </div>
 
         {/* down-side TRUE*/}
-        <div style={{ display: "flex"}}>
+        <div style={{ display: 'flex' }}>
           <div
             style={{
-              display: "flex",
-              backgroundColor: "white",
+              display: 'flex',
+              backgroundColor: 'white',
               // width: "100%",
-              flex: "1",
-              margin: "0 10px 10px 10px",
-              padding:"20px",
-              flexDirection: "column",
+              flex: '1',
+              margin: '0 10px 10px 10px',
+              padding: '20px',
+              flexDirection: 'column',
             }}
           >
             <h4>ค่าใช้จ่ายในแต่ละเทอม</h4>
 
-            <div style={{ display: "flex",margin:"10px 0 20px 0" }}>
+            <div style={{ display: 'flex', margin: '10px 0 20px 0' }}>
               <div>
-              <p  style={{ paddingRight: "5px", alignSelf:'center'}}>ต้องการดูกี่ปี </p>
-              <select
-                name="numberOfYear"
-                onChange={(e) => {
-                  setNumberOfYearTrue(e.target.value);
-                }}
-                style={{fontSize:"1rem"}}
-              >
-                <option value="All" disabled selected hidden>
-                  ปีการศึกษากี่ปี
-                </option>
+                <p style={{ paddingRight: '5px', alignSelf: 'center' }}>
+                  ต้องการดูกี่ปี{' '}
+                </p>
+                <select
+                  name="numberOfYear"
+                  onChange={(e) => {
+                    setNumberOfYearTrue(e.target.value);
+                  }}
+                  style={{ fontSize: '1rem' }}
+                >
+                  <option value="All" disabled selected hidden>
+                    ปีการศึกษากี่ปี
+                  </option>
 
-                <option value={1}>1</option>
-                <option value={2}>2</option>
-                <option value={3}>3</option>
-              </select>
-                </div>
-                <div style={{margin:"0 15px"}}>
-              <p style={{ paddingRight: "5px" , alignSelf:'center'}}>เลือกปีที่ต้องการเริ่มดู </p>
-              <select
-                name="year"
-                onChange={(e) => {
-                  setStartAtTrue(e.target.value);
-                }}
-                style={{fontSize:"1rem"}}
-              >
-                <option value="All" disabled selected hidden>
-                  ปีการศึกษาตั้งเเต่
-                </option>
-                {yearSearch != null
-                  ? yearSearch.map((data, index) => {
-                      return <option value={data.year}>{data.year}</option>;
-                    })
-                  : loading}
-              </select>
+                  <option value={1}>1</option>
+                  <option value={2}>2</option>
+                  <option value={3}>3</option>
+                </select>
+              </div>
+              <div style={{ margin: '0 15px' }}>
+                <p style={{ paddingRight: '5px', alignSelf: 'center' }}>
+                  เลือกปีที่ต้องการเริ่มดู{' '}
+                </p>
+                <select
+                  name="year"
+                  onChange={(e) => {
+                    setStartAtTrue(e.target.value);
+                  }}
+                  style={{ fontSize: '1rem' }}
+                >
+                  <option value="All" disabled selected hidden>
+                    ปีการศึกษาตั้งเเต่
+                  </option>
+                  {yearSearch != null
+                    ? yearSearch.map((data, index) => {
+                        return <option value={data.year}>{data.year}</option>;
+                      })
+                    : loading}
+                </select>
               </div>
               <button
                 className="btn btn-success"
                 onClick={() => FilterDataTrue(numberOfYearTrue, startAtTrue)}
-                style={{padding:"0px 20px",margin:"39px 0 0 0"}}
-              > 
+                style={{ padding: '0px 20px', margin: '39px 0 0 0' }}
+              >
                 ยืนยัน
               </button>
             </div>
 
             <div
               style={{
-                display: "flex",
-                justifyContent: "center",
-                width: "550px",
-                height: "450px",
-                backgroundColor: "white",
+                display: 'flex',
+                justifyContent: 'center',
+                width: '550px',
+                height: '450px',
+                backgroundColor: 'white',
               }}
             >
               <MyResponsiveBar
@@ -1024,13 +1028,13 @@ function dashboard(props) {
 
           <div
             style={{
-              display: "flex",
-              backgroundColor: "white",
+              display: 'flex',
+              backgroundColor: 'white',
               // width: "100%",
-              flex: "3",
-              margin: "0 0 10px 0",
-              padding:"20px",
-              flexDirection: "column",
+              flex: '3',
+              margin: '0 0 10px 0',
+              padding: '20px',
+              flexDirection: 'column',
             }}
           >
             <h4>
@@ -1039,12 +1043,12 @@ function dashboard(props) {
 
             <div
               style={{
-                display: "flex",
-                width: "100%",
-                height: "450px",
-                backgroundColor: "white",
-                margin:"30px 0",
-                alignItems:"center"
+                display: 'flex',
+                width: '100%',
+                height: '450px',
+                backgroundColor: 'white',
+                margin: '30px 0',
+                alignItems: 'center',
               }}
             >
               <MyResponsivePie data={selectBarDataTrue} />
@@ -1088,7 +1092,7 @@ function dashboard(props) {
                   className="form-control"
                   name="cost"
                   placeholder="ค่าใช้จ่ายจริง"
-                  style={{ width: "10" }}
+                  style={{ width: '10' }}
                   onChange={(e) => {
                     setCost(e.target.value);
                   }}
@@ -1097,26 +1101,23 @@ function dashboard(props) {
                   ยืนยัน
                 </button>
               </div>
- {success && (
-            <div className="alert alert-success" role="alert">
-              {" "}
-              {success}{" "}
-            </div>
-          )}
-          {error && (
-            <div className="alert alert-danger" role="alert">
-              {" "}
-              {error}{" "}
-            </div>
-          )}
-
-
+              {success && (
+                <div className="alert alert-success" role="alert">
+                  {' '}
+                  {success}{' '}
+                </div>
+              )}
+              {error && (
+                <div className="alert alert-danger" role="alert">
+                  {' '}
+                  {error}{' '}
+                </div>
+              )}
             </div>
           </div>
-
-         
         </div>
       </div>
+      <button className="btn btn-success">นำออกเป็น Excel</button>
     </div>
 
     // <div style={{ justifyContent: "center", display: "flex" }}>

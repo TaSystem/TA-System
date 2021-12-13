@@ -1,14 +1,13 @@
-import React, { useEffect, useState, useRef } from "react";
-import Axios from "../../config/Axios";
-import { useRouter } from "next/router";
-import { useSession } from "next-auth/client";
-import { connect } from "react-redux";
-import SelectMajor from "../../components/SelectMajor";
-import SelectNameBank from "../../components/SelectNameBank";
-import { getDetailNisit } from "../../redux/actions/nisitAction";
-import Image from "next/image";
-import Link from "next/link";
-
+import React, { useEffect, useState, useRef } from 'react';
+import Axios from '../../config/Axios';
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/client';
+import { connect } from 'react-redux';
+import SelectMajor from '../../components/SelectMajor';
+import SelectNameBank from '../../components/SelectNameBank';
+import { getDetailNisit } from '../../redux/actions/nisitAction';
+import Image from 'next/image';
+import Link from 'next/link';
 
 const profileNisit = (props) => {
   const [user, setUser] = useState([]);
@@ -26,8 +25,7 @@ const profileNisit = (props) => {
   const [selectedFileCardStudent, setSelectedFileCardStudent] = useState([]);
   const [selectedFileBookBank, setSelectedFileBookBank] = useState([]);
   const [success, setSuccess] = useState(null);
-  const [error,setError] = useState(null);
-  
+  const [error, setError] = useState(null);
 
   const [load, setLoad] = useState(false);
 
@@ -54,100 +52,99 @@ const profileNisit = (props) => {
         setBranch(response.data[0].Branch);
         setFileBookBank(response.data[0].fileBookBank);
         setFileCardStudent(response.data[0].fileCardStudent);
-        
       }
       getUser();
     }
   }, [loading]);
 
-  const clearFileCard = async ()=>{
-    await Axios.put(`/clear-file`, {
-        email: session.user.email,
-        fileCardStudent:fileCardStudent,
-        
-      }).then((res)=>{
-        if(res){
-          setFileCardStudent(null);
-        }
-        
-      });
-  }
-
-  const clearFileBank = async ()=>{
+  const clearFileCard = async () => {
     await Axios.put(`/clear-file`, {
       email: session.user.email,
-      fileBookBank:fileBookBank
-    }).then((res)=>{
-      if(res){
+      fileCardStudent: fileCardStudent,
+    }).then((res) => {
+      if (res) {
+        setFileCardStudent(null);
+      }
+    });
+  };
+
+  const clearFileBank = async () => {
+    await Axios.put(`/clear-file`, {
+      email: session.user.email,
+      fileBookBank: fileBookBank,
+    }).then((res) => {
+      if (res) {
         setFileBookBank(null);
       }
     });
-  }
+  };
 
   const userUpdate = async (e) => {
     e.preventDefault();
     let formData = new FormData();
     setSuccess(null);
     setError(null);
-    formData.append("email", session.user.email);
-    formData.append("name", name);
-    formData.append("lastname", lastname);
-    formData.append("idStudent", idStudent);
-    formData.append("tel", tel);
-    formData.append("level", level);
-    formData.append("department", department);
-    formData.append("nameBank", nameBank);
-    formData.append("idBank", idBank);
-    formData.append("Branch", branch);
-    formData.append("fileCardStudent", selectedFileCardStudent[0]?selectedFileCardStudent[0]:null);
-    formData.append("fileBookBank", selectedFileBookBank[0]?selectedFileBookBank[0]:null);
+    formData.append('email', session.user.email);
+    formData.append('name', name);
+    formData.append('lastname', lastname);
+    formData.append('idStudent', idStudent);
+    formData.append('tel', tel);
+    formData.append('level', level);
+    formData.append('department', department);
+    formData.append('nameBank', nameBank);
+    formData.append('idBank', idBank);
+    formData.append('Branch', branch);
+    formData.append(
+      'fileCardStudent',
+      selectedFileCardStudent[0] ? selectedFileCardStudent[0] : null
+    );
+    formData.append(
+      'fileBookBank',
+      selectedFileBookBank[0] ? selectedFileBookBank[0] : null
+    );
 
-    await Axios.put("/users/edit-profile", formData)
-    .then((res) => {
-      setSuccess(res.data.message);
-      if(!fileBookBank && !fileCardStudent){
-        setFileBookBank(res.data.fileBookBank);
-        setFileCardStudent(res.data.fileCardStudent);
-      }
-      else if(!fileCardStudent){
-        setFileCardStudent(res.data.fileCardStudent);
-      }
-      else if(!fileBookBank){
-        setFileBookBank(res.data.fileBookBank);
-      }
-      
-    }).catch(() => {
-      setError("เเก้ไขข้อมูลไม่สำเร็จ กรุณาเพิ่มไฟล์ !!");
-    });
+    await Axios.put('/users/edit-profile', formData)
+      .then((res) => {
+        setSuccess(res.data.message);
+        if (!fileBookBank && !fileCardStudent) {
+          setFileBookBank(res.data.fileBookBank);
+          setFileCardStudent(res.data.fileCardStudent);
+        } else if (!fileCardStudent) {
+          setFileCardStudent(res.data.fileCardStudent);
+        } else if (!fileBookBank) {
+          setFileBookBank(res.data.fileBookBank);
+        }
+      })
+      .catch(() => {
+        setError('เเก้ไขข้อมูลไม่สำเร็จ กรุณาเพิ่มไฟล์ !!');
+      });
   };
-
 
   return (
     <form>
       <div class="container">
         <h2>
-          {" "}
-          ข้อมูลนิสิต {user && user.length != 0 ? user[0].email : "loading..."}
+          {' '}
+          ข้อมูลนิสิต {user && user.length != 0 ? user[0].email : 'loading...'}
         </h2>
-        
+
         {success && (
           <div className="alert alert-success" role="alert">
-            {" "}
-            {success}{" "}
+            {' '}
+            {success}{' '}
           </div>
         )}
         {error && (
-            <div className="alert alert-danger" role="alert">
-              {" "}
-              {error}
-              {" "}
-            </div>
-      )}
+          <div className="alert alert-danger" role="alert">
+            {' '}
+            {error}{' '}
+          </div>
+        )}
         <div class="information">
           <div class="row mb-4">
             <div class="col">
               <div class="form-outline">
-              <label class="form-label" for="form6Example1">
+                <label class="form-label" for="form6Example1">
                   ชื่อจริง
                 </label>
                 <input
@@ -165,12 +162,11 @@ const profileNisit = (props) => {
                     setName(e.target.value);
                   }}
                 />
-                
               </div>
             </div>
             <div class="col">
               <div class="form-outline">
-              <label class="form-label" for="form6Example2">
+                <label class="form-label" for="form6Example2">
                   นามสกุล
                 </label>
                 <input
@@ -188,7 +184,6 @@ const profileNisit = (props) => {
                     setLastname(e.target.value);
                   }}
                 />
-                
               </div>
             </div>
           </div>
@@ -196,7 +191,7 @@ const profileNisit = (props) => {
           <div class="row mb-4">
             <div class="col">
               <div class="form-outline">
-              <label class="form-label" for="form6Example1">
+                <label class="form-label" for="form6Example1">
                   รหัสนิสิต
                 </label>
                 <input
@@ -214,7 +209,6 @@ const profileNisit = (props) => {
                     setIdstudent(e.target.value);
                   }}
                 />
-                
               </div>
             </div>
             <div class="col">
@@ -242,7 +236,7 @@ const profileNisit = (props) => {
           <div class="row mb-4">
             <div class="col">
               <div class="form-outline">
-              <label class="form-label">ระดับการศึกษา</label>
+                <label class="form-label">ระดับการศึกษา</label>
                 <select
                   class="form-select"
                   name="level"
@@ -259,19 +253,18 @@ const profileNisit = (props) => {
                     selected
                     hidden
                   >
-                    {user && user.length != 0 ? user[0].level : "loading..."}
+                    {user && user.length != 0 ? user[0].level : 'loading...'}
                   </option>
 
                   <option value="ปริญญาตรี">ปริญญาตรี</option>
 
                   <option value="ปริญญาโท">ปริญญาโท</option>
                 </select>
-                
               </div>
             </div>
             <div class="col">
               <div class="form-outline">
-              <label class="form-label">ภาควิชา</label>
+                <label class="form-label">ภาควิชา</label>
                 <select
                   class="form-select"
                   name="major"
@@ -321,7 +314,6 @@ const profileNisit = (props) => {
                     วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ(ป.ตรี)
                   </option>
                 </select>
-                
               </div>
             </div>
           </div>
@@ -331,7 +323,7 @@ const profileNisit = (props) => {
           <div class="row mb-4">
             <div class="col">
               <div class="form-outline">
-              <label class="form-label">ชื่อธนาคาร</label>
+                <label class="form-label">ชื่อธนาคาร</label>
                 <SelectNameBank
                   nameBank={
                     // user && user.length != 0 ? user[0].nameBank : "loading..."
@@ -341,12 +333,11 @@ const profileNisit = (props) => {
                     setNameBank(e.target.value);
                   }}
                 />
-                
               </div>
             </div>
             <div class="col">
               <div class="form-outline">
-              <label class="form-label" for="form6Example7">
+                <label class="form-label" for="form6Example7">
                   เลขที่บัญชี
                 </label>
                 <input
@@ -362,12 +353,11 @@ const profileNisit = (props) => {
                     setIdBank(e.target.value);
                   }}
                 />
-                
               </div>
             </div>
             <div class="col">
               <div class="form-outline">
-              <label class="form-label" for="form6Example8">
+                <label class="form-label" for="form6Example8">
                   สาขาธนาคาร
                 </label>
                 <input
@@ -383,7 +373,6 @@ const profileNisit = (props) => {
                     setBranch(e.target.value);
                   }}
                 />
-                
               </div>
             </div>
           </div>
@@ -393,25 +382,28 @@ const profileNisit = (props) => {
                 {!fileCardStudent && (
                   <div>
                     <label class="form-label" for="form6Example9">
-                      รูปบัตรนิสิตที่ยังไม่หมดอายุ
+                      รูปบัตรนิสิตที่ยังไม่หมดอายุ(pdfเท่านั้น)
                     </label>
                     <input
                       type="file"
                       id="form6Example9"
                       class="form-control"
                       // defaultValue={path}
-                      // accept="application/pdf"
+                      accept="application/pdf"
                       onChange={(e) => {
                         setSelectedFileCardStudent(e.target.files);
                       }}
                     />
-                    
                   </div>
                 )}
                 {fileCardStudent && (
                   <p>
                     {fileCardStudent}
-                    <button type="button" class="btn btn-danger btn-block mb-4" onClick={clearFileCard}>
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-block mb-4"
+                      onClick={clearFileCard}
+                    >
                       นำออก
                     </button>
                   </p>
@@ -424,13 +416,13 @@ const profileNisit = (props) => {
                 {!fileBookBank && (
                   <div>
                     <label class="form-label" for="form6Example10">
-                      รูปสมุดบัญชีธนาคาร
+                      รูปสมุดบัญชีธนาคาร(pdfเท่านั้น)
                     </label>
                     <input
                       type="file"
                       id="form6Example10"
                       class="form-control"
-                      // accept="application/pdf"
+                      accept="application/pdf"
                       //   defaultValue={
                       //     user && user.length != 0 ? `../../img/timer.png` : "loading..."
                       //   }
@@ -440,13 +432,16 @@ const profileNisit = (props) => {
                         setSelectedFileBookBank(e.target.files);
                       }}
                     />
-                    
                   </div>
                 )}
                 {fileBookBank && (
                   <p>
-                    {fileBookBank}{" "}
-                    <button type="button" class="btn btn-danger btn-block mb-4" onClick={clearFileBank}>
+                    {fileBookBank}{' '}
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-block mb-4"
+                      onClick={clearFileBank}
+                    >
                       นำออก
                     </button>
                   </p>
@@ -467,7 +462,6 @@ const profileNisit = (props) => {
     </form>
   );
 };
-
 
 const mapStateToProps = (state) => ({
   nisit: state.nisit.nisit,

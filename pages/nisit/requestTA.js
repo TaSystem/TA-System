@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import Axios from "../../config/Axios";
-import { signIn, signOut, useSession } from "next-auth/client";
-import { connect } from "react-redux";
+import React, { useState, useEffect } from 'react';
+import Axios from '../../config/Axios';
+import { signIn, signOut, useSession } from 'next-auth/client';
+import { connect } from 'react-redux';
 import {
   getDetailNisit,
   getCoursesNisit,
-} from "../../redux/actions/nisitAction";
+} from '../../redux/actions/nisitAction';
 
 function requestTA(props) {
   const [courseList, setCourseList] = useState([]);
@@ -20,22 +20,22 @@ function requestTA(props) {
   // const [startArray, setStartArray] = useState([]);
   // const [endArray, setEndArray] = useState([]);
   var syStatus =
-    system != null && system.length != 0 ? system[0].status : "loading...";
+    system != null && system.length != 0 ? system[0].status : 'loading...';
 
   useEffect(() => {
     async function getCourses() {
-      const response = await Axios.get("/courses/student");
+      const response = await Axios.get('/courses/student');
       setCourseList(response.data);
       // setDayArray(response.data[0].day_P.split("_"));
       // setStartArray(response.data[0].start_P.split("_"));
       // setEndArray(response.data[0].end_P.split("_"));
     }
     async function getYear() {
-      const response = await Axios.get("/setdate/getNow");
+      const response = await Axios.get('/setdate/getNow');
       setYearNow(response.data);
     }
     async function getSystem() {
-      const response = await Axios.get("/system/2");
+      const response = await Axios.get('/system/2');
       setSystem(response.data);
     }
 
@@ -68,9 +68,9 @@ function requestTA(props) {
       }
     });
   }
-  
+
   const showSec = (sec_P) => {
-    let arraySec = sec_P.split("_");
+    let arraySec = sec_P.split('_');
     return arraySec.map((val, index) => {
       if (arraySec.length == index + 1) {
         return <>{val}</>;
@@ -80,9 +80,10 @@ function requestTA(props) {
     });
   };
 
-  
-  const hourTA = (d, p) => {
-    if (d && p) return 5;
+  const hourTA = (d, p, CID) => {
+    if (CID == '03602312') return 2;
+    else if (CID == '03602362') return 4;
+    else if (d && p) return 5;
     else if (d && !p) return 2;
     else if (p && !d) return 3;
   };
@@ -90,7 +91,7 @@ function requestTA(props) {
   const applyTA = async (id, hr) => {
     setSuccess(null);
     setError(null);
-    await Axios.post("/apply/student-apply", {
+    await Axios.post('/apply/student-apply', {
       userID: props.nisit.userID,
       level: props.nisit.level,
       courseID: id,
@@ -108,14 +109,14 @@ function requestTA(props) {
 
   const hourP = (day, start, end) => {
     if (day && start && end) {
-      let dayArray = day.split("_");
-      let startArray = start.split("_");
-      let endArray = end.split("_");
+      let dayArray = day.split('_');
+      let startArray = start.split('_');
+      let endArray = end.split('_');
       return dayArray.map((val, index) => {
         return (
           <p>
-            เวลาเรียนปฎิบัติ วัน {dayArray[index]} เวลา {startArray[index]} -{" "}
-            {endArray[index]}{" "}
+            เวลาเรียนปฎิบัติ วัน {dayArray[index]} เวลา {startArray[index]} -{' '}
+            {endArray[index]}{' '}
           </p>
         );
       });
@@ -124,10 +125,10 @@ function requestTA(props) {
     }
   };
 
-  if (typeof window !== "undefined" && loading) return null;
+  if (typeof window !== 'undefined' && loading) return null;
 
   if (!session) {
-    console.log("in that case");
+    console.log('in that case');
     return (
       <div>
         <h2>You aren't signed in, please sign in first</h2>
@@ -141,28 +142,28 @@ function requestTA(props) {
     );
   }
 
-  console.log("props in requestTA  >> ", props.nisit);
-  console.log("session in requestTA ", session);
+  console.log('props in requestTA  >> ', props.nisit);
+  console.log('session in requestTA ', session);
 
   //จำนวนชั่วโฒง
   return (
     <div className="container">
       <h1>
-        ลงทะเบียนSA{" "}
-        {props.nisit.level == "ปริญญาตรี"
-          ? "(ขอได้ไม่เกิน 10 ชั่วโมง)"
-          : "(ขอได้ไม่จำกัดชั่วโมง)"}
+        ลงทะเบียนSA{' '}
+        {props.nisit.level == 'ปริญญาตรี'
+          ? '(ขอได้ไม่เกิน 10 ชั่วโมง)'
+          : '(ขอได้ไม่จำกัดชั่วโมง)'}
       </h1>
       {/* <h2>ระบบ {syStatus?"เปิด":"ปิด"}</h2> */}
       <h2>
-        ปี{" "}
+        ปี{' '}
         {yearNow != null && yearNow.length != 0
           ? yearNow[0].year
-          : "loading..."}{" "}
-        เทอม{" "}
+          : 'loading...'}{' '}
+        เทอม{' '}
         {yearNow != null && yearNow.length != 0
           ? yearNow[0].term
-          : "loading..."}{" "}
+          : 'loading...'}{' '}
       </h2>
       <input
         type="text"
@@ -170,21 +171,22 @@ function requestTA(props) {
         placeholder="รหัสวิชา/ชื่อวิชา/อาจารย์"
         onChange={(e) => setSearch(e.target.value)}
       />
-      จำนวนคำร้อง:{courseList != null && courseList.length != 0 ? Filter(courseList).length : 0} 
-
+      จำนวนคำร้อง:
+      {courseList != null && courseList.length != 0
+        ? Filter(courseList).length
+        : 0}
       {success && (
         <div className="alert alert-success" role="alert">
-          {" "}
-          {success}{" "}
+          {' '}
+          {success}{' '}
         </div>
       )}
       {error && (
         <div className="alert alert-danger" role="alert">
-          {" "}
-          {error}{" "}
+          {' '}
+          {error}{' '}
         </div>
       )}
-
       <div className="information">
         {Filter(courseList).map((val, key) => {
           return (
@@ -192,11 +194,13 @@ function requestTA(props) {
               <div class="card-header">{val.courseID}</div>
               <div class="card-body">
                 <h5 class="card-title">
-                  {val.title} หมู่เรียน {val.sec_D}{val.sec_D&&val.sec_P ?",":""}{showSec(val.sec_P)}{" "}
+                  {val.title} หมู่เรียน {val.sec_D}
+                  {val.sec_D && val.sec_P ? ',' : ''}
+                  {showSec(val.sec_P)}{' '}
                 </h5>
                 <p class="card-text">
-                  เวลาเรียนบรรยาย {val.day_D ? val.day_D : ""}{" "}
-                  {val.start_D ? val.start_D + " - " + val.end_D : "-"}
+                  เวลาเรียนบรรยาย {val.day_D ? val.day_D : ''}{' '}
+                  {val.start_D ? val.start_D + ' - ' + val.end_D : '-'}
                 </p>
 
                 {hourP(val.day_P, val.start_P, val.end_P)}
@@ -222,11 +226,14 @@ function requestTA(props) {
                       aria-label="Example text with button addon"
                       aria-describedby="button-addon1"
                       onClick={() => {
-                        if (window.confirm("ต้องการยืนขอวิชา: " + val.title))
-                          applyTA(val.id, hourTA(val.sec_D, val.sec_P));
+                        if (window.confirm('ต้องการยืนขอวิชา: ' + val.title))
+                          applyTA(
+                            val.id,
+                            hourTA(val.sec_D, val.sec_P, val.courseID)
+                          );
                       }}
                     >
-                      ส่งคำร้อง{" "}
+                      ส่งคำร้อง{' '}
                     </button>
                   </div>
                 </form>
@@ -235,7 +242,7 @@ function requestTA(props) {
           );
         })}
         {courseList && !courseList.length && (
-          <h2 style={{ color: "red" }}>ไม่มีรายวิชาที่เปิดสอนรับ SA</h2>
+          <h2 style={{ color: 'red' }}>ไม่มีรายวิชาที่เปิดสอนรับ SA</h2>
         )}
       </div>
     </div>

@@ -1,12 +1,12 @@
-import Axios from "../../../config/Axios";
-import React, { useState, useEffect } from "react";
+import Axios from '../../../config/Axios';
+import React, { useState, useEffect } from 'react';
 
-import ModalCourse from "../../../components/ModalCourse";
-import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/client";
-import { connect } from "react-redux";
-import { getDetailNisit } from "../../../redux/actions/nisitAction";
-import { useRouter } from "next/router";
+import ModalCourse from '../../../components/ModalCourse';
+import Link from 'next/link';
+import { signIn, signOut, useSession } from 'next-auth/client';
+import { connect } from 'react-redux';
+import { getDetailNisit } from '../../../redux/actions/nisitAction';
+import { useRouter } from 'next/router';
 
 function coursesTeacher(props) {
   //ขอเลือกระดับได้
@@ -17,24 +17,24 @@ function coursesTeacher(props) {
   const [yearNow, setYearNow] = useState([]);
   const [load, setLoad] = useState(false);
   const [session, loading] = useSession(); //ชื่อมันซ้ำ
-  const [courseValue,setCourseValue] = useState([]);
+  const [courseValue, setCourseValue] = useState([]);
   const router = useRouter();
   var syStatus =
-    system != null && system.length != 0 ? system[0].status : "loading...";
+    system != null && system.length != 0 ? system[0].status : 'loading...';
 
   useEffect(() => {
     async function getCourses() {
       setLoad(true);
-      const response = await Axios.get("/courses/course-open");
+      const response = await Axios.get('/courses/course-open');
       setCourseList(response.data);
       setLoad(false);
     }
     async function getSystem() {
-      const response = await Axios.get("/system/1");
+      const response = await Axios.get('/system/1');
       setSystem(response.data);
     }
     async function getYear() {
-      const response = await Axios.get("/setdate/getNow");
+      const response = await Axios.get('/setdate/getNow');
       setYearNow(response.data);
     }
     getYear();
@@ -70,27 +70,27 @@ function coursesTeacher(props) {
 
   const showModalCourse = (val) => {
     setCourseValue({
-      CID:val.CID,
-      title:val.title,
-      courseID:val.courseID,
-      sec_D:val.sec_D,
-      sec_P:val.sec_P,
-      day_D:val.day_D,
-      day_P:val.day_P,
-      start_D:val.start_D,
-      start_P:val.start_P,
-      end_D:val.end_D,
-      end_P:val.end_P,
-      number_D:val.number_D,
-      number_P:val.number_P,
-      numberReal:val.numberReal,
-      level:val.level,
-      major:val.major,
-      teacher:val.teacher
+      CID: val.CID,
+      title: val.title,
+      courseID: val.courseID,
+      sec_D: val.sec_D,
+      sec_P: val.sec_P,
+      day_D: val.day_D,
+      day_P: val.day_P,
+      start_D: val.start_D,
+      start_P: val.start_P,
+      end_D: val.end_D,
+      end_P: val.end_P,
+      number_D: val.number_D,
+      number_P: val.number_P,
+      numberReal: val.numberReal,
+      level: val.level,
+      major: val.major,
+      teacher: val.teacher,
     });
   };
   const showSec = (sec_P) => {
-    let arraySec = sec_P?.split("_");
+    let arraySec = sec_P?.split('_');
     return arraySec?.map((val, index) => {
       if (arraySec.length == index + 1) {
         return <>{val}</>;
@@ -100,7 +100,7 @@ function coursesTeacher(props) {
     });
   };
 
-  if (typeof window !== "undefined" && loading) return null;
+  if (typeof window !== 'undefined' && loading) return null;
 
   if (!session) {
     // console.log("in that case");
@@ -121,14 +121,14 @@ function coursesTeacher(props) {
     <div className="container">
       <h1>รายวิชาที่เปิดสอน </h1>
       <h2>
-        ปี{" "}
+        ปี{' '}
         {yearNow != null && yearNow.length != 0
           ? yearNow[0].year
-          : "loading..."}{" "}
-        เทอม{" "}
+          : 'loading...'}{' '}
+        เทอม{' '}
         {yearNow != null && yearNow.length != 0
           ? yearNow[0].term
-          : "loading..."}{" "}
+          : 'loading...'}{' '}
       </h2>
       {/* <h2>ระบบ {syStatus ? "เปิด" : "ปิด"}{" "}</h2> */}
       <input
@@ -137,27 +137,27 @@ function coursesTeacher(props) {
         placeholder="รหัสวิชา/ชื่อวิชา/อาจารย์"
         onChange={(e) => setSearch(e.target.value)}
       />
-      จำนวน:{" "}
+      จำนวน:{' '}
       {courseList != null && courseList.length != 0
         ? Filter(courseList).length
-        : 0}{" "}
+        : 0}{' '}
       วิชา
       <div
         className="table-responsive"
-        style={{ maxHeight: "65vh", marginTop: "1vh" }}
+        style={{ maxHeight: '65vh', marginTop: '1vh' }}
       >
         <table
           className="table table-hover table-borderless"
           cellspacing="0"
-          style={{ textAlign: "center" }}
+          style={{ textAlign: 'center' }}
         >
           <thead
             style={{
-              position: "sticky",
+              position: 'sticky',
               top: 0,
-              background: "#7a0117",
-              color: "#fff",
-              fontWeight: "400",
+              background: '#7a0117',
+              color: '#fff',
+              fontWeight: '400',
             }}
           >
             <tr>
@@ -172,7 +172,6 @@ function coursesTeacher(props) {
                 จำนวนนิสิต
               </th>
               <th rowSpan="2">ข้อมูล/ขอนิสิตช่วยงาน</th>
-              
             </tr>
 
             <tr>
@@ -199,43 +198,45 @@ function coursesTeacher(props) {
                     </Link>
                   </td>
                   <td>{val.title}</td>
-                  <td>{val.sec_D ? val.sec_D : "-"}</td>
-                  <td>{val.sec_P ? showSec(val.sec_P) : "-"}</td>
+                  <td>{val.sec_D ? val.sec_D : '-'}</td>
+                  <td>{val.sec_P ? showSec(val.sec_P) : '-'}</td>
                   <td class="text-nowrap">{val.level}</td>
                   <td>{val.major}</td>
                   <td>{val.teacher}</td>
                   <td>{val.number_D ? val.number_D : val.number_P}</td>
                   <td>{val.numberReal ? val.numberReal : 0}</td>
                   <td>
-                    {val.status ?<button
-                      type="button"
-                      className="btn btn-primary text-nowrap"
-                      
-                      onClick={() => applyTa(val.id)}
-                    >
-                      ขอนิสิตช่วยงาน
-                    </button>:<button
-                      type="button"
-                      className="btn btn-danger text-nowrap"
-                      disabled
-                    >
-                      ขอนิสิตช่วยงานไม่ได้
-                    </button>}
+                    {val.status ? (
+                      <button
+                        type="button"
+                        className="btn btn-primary text-nowrap"
+                        onClick={() => applyTa(val.id)}
+                      >
+                        ขอนิสิตช่วยงาน
+                      </button>
+                    ) : (
+                      <p
+                        style={{
+                          backgroundColor: '#DD0E0E',
+                          color: 'white',
+                          borderRadius: '6px',
+                          padding: '3px',
+                        }}
+                      >
+                        ขอนิสิตช่วยงานไม่ได้
+                      </p>
+                    )}
                   </td>
-                  
-                    
-                  
                 </tr>
               );
             })}
-            {load && <h2 style={{ color: "red" }}>กำลังโหลด...</h2>}
+            {load && <h2 style={{ color: 'red' }}>กำลังโหลด...</h2>}
             {!load && courseList && !courseList.length && (
-              <h2 style={{ color: "red" }}>ไม่มีรายวิชาที่เปิดสอน</h2>
+              <h2 style={{ color: 'red' }}>ไม่มีรายวิชาที่เปิดสอน</h2>
             )}
           </tbody>
         </table>
         <ModalCourse val={courseValue} />
-        
       </div>
     </div>
   );

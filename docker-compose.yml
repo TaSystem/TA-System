@@ -1,0 +1,79 @@
+version: '3.9'
+services:
+  db:
+    image: mysql:latest
+    container_name: db
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      # - ./backups:/backups
+      - ./database.sql:/docker-entrypoint-initdb.d/db.sql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: admintasystem
+      MYSQL_DATABASE: TASystem
+      MYSQL_PASSWORD: admintasystem
+    # healthcheck:
+    #   healthcheck:
+    #     test:  mysql --user=root --password=admintasystem -e 'SHOW DATABASES;'
+    #   timeout: 3m
+    #   retries: 10
+    networks:
+      - sanetwork
+      
+      
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - 8081:80
+    networks:
+      - sanetwork
+  tasystem-ui:
+    build:
+      context: .
+      # args:
+      #   REACT_APP_ENV: ${REACT_APP_ENV}
+    environment:
+      - NEXT_BACKEND_URL=http://tasystem-server:3001
+    ports:
+      - "3000:3000"
+    container_name: TASystem-ui
+    stdin_open: true
+    volumes:
+      - .:/usr/src/app/TASystem
+      - /usr/src/app/TASystem/node_modules
+    depends_on:
+      - tasystem-server
+    networks:
+      - sanetwork
+    
+  tasystem-server:
+    build:
+      context: ./backend
+      # args:
+      #   REACT_APP_ENV: ${REACT_APP_ENV}
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASS=admintasystem
+      - DB_NAME=TASystem
+    ports:
+      - "3001:3001"
+    container_name: TASystem-server
+    stdin_open: true
+    volumes:
+      - .:/usr/src/app/TASystem/backend
+      - /usr/src/app/TASystem/backend/node_modules
+    depends_on:
+      - db
+        # condition: service_healthy
+    restart: on-failure
+    command: ["./wait-for-it.sh", "db:3306", "--timeout=300","--", "yarn", "dev"]
+    networks:
+      - sanetwork
+networks:
+  sanetwork:
+    driver: bridge

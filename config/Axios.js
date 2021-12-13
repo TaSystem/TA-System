@@ -1,6 +1,10 @@
-import axios from "axios";
+import axios from 'axios';
+import getConfig from 'next/config';
 
+const { serverRuntimeConfig, publicRuntimeConfig } = getConfig();
+
+const apiUrl = serverRuntimeConfig.apiUrl || publicRuntimeConfig.apiUrl;
 const Axios = axios.create({
-  baseURL: "http://localhost:3001",
-})
-export default Axios
+  baseURL: `${apiUrl}`,
+});
+export default Axios;

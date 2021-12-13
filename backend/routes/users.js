@@ -1,12 +1,12 @@
-const { response } = require("express");
-var express = require("express");
+const { response } = require('express');
+var express = require('express');
 var router = express.Router();
-var db = require("../config/db");
-var upload = require("../config/multer.config");
+var db = require('../config/db');
+var upload = require('../config/multer.config');
 
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   await db.query(
-    "SELECT U.id as UID,U.email,U.name_email,U.name,U.lastname,U.level,U.department,U.tel,R.id as RID,R.title FROM users as U,users_roles as US,roles as R WHERE U.id = US.userID AND R.id = US.roleID AND US.roleID !=5 ORDER BY R.id",
+    'SELECT U.id as UID,U.email,U.name_email,U.name,U.lastname,U.level,U.department,U.tel,R.id as RID,R.title FROM users as U,users_roles as US,roles as R WHERE U.id = US.userID AND R.id = US.roleID AND US.roleID !=5 ORDER BY R.id',
     (err, result) => {
       if (err) {
         console.log(err);
@@ -18,8 +18,8 @@ router.get("/", async (req, res) => {
   // res.sendFile(__dirname+'/index.html');
 });
 
-router.get("/get-role", async (req, res) => {
-  await db.query("SELECT * FROM roles WHERE id !=5", (err, result) => {
+router.get('/get-role', async (req, res) => {
+  await db.query('SELECT * FROM roles WHERE id !=5', (err, result) => {
     if (err) {
       console.log(err);
     } else {
@@ -28,9 +28,9 @@ router.get("/get-role", async (req, res) => {
   });
 });
 
-router.get("/users-SA", async (req, res) => {
+router.get('/users-SA', async (req, res) => {
   await db.query(
-    "SELECT SA.userID,COUNT(SA.courseID) as count_courses,SUM(SA.hrperweek) as sumHour,U.id as UID,U.email,U.name_email,U.name,U.lastname,U.idStudent,U.tel,U.department,U.tel,U.level as lvl,U.nameBank,U.idBank,U.fileCardStudent,U.fileBookBank,C.year,C.term FROM studentapplyta as SA,users as U,courses as C WHERE SA.userID = U.id AND C.id = SA.courseID AND C.year IN (SELECT DISTINCT(year) FROM datestudy WHERE status = 1) AND C.term IN (SELECT DISTINCT(term) FROM datestudy WHERE status = 1) AND SA.status = 3 GROUP BY SA.userID",
+    'SELECT SA.userID,COUNT(SA.courseID) as count_courses,SUM(SA.hrperweek) as sumHour,U.id as UID,U.email,U.name_email,U.name,U.lastname,U.idStudent,U.tel,U.department,U.tel,U.level as lvl,U.nameBank,U.idBank,U.fileCardStudent,U.fileBookBank,C.year,C.term FROM studentapplyta as SA,users as U,courses as C WHERE SA.userID = U.id AND C.id = SA.courseID AND C.year IN (SELECT DISTINCT(year) FROM datestudy WHERE status = 1) AND C.term IN (SELECT DISTINCT(term) FROM datestudy WHERE status = 1) AND SA.status = 3 GROUP BY SA.userID',
     (err, result) => {
       if (err) {
         console.log(err);
@@ -41,10 +41,10 @@ router.get("/users-SA", async (req, res) => {
   );
 });
 
-router.get("/:id", async (req, res) => {
+router.get('/:id', async (req, res) => {
   const id = req.params.id;
   await db.query(
-    "SELECT U.id as UID,U.email,U.name_email,U.name,U.lastname,U.level,U.department,U.tel,R.id as RID,R.title FROM users as U,users_roles as US,roles as R WHERE U.id = US.userID AND R.id = US.roleID AND U.id = ?",
+    'SELECT U.id as UID,U.email,U.name_email,U.name,U.lastname,U.level,U.department,U.tel,R.id as RID,R.title FROM users as U,users_roles as US,roles as R WHERE U.id = US.userID AND R.id = US.roleID AND U.id = ?',
     id,
     (err, result) => {
       if (err) {
@@ -56,10 +56,10 @@ router.get("/:id", async (req, res) => {
   );
 });
 
-router.get("/users-SA/:id", async (req, res) => {
+router.get('/users-SA/:id', async (req, res) => {
   const courseID = req.params.id;
   await db.query(
-    "SELECT * FROM studentapplyta as SA,users as U WHERE U.id=SA.userID AND SA.status=3 AND SA.courseID = ?",
+    'SELECT * FROM studentapplyta as SA,users as U WHERE U.id=SA.userID AND SA.status=3 AND SA.courseID = ?',
     courseID,
     (err, result) => {
       if (err) {
@@ -71,10 +71,10 @@ router.get("/users-SA/:id", async (req, res) => {
   );
 });
 
-router.get("/course-owner/:id", async (req, res) => {
+router.get('/course-owner/:id', async (req, res) => {
   const courseID = req.params.id;
   await db.query(
-    "SELECT U.email,U.name_email,U.name,U.lastname,U.department,U.tel,R.title as roleTitle FROM teacherapplyta as TA,users as U,roles as R,users_roles as UR WHERE U.id = TA.userID AND U.id = UR.userID AND UR.roleID = R.id AND TA.status = 5 AND TA.courseID = ?",
+    'SELECT U.email,U.name_email,U.name,U.lastname,U.department,U.tel,R.title as roleTitle FROM teacherapplyta as TA,users as U,roles as R,users_roles as UR WHERE U.id = TA.userID AND U.id = UR.userID AND UR.roleID = R.id AND TA.status = 5 AND TA.courseID = ?',
     courseID,
     (err, result) => {
       if (err) {
@@ -86,17 +86,17 @@ router.get("/course-owner/:id", async (req, res) => {
   );
 });
 
-router.post("/profiledetail", async (req, res) => {
+router.post('/profiledetail', async (req, res) => {
   const email = req.body.email;
   if (email) {
     await db.query(
-      "SELECT  * FROM users,roles,users_roles WHERE users.id = users_roles.userID AND roles.id = users_roles.roleID AND users.email = ?",
+      'SELECT  * FROM users,roles,users_roles WHERE users.id = users_roles.userID AND roles.id = users_roles.roleID AND users.email = ?',
       email,
       (err, result) => {
         if (err) {
           console.log(err);
         } else {
-          console.log("fetch profile data");
+          console.log('fetch profile data');
           res.send(result);
         }
       }
@@ -104,7 +104,8 @@ router.post("/profiledetail", async (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {
+router.post('/login', async (req, res) => {
+  console.log('login');
   const email = req.body.email;
   const name_email = req.body.name_email;
   const imgURL = req.body.imgURL;
@@ -113,7 +114,7 @@ router.post("/login", async (req, res) => {
   const role = req.body.role;
   if (email) {
     await db.query(
-      "SELECT * FROM users WHERE email = ? ",
+      'SELECT * FROM users WHERE email = ? ',
       email,
       (err, result) => {
         if (err) {
@@ -121,7 +122,7 @@ router.post("/login", async (req, res) => {
         } else if (result.length > 0) {
           const userID = result[0].id;
           db.query(
-            "SELECT  * FROM users,roles,users_roles WHERE users.id = users_roles.userID AND roles.id = users_roles.roleID AND users_roles.userID = ?",
+            'SELECT  * FROM users,roles,users_roles WHERE users.id = users_roles.userID AND roles.id = users_roles.roleID AND users_roles.userID = ?',
             userID,
             (err, result) => {
               const title = result[0].title;
@@ -132,29 +133,29 @@ router.post("/login", async (req, res) => {
                 result[0].imgURL == null
               ) {
                 db.query(
-                  "UPDATE users SET name_email=?,imgURL=?,created_at=?,updated_at=? WHERE id=?",
+                  'UPDATE users SET name_email=?,imgURL=?,created_at=?,updated_at=? WHERE id=?',
                   [name_email, imgURL, created_at, updated_at, userID],
                   (err, result) => {
                     if (err) {
                       console.log(err);
                     } else {
                       console.log(title);
-                      console.log("welcome role set");
-                      let ans = { path: "/provostCourses", result: result };
+                      console.log('welcome role set');
+                      let ans = { path: '/provostCourses', result: result };
                       res.send(ans);
                     }
                   }
                 );
               } else {
                 console.log(result[0].title);
-                console.log("welcome back");
+                console.log('welcome back');
 
                 let ansTeacher = {
-                  path: "/provost/provostCourses",
+                  path: '/provost/provostCourses',
                   result: result,
                 };
 
-                let ansStudent = { path: "/nisit", result: result };
+                let ansStudent = { path: '/nisit', result: result };
 
                 if (role == 5) {
                   res.send(ansStudent);
@@ -166,15 +167,16 @@ router.post("/login", async (req, res) => {
           );
           console.log(result[0].id);
         } else {
+          console.log("email doesn't exist");
           db.query(
-            "INSERT INTO users (email,name_email,imgURL,created_at,updated_at) VALUES(?,?,?,?,?)",
+            'INSERT INTO users (email,name_email,imgURL,created_at,updated_at) VALUES(?,?,?,?,?)',
             [email, name_email, imgURL, created_at, updated_at],
             (err, result) => {
               if (err) {
                 console.log(err);
               } else {
                 db.query(
-                  "select id FROM users WHERE email=?",
+                  'select id FROM users WHERE email=?',
                   email,
                   (err, result) => {
                     if (err) {
@@ -183,23 +185,23 @@ router.post("/login", async (req, res) => {
                       const id = result[0].id;
                       console.log(id);
                       db.query(
-                        "INSERT INTO users_roles VALUES(?,?)",
+                        'INSERT INTO users_roles VALUES(?,?)',
                         [id, role],
                         (err, result) => {
                           if (err) {
                             console.log(err);
                           } else {
                             db.query(
-                              "SELECT  * FROM users,roles,users_roles WHERE users.id = users_roles.userID AND roles.id = users_roles.roleID AND users_roles.userID = ?",
+                              'SELECT  * FROM users,roles,users_roles WHERE users.id = users_roles.userID AND roles.id = users_roles.roleID AND users_roles.userID = ?',
                               id,
                               (err, result) => {
                                 if (err) {
                                   console.log(err);
                                 } else {
                                   console.log(result[0].title);
-                                  console.log("first login");
+                                  console.log('first login');
                                   let ans = {
-                                    path: "/nisit/registerNisit",
+                                    path: '/nisit/registerNisit',
                                     result: result,
                                   };
                                   res.send(ans);
@@ -221,28 +223,28 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post("/create", (req, res) => {
+router.post('/create', (req, res) => {
   const email = req.body.email;
   const name_email = req.body.name_email;
   const imgURL = req.body.imgURL;
   db.query(
-    "INSERT INTO users (email,name_email,imgURL) VALUES(?,?,?)",
+    'INSERT INTO users (email,name_email,imgURL) VALUES(?,?,?)',
     [email, name_email, imgURL],
     (err, result) => {
       if (err) {
         console.log(err);
       } else {
-        res.send("User inserted");
+        res.send('User inserted');
       }
     }
   );
 });
 
 router.post(
-  "/profile",
+  '/profile',
   upload.fields([
-    { name: "fileCardStudent", maxCount: 1 },
-    { name: "fileBookBank", maxCount: 1 },
+    { name: 'fileCardStudent', maxCount: 1 },
+    { name: 'fileBookBank', maxCount: 1 },
   ]),
   (req, res) => {
     const name = req.body.name;
@@ -257,7 +259,7 @@ router.post(
     const fileBookBank = req.files.fileBookBank[0].filename;
     const updated_at = new Date();
     db.query(
-      "INSERT INTO users (name,lastname,idStudent,level,department,tel,nameBank,idBank,fileCardStudent,fileBookBank,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+      'INSERT INTO users (name,lastname,idStudent,level,department,tel,nameBank,idBank,fileCardStudent,fileBookBank,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
       [
         name,
         lastname,
@@ -275,14 +277,14 @@ router.post(
         if (err) {
           console.log(err);
         } else {
-          res.send("User inserted");
+          res.send('User inserted');
         }
       }
     );
   }
 );
 
-router.post("/set-role", (req, res) => {
+router.post('/set-role', (req, res) => {
   let email = req.body.email;
   let name = req.body.name;
   let lastname = req.body.lastname;
@@ -291,31 +293,31 @@ router.post("/set-role", (req, res) => {
   let roleID = req.body.roleID;
 
   let items = [email, name, lastname, department, tel];
-  console.log("items: ", items);
+  console.log('items: ', items);
 
   db.query(
-    "INSERT INTO users (email,name,lastname,department,tel) VALUES(?,?,?,?,?)",
+    'INSERT INTO users (email,name,lastname,department,tel) VALUES(?,?,?,?,?)',
     items,
     (err, result) => {
       if (err) {
         console.log(err);
       } else {
         db.query(
-          "INSERT INTO users_roles(userID,roleID) VALUES (?,?)",
+          'INSERT INTO users_roles(userID,roleID) VALUES (?,?)',
           [result.insertId, roleID],
           (err, result) => {
             if (err) {
               console.log(err);
             } else {
               db.query(
-                "SELECT U.id as UID,U.email,U.name_email,U.name,U.lastname,U.level,U.department,U.tel,R.id as RID,R.title FROM users as U,users_roles as US,roles as R WHERE U.id = US.userID AND R.id = US.roleID AND US.roleID !=5 ORDER BY R.id",
+                'SELECT U.id as UID,U.email,U.name_email,U.name,U.lastname,U.level,U.department,U.tel,R.id as RID,R.title FROM users as U,users_roles as US,roles as R WHERE U.id = US.userID AND R.id = US.roleID AND US.roleID !=5 ORDER BY R.id',
                 (err, result) => {
                   if (err) {
                     console.log(err);
                   } else {
                     let response = {
                       data: result,
-                      message: "เพิ่มบุคลากรสำเร็จ",
+                      message: 'เพิ่มบุคลากรสำเร็จ',
                     };
                     res.send(response);
                   }
@@ -330,10 +332,10 @@ router.post("/set-role", (req, res) => {
 });
 
 router.put(
-  "/update-profile",
+  '/update-profile',
   upload.fields([
-    { name: "fileCardStudent", maxCount: 1 },
-    { name: "fileBookBank", maxCount: 1 },
+    { name: 'fileCardStudent', maxCount: 1 },
+    { name: 'fileBookBank', maxCount: 1 },
   ]),
   (req, res) => {
     const id = req.body.id;
@@ -345,20 +347,20 @@ router.put(
     const tel = req.body.tel;
     const updated_at = new Date();
     db.query(
-      "UPDATE users SET name = ?,lastname = ?,idStudent = ?,level = ?,department = ?,tel = ?,updated_at=? WHERE id = ?",
+      'UPDATE users SET name = ?,lastname = ?,idStudent = ?,level = ?,department = ?,tel = ?,updated_at=? WHERE id = ?',
       [name, lastname, idStudent, level, department, tel, updated_at, id],
       (err, result) => {
         if (err) {
           console.log(err);
         } else {
           db.query(
-            "SELECT  * FROM users,roles,users_roles WHERE users.id = users_roles.userID AND roles.id = users_roles.roleID AND users.id = ?",
+            'SELECT  * FROM users,roles,users_roles WHERE users.id = users_roles.userID AND roles.id = users_roles.roleID AND users.id = ?',
             id,
             (req, res) => {
               if (err) console.log(err);
               else {
-                console.log("User Updated");
-                let ans = { result: result, message: "update profile!!!" };
+                console.log('User Updated');
+                let ans = { result: result, message: 'update profile!!!' };
                 res.send(ans);
               }
             }
@@ -369,7 +371,7 @@ router.put(
   }
 );
 
-router.put("/update-banking", (req, res) => {
+router.put('/update-banking', (req, res) => {
   const id = req.body.id;
   const nameBank = req.body.nameBank;
   const idBank = req.body.idBank;
@@ -377,14 +379,14 @@ router.put("/update-banking", (req, res) => {
   const fileBookBank = req.body.fileBookBank;
   const updated_at = new Date();
   db.query(
-    "UPDATE users SET nameBank = ?,idBank = ?,fileCardStudent = ? ,fileBookBank = ?,updated_at=? WHERE id = ?",
+    'UPDATE users SET nameBank = ?,idBank = ?,fileCardStudent = ? ,fileBookBank = ?,updated_at=? WHERE id = ?',
     [nameBank, idBank, fileCardStudent, fileBookBank, updated_at, id],
     (err, result) => {
       if (err) {
         console.log(err);
       } else {
-        console.log("User Updated");
-        let ans = { result: result, message: "update profile!!!" };
+        console.log('User Updated');
+        let ans = { result: result, message: 'update profile!!!' };
         res.send(ans);
       }
     }
@@ -392,10 +394,10 @@ router.put("/update-banking", (req, res) => {
 });
 
 router.put(
-  "/edit-profile",
+  '/edit-profile',
   upload.fields([
-    { name: "fileCardStudent", maxCount: 1 },
-    { name: "fileBookBank", maxCount: 1 },
+    { name: 'fileCardStudent', maxCount: 1 },
+    { name: 'fileBookBank', maxCount: 1 },
   ]),
   (req, res) => {
     let id = req.body.id;
@@ -409,11 +411,11 @@ router.put(
     let nameBank = req.body.nameBank;
     let idBank = req.body.idBank;
     let Branch = req.body.Branch;
-    
+
     let fileCardStudent = req.files.fileCardStudent
       ? req.files.fileCardStudent[0].filename
       : null;
-    
+
     let fileBookBank = req.files.fileBookBank
       ? req.files.fileBookBank[0].filename
       : null;
@@ -493,7 +495,7 @@ router.put(
         let response = {
           fileCardStudent: fileCardStudent,
           fileBookBank: fileBookBank,
-          message: "อัปเดตข้อมูลนิสิตสำเร็จ",
+          message: 'อัปเดตข้อมูลนิสิตสำเร็จ',
         };
         res.send(response);
       }
@@ -501,7 +503,7 @@ router.put(
   }
 );
 
-router.put("/edit-profile-teacher", async (req, res) => {
+router.put('/edit-profile-teacher', async (req, res) => {
   const email = req.body.email;
   const userID = req.body.userID;
   const name = req.body.name;
@@ -532,7 +534,7 @@ router.put("/edit-profile-teacher", async (req, res) => {
       if (err) {
         console.log(err);
       } else {
-        res.send("อัปเดตข้อมูลสำเร็จ");
+        res.send('อัปเดตข้อมูลสำเร็จ');
       }
     });
   } else {
@@ -544,23 +546,23 @@ router.put("/edit-profile-teacher", async (req, res) => {
           if (err) {
             console.log(err);
           } else {
-            res.send("อัปเดตข้อมูลสำเร็จ");
+            res.send('อัปเดตข้อมูลสำเร็จ');
           }
         });
       } else {
-        res.send("อัปเดตข้อมูลสำเร็จ");
+        res.send('อัปเดตข้อมูลสำเร็จ');
       }
     });
   }
 });
 
-router.delete("/delete/:email", (req, res) => {
+router.delete('/delete/:email', (req, res) => {
   const email = req.params.email;
-  db.query("DELETE FROM users WHERE email = ?", email, (err, result) => {
+  db.query('DELETE FROM users WHERE email = ?', email, (err, result) => {
     if (err) {
       console.log(err);
     } else {
-      res.send("ลบสำเร็จ");
+      res.send('ลบสำเร็จ');
     }
   });
 });

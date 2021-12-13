@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import Axios from "../../config/Axios";
-import ModalCourse from "../../components/ModalCourse";
-import ModalDetailNisit from "../../components/ModalDetailNisit";
-import ModalDetailTeacher from "../../components/ModalDetailTeacher";
-import SelectMajor from "../../components/SelectMajor";
-import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/client";
-import { connect } from "react-redux";
-import { getDetailNisit } from "../../redux/actions/nisitAction";
+import React, { useState, useEffect } from 'react';
+import Axios from '../../config/Axios';
+import ModalCourse from '../../components/ModalCourse';
+import ModalDetailNisit from '../../components/ModalDetailNisit';
+import ModalDetailTeacher from '../../components/ModalDetailTeacher';
+import SelectMajor from '../../components/SelectMajor';
+import Link from 'next/link';
+import { signIn, signOut, useSession } from 'next-auth/client';
+import { connect } from 'react-redux';
+import { getDetailNisit } from '../../redux/actions/nisitAction';
 
 function provostNisitRequest(props) {
   const [courses, setCourses] = useState([]);
@@ -17,8 +17,8 @@ function provostNisitRequest(props) {
   const [nisitValue, setNisitValue] = useState([]);
   const [yearNow, setYearNow] = useState([]);
   const [search, setSearch] = useState(null);
-  const [major, setMajor] = useState("All");
-  const [error,setError] = useState(null);
+  const [major, setMajor] = useState('All');
+  const [error, setError] = useState(null);
   const [load, setLoad] = useState(false);
   const [session, loading] = useSession();
 
@@ -27,16 +27,24 @@ function provostNisitRequest(props) {
       props.getDetailNisit(session.user.email);
       async function getCourses() {
         setLoad(true);
-        const response = await Axios.post(`/courses/student-reply`, {
-          status: 1,
-          roleID: props.nisit.roleID,
-          email: props.nisit.email,
+        await Axios.post('/users/profiledetail', {
+          email: session.user.email,
+        }).then(async (res) => {
+          // console.log('res is ', res.data);
+          await Axios.post(`/courses/student-reply`, {
+            status: 1,
+            roleID: res.data[0].roleID,
+            email: res.data[0].email,
+          }).then((res) => {
+            // console.log('res.data is ', res.data);
+            setCourses(res.data);
+          });
         });
-        setCourses(response.data);
         setLoad(false);
       }
+
       async function getYear() {
-        const response = await Axios.get("/setdate/getNow");
+        const response = await Axios.get('/setdate/getNow');
         setYearNow(response.data);
       }
       getYear();
@@ -46,7 +54,7 @@ function provostNisitRequest(props) {
 
   function Filter(courses) {
     return courses.filter((course) => {
-      if (major == "All") {
+      if (major == 'All') {
         if (!search) {
           return course;
         } else if (course.title.toLowerCase().includes(search.toLowerCase())) {
@@ -133,8 +141,8 @@ function provostNisitRequest(props) {
       tel: val.tel,
       nameBank: val.nameBank,
       idBank: val.idBank,
-      fileCardStudent:val.fileCardStudent,
-      fileBookBank:val.fileBookBank
+      fileCardStudent: val.fileCardStudent,
+      fileBookBank: val.fileBookBank,
     });
   };
 
@@ -154,27 +162,27 @@ function provostNisitRequest(props) {
 
   const NisitapplyID = (id) => {
     let l = id.toString().length;
-    if (l == 1) return "SR00000" + id;
-    else if (l == 2) return "SR0000" + id;
-    else if (l == 3) return "SR000" + id;
-    else if (l == 4) return "SR00" + id;
-    else if (l == 5) return "SR0" + id;
-    else if (l == 6) return "SR" + id;
+    if (l == 1) return 'SR00000' + id;
+    else if (l == 2) return 'SR0000' + id;
+    else if (l == 3) return 'SR000' + id;
+    else if (l == 4) return 'SR00' + id;
+    else if (l == 5) return 'SR0' + id;
+    else if (l == 6) return 'SR' + id;
   };
 
   const replyTAsuccess = async (AID, CID) => {
     setError(null);
     setSuccess(null);
     //console.log("AID: ", AID);
-    await Axios.put("/reply/student-reply", {
+    await Axios.put('/reply/student-reply', {
       email: session.user.email,
       studentapplyID: AID,
       status: 2,
-      courseID:CID
+      courseID: CID,
     }).then((response) => {
-      if(response.data.check==0){
+      if (response.data.check == 0) {
         setError(response.data.message);
-      }else{
+      } else {
         setSuccess(response.data.message);
         setCourses(
           courses.filter((val) => {
@@ -185,15 +193,15 @@ function provostNisitRequest(props) {
     });
   };
 
-  const replyTAfail = async (AID,CID, title) => {
-    let notereply = prompt("เหตุผลที่ยกนิสิต " + title);
+  const replyTAfail = async (AID, CID, title) => {
+    let notereply = prompt('เหตุผลที่ยกนิสิต ' + title);
     if (notereply != null) {
-      await Axios.put("/reply/student-reply", {
+      await Axios.put('/reply/student-reply', {
         email: session.user.email,
         studentapplyID: AID,
         status: 0,
-        courseID:CID,
-        notereply:notereply
+        courseID: CID,
+        notereply: notereply,
       }).then((response) => {
         setSuccess(response.data.message);
         setCourses(
@@ -203,11 +211,11 @@ function provostNisitRequest(props) {
         );
       });
     } else {
-        console.log("")
+      console.log('');
     }
   };
 
-  if (typeof window !== "undefined" && loading) return null;
+  if (typeof window !== 'undefined' && loading) return null;
 
   if (!session) {
     //console.log("in that case");
@@ -223,39 +231,50 @@ function provostNisitRequest(props) {
       <h1>รายชื่อนิสิตที่ยื่นขอ(อาจารย์ผู้สอน)</h1>
       <div className="information">
         <h3>
-          ปี{" "}
+          ปี{' '}
           {yearNow != null && yearNow.length != 0
             ? yearNow[0].year
-            : "loading..."}{" "}
-          เทอม{" "}
+            : 'loading...'}{' '}
+          เทอม{' '}
           {yearNow != null && yearNow.length != 0
             ? yearNow[0].term
-            : "loading..."}
+            : 'loading...'}
         </h3>
         {searchBox()}
         {success && (
           <div className="alert alert-success" role="alert">
-            {" "}
-            {success}{" "}
+            {' '}
+            {success}{' '}
           </div>
         )}
         {error && (
-            <div className="alert alert-danger" role="alert">
-              {" "}
-              {error}
-              {" "}
-            </div>
-      )}
+          <div className="alert alert-danger" role="alert">
+            {' '}
+            {error}{' '}
+          </div>
+        )}
         จำนวนคำร้อง:
         {courses != null && courses.length != 0 ? Filter(courses).length : 0}
-        <table className="table table-hover table-bordered" cellspacing="0" style={{textAlign:"center"}}>
-          <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
+        <table
+          className="table table-hover table-bordered"
+          cellspacing="0"
+          style={{ textAlign: 'center' }}
+        >
+          <thead
+            style={{
+              position: 'sticky',
+              top: 0,
+              background: '#7a0117',
+              color: '#fff',
+              fontWeight: '400',
+            }}
+          >
             <tr>
               <th rowSpan="2">ลำดับ</th>
               <th rowSpan="2">รหัสคำขอ</th>
               <th rowSpan="2">รหัสวิชา</th>
               <th rowSpan="2">ชื่อวิชา</th>
-              
+
               <th rowSpan="2">สาขาวิชา</th>
               <th rowSpan="2">อาจารย์</th>
               <th rowSpan="2">อาจารย์เจ้าของวิชา</th>
@@ -263,7 +282,6 @@ function provostNisitRequest(props) {
               <th rowSpan="2">เหตุผล</th>
               <th rowSpan="2">ตอบกลับคำร้อง</th>
             </tr>
-            
           </thead>
           <tbody>
             {Filter(courses).map((val, key) => {
@@ -284,7 +302,6 @@ function provostNisitRequest(props) {
                   </td>
                   <td>{val.title}</td>
 
-                  
                   <td>{val.major}</td>
                   <td>{val.teacher}</td>
                   <td>
@@ -316,7 +333,7 @@ function provostNisitRequest(props) {
                       class="btn btn-success"
                       key={key}
                       onClick={() => {
-                        if (window.confirm("ต้องการยืนยันวิชา: " + val.title))
+                        if (window.confirm('ต้องการยืนยันวิชา: ' + val.title))
                           replyTAsuccess(val.AID, val.CID);
                       }}
                     >
@@ -327,8 +344,7 @@ function provostNisitRequest(props) {
                       class="btn btn-danger"
                       key={key}
                       onClick={() => {
-                        
-                          replyTAfail(val.AID,val.CID,val.name);
+                        replyTAfail(val.AID, val.CID, val.name);
                       }}
                     >
                       ยกเลิก
@@ -337,8 +353,10 @@ function provostNisitRequest(props) {
                 </tr>
               );
             })}
-            {load  && <h2 style={{color:"red"}}>กำลังโหลด...</h2>}
-            {!load && courses && !courses.length && <h2 style={{color:"red"}}>ไม่มีคำร้อง</h2>}
+            {load && <h2 style={{ color: 'red' }}>กำลังโหลด...</h2>}
+            {!load && courses && !courses.length && (
+              <h2 style={{ color: 'red' }}>ไม่มีคำร้อง</h2>
+            )}
           </tbody>
         </table>
         <ModalCourse val={courseValue} />

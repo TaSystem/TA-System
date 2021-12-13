@@ -1,16 +1,15 @@
-import Axios from "../../config/Axios";
-import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/client";
-import { connect } from "react-redux";
-import { getDetailNisit } from "../../redux/actions/nisitAction";
-import SelectMajor from "../../components/SelectMajor";
-import Link from "next/link";
-import ModalCourse from "../../components/ModalCourse";
-import ModalDetailTeacher from "../../components/ModalDetailTeacher";
-import ModalHistoryReply from "../../components/ModalHistoryReply";
+import Axios from '../../config/Axios';
+import React, { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/client';
+import { connect } from 'react-redux';
+import { getDetailNisit } from '../../redux/actions/nisitAction';
+import SelectMajor from '../../components/SelectMajor';
+import Link from 'next/link';
+import ModalCourse from '../../components/ModalCourse';
+import ModalDetailTeacher from '../../components/ModalDetailTeacher';
+import ModalHistoryReply from '../../components/ModalHistoryReply';
 import { CSVLink } from 'react-csv';
 import ReactToPrint from 'react-to-print';
-
 
 function officerApproveCost(props) {
   const componentRef = React.useRef();
@@ -18,19 +17,17 @@ function officerApproveCost(props) {
   const [search, setSearch] = useState(null);
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
-  const [major, setMajor] = useState("All");
+  const [major, setMajor] = useState('All');
   const [numberReal, setNumberReal] = useState({});
-  const [applyID,setApplyID] = useState([]);
-  const [historyReply,setHistoryReply] = useState([]);
-  const [courseValue,setCourseValue] = useState([]);
-  const [teacherValue,setTeacherValue] = useState([]);
-  const [data,setData] = useState([]);
+  const [applyID, setApplyID] = useState([]);
+  const [historyReply, setHistoryReply] = useState([]);
+  const [courseValue, setCourseValue] = useState([]);
+  const [teacherValue, setTeacherValue] = useState([]);
+  const [data, setData] = useState([]);
   const [yearNow, setYearNow] = useState([]);
   const [load, setLoad] = useState(false);
   const [session, loading] = useSession();
-  
 
-  
   useEffect(() => {
     async function getCourses() {
       setLoad(true);
@@ -39,7 +36,7 @@ function officerApproveCost(props) {
       setLoad(false);
     }
     async function getYear() {
-      const response = await Axios.get("/setdate/getNow");
+      const response = await Axios.get('/setdate/getNow');
       setYearNow(response.data);
     }
     getYear();
@@ -48,14 +45,13 @@ function officerApproveCost(props) {
 
   useEffect(() => {
     if (session) {
-      props.getDetailNisit(session.user.email)
+      props.getDetailNisit(session.user.email);
     }
-
   }, [loading]);
 
   function Filter(courses) {
     return courses.filter((course) => {
-      if (major == "All") {
+      if (major == 'All') {
         if (!search) {
           return course;
         } else if (course.title.toLowerCase().includes(search.toLowerCase())) {
@@ -69,8 +65,7 @@ function officerApproveCost(props) {
         ) {
           return course;
         }
-      }
-      else if (course.major == major) {
+      } else if (course.major == major) {
         if (!search) {
           return course;
         } else if (course.title.toLowerCase().includes(search.toLowerCase())) {
@@ -88,21 +83,20 @@ function officerApproveCost(props) {
     });
   }
 
-  const TeacherapplyID = (id) =>{
+  const TeacherapplyID = (id) => {
     let l = id.toString().length;
-    if(l==1) return "TR00000"+id;
-    else if(l==2) return "TR0000"+id;
-    else if(l==3) return "TR000"+id;
-    else if(l==4) return "TR00"+id;
-    else if(l==5) return "TR0"+id;
-    else if(l==6) return "TR"+id;
-}
+    if (l == 1) return 'TR00000' + id;
+    else if (l == 2) return 'TR0000' + id;
+    else if (l == 3) return 'TR000' + id;
+    else if (l == 4) return 'TR00' + id;
+    else if (l == 5) return 'TR0' + id;
+    else if (l == 6) return 'TR' + id;
+  };
 
-
-  async function CheckCourseCondition(course,AID) {
-    await Axios.put("/reply/check-course-condition", {
-      email:session.user.email,
-      applyTaId:AID,
+  async function CheckCourseCondition(course, AID) {
+    await Axios.put('/reply/check-course-condition', {
+      email: session.user.email,
+      applyTaId: AID,
       status: 5,
     }).then((response) => {
       setSuccess(response.data.message);
@@ -113,16 +107,16 @@ function officerApproveCost(props) {
       );
     });
   }
-  
-  async function replyTAfail(course,AID,title) {
-    let notereply = prompt("เหตุผลที่ยกเลิกวิชา "+title);
-    if(notereply != null){
-      await Axios.put("/reply/teacher-reply", {
-        email:session.user.email,
-        applyTaId:AID,
+
+  async function replyTAfail(course, AID, title) {
+    let notereply = prompt('เหตุผลที่ยกเลิกวิชา ' + title);
+    if (notereply != null) {
+      await Axios.put('/reply/teacher-reply', {
+        email: session.user.email,
+        applyTaId: AID,
         courseID: course,
         status: 0,
-        notereply:notereply
+        notereply: notereply,
       }).then((response) => {
         setSuccess(response.data.message);
         setCourseList(
@@ -131,91 +125,88 @@ function officerApproveCost(props) {
           })
         );
       });
-    }
-    else{
-      console.log("")
+    } else {
+      console.log('');
     }
   }
 
   const updateNumberReal = async (CID) => {
-    await Axios.put("/courses/updateNumber", {
+    await Axios.put('/courses/updateNumber', {
       id: CID,
       numberReal: numberReal[CID],
     }).then((response) => {
       setCourseList(
-        courseList.map((val) =>  { 
-          return val.CID === CID?{
-            AID : val.AID,
-            courseID:val.courseID,
-            title:val.title,
-            sec_D:val.sec_D,
-            sec_P:val.sec_P,
-            major:val.major,
-            number_D:val.number_D,
-            number_P:val.number_P,
-            numberReal:numberReal[CID],
-            teacher:val.teacher,
-            name:val.name,
-            lastname:val.lastname,
-            number1:val.number1,
-            number2:val.number2,
-
-          } : val ;
+        courseList.map((val) => {
+          return val.CID === CID
+            ? {
+                AID: val.AID,
+                courseID: val.courseID,
+                title: val.title,
+                sec_D: val.sec_D,
+                sec_P: val.sec_P,
+                major: val.major,
+                number_D: val.number_D,
+                number_P: val.number_P,
+                numberReal: numberReal[CID],
+                teacher: val.teacher,
+                name: val.name,
+                lastname: val.lastname,
+                number1: val.number1,
+                number2: val.number2,
+              }
+            : val;
         })
-      )
-      
+      );
     });
   };
 
-  const showModalHistory = async (id) =>{
+  const showModalHistory = async (id) => {
     const response = await Axios.get(`/historyreply/${id}`);
     setHistoryReply(response.data);
     setApplyID(id);
-  }
+  };
 
-  const showModalCourse =  (val) =>{
+  const showModalCourse = (val) => {
     setCourseValue({
-      CID:val.CID,
-      title:val.title,
-      courseID:val.courseID,
-      sec_D:val.sec_D,
-      sec_P:val.sec_P,
-      day_D:val.day_D,
-      day_P:val.day_P,
-      start_D:val.start_D,
-      start_P:val.start_P,
-      end_D:val.end_D,
-      end_P:val.end_P,
-      number_D:val.number_D,
-      number_P:val.number_P,
-      numberReal:val.numberReal,
-      level:val.level,
-      major:val.major,
-      teacher:val.teacher
-      
+      CID: val.CID,
+      title: val.title,
+      courseID: val.courseID,
+      sec_D: val.sec_D,
+      sec_P: val.sec_P,
+      day_D: val.day_D,
+      day_P: val.day_P,
+      start_D: val.start_D,
+      start_P: val.start_P,
+      end_D: val.end_D,
+      end_P: val.end_P,
+      number_D: val.number_D,
+      number_P: val.number_P,
+      numberReal: val.numberReal,
+      level: val.level,
+      major: val.major,
+      teacher: val.teacher,
     });
-  }
+  };
 
-  const showModalTeacher =  (val) =>{
+  const showModalTeacher = (val) => {
     setTeacherValue({
-      CID:val.CID,
-      email:val.email,
-      name_email:val.name_email,
-      name:val.name,
-      lastname:val.lastname,
-      department:val.department,
-      roleTitle:val.roleTitle,
-      tel:val.tel,
+      CID: val.CID,
+      email: val.email,
+      name_email: val.name_email,
+      name: val.name,
+      lastname: val.lastname,
+      department: val.department,
+      roleTitle: val.roleTitle,
+      tel: val.tel,
     });
-    
-  }
-  
+  };
+
   // const downloadExcel = async () =>{
   //   const response = await Axios.get(`/document/getCSV/`,{
   //     major :major
   //   });
   //   console.log('resdata = ',response.data)
-    
+
   // }
   // ------------------------------------------------------------ print document ----------------------------------------------
   const header = [
@@ -237,7 +228,6 @@ function officerApproveCost(props) {
 
   const renderBody = () => {
     return data.map((item) => {
-     
       return (
         <tr>
           {header.map((h) => {
@@ -267,10 +257,10 @@ function officerApproveCost(props) {
       paddingTop: '50px',
       width: '100%',
       height: '100%',
-      display:'flex',
-      flexDirection:'column',
-      height:'initial',
-      overflow:'initial'
+      display: 'flex',
+      flexDirection: 'column',
+      height: 'initial',
+      overflow: 'initial',
       // justifyContent:'center',
       // display:'none'
     },
@@ -290,87 +280,89 @@ function officerApproveCost(props) {
     render() {
       return (
         <div>
-        <div style = {{height: "90vh", padding: "5vh",
-        
-        // background:'red'
-        
-        }}>
-        <div style={styles.root}>
-          <p style={{ ...styles.font, fontWeight: 'Bold' }}>
-            รายวิชาที่ขอนิสิตช่วยงาน ภาคปลาย ปีการศึกษา 2563
-          </p>
-          <p style={{ ...styles.font, fontWeight: 'Bold' }}>
-            ภาควิชาวิศวกรรมคอมพิวเตอร์
-          </p>
-          <p style={{ ...styles.font, fontWeight: 'Bold' }}>
-            คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตศรีราชา
-          </p>
-          <table style={styles.table}>
-            <thead style={{ height: '45px' }}>
-              <th style={{ ...styles.table, width: '70px' }}>
-                <p style={styles.font}>รหัสวิชา</p>
-              </th>
-              <th style={{ ...styles.table, width: '300px' }}>
-                <p style={styles.font}>ชื่อวิชา</p>
-              </th>
-              <th style={{ ...styles.table, width: '70px' }}>
-                <p style={styles.font}>หมู่เรียน</p>
-              </th>
-              <th style={{ ...styles.table, width: '200px' }}>
-                <p style={styles.font}>ชื่อ-สกุล อาจารย์ผู้สอน</p>
-              </th>
-              <th style={{ width: '100px' }}>
-                <p style={{ ...styles.font, textAlign: 'end' }}>วัน-เวลา</p>
-              </th>
-              <th style={{ width: '100px' }}>
-                <p style={{ ...styles.font, textAlign: 'start' }}>ปฎิบัติงาน</p>
-              </th>
-              <th style={{ ...styles.table, width: '65px' }}>
-                <p style={styles.font}>จำนวนนิสิตลงทะเบียน (คน)</p>
-              </th>
-              <th style={{ ...styles.table, width: '70px' }}>
-                <p style={styles.font}>
-                  จำนวนนิสิต
-                  <br />
-                  ช่วยงาน
-                  <br />
-                  (คน)
-                </p>
-              </th>
-              <th style={{ ...styles.table, width: '130px' }}>
-                <p style={styles.font}>
-                  จำนวนชั่วโมง <br />
-                  การทำงาน
-                  <br /> (ชั่วโมง/คน/สัปดาห์)
-                </p>
-              </th>
-              <th style={{ ...styles.table, width: '75px' }}>
-                <p style={styles.font}>
-                  อัตราจ้าง
-                  <br />
-                  ต่อชั่วโมง
-                  <br /> (บาท)
-                </p>
-              </th>
-              <th style={{ ...styles.table, width: '70px' }}>
-                <p style={styles.font}>
-                  รวม15ครั้ง
-                  <br />
-                  เป็นเงิน(บาท)
-                </p>
-              </th>
-            </thead>
-            <tbody style={styles.table}>{renderBody()}</tbody>
-          </table>
+          <div
+            style={{
+              height: '90vh',
+              padding: '5vh',
+
+              // background:'red'
+            }}
+          >
+            <div style={styles.root}>
+              <p style={{ ...styles.font, fontWeight: 'Bold' }}>
+                รายวิชาที่ขอนิสิตช่วยงาน ภาคปลาย ปีการศึกษา 2563
+              </p>
+              <p style={{ ...styles.font, fontWeight: 'Bold' }}>
+                ภาควิชาวิศวกรรมคอมพิวเตอร์
+              </p>
+              <p style={{ ...styles.font, fontWeight: 'Bold' }}>
+                คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ วิทยาเขตศรีราชา
+              </p>
+              <table style={styles.table}>
+                <thead style={{ height: '45px' }}>
+                  <th style={{ ...styles.table, width: '70px' }}>
+                    <p style={styles.font}>รหัสวิชา</p>
+                  </th>
+                  <th style={{ ...styles.table, width: '300px' }}>
+                    <p style={styles.font}>ชื่อวิชา</p>
+                  </th>
+                  <th style={{ ...styles.table, width: '70px' }}>
+                    <p style={styles.font}>หมู่เรียน</p>
+                  </th>
+                  <th style={{ ...styles.table, width: '200px' }}>
+                    <p style={styles.font}>ชื่อ-สกุล อาจารย์ผู้สอน</p>
+                  </th>
+                  <th style={{ width: '100px' }}>
+                    <p style={{ ...styles.font, textAlign: 'end' }}>วัน-เวลา</p>
+                  </th>
+                  <th style={{ width: '100px' }}>
+                    <p style={{ ...styles.font, textAlign: 'start' }}>
+                      ปฎิบัติงาน
+                    </p>
+                  </th>
+                  <th style={{ ...styles.table, width: '65px' }}>
+                    <p style={styles.font}>จำนวนนิสิตลงทะเบียน (คน)</p>
+                  </th>
+                  <th style={{ ...styles.table, width: '70px' }}>
+                    <p style={styles.font}>
+                      จำนวนนิสิต
+                      <br />
+                      ช่วยงาน
+                      <br />
+                      (คน)
+                    </p>
+                  </th>
+                  <th style={{ ...styles.table, width: '130px' }}>
+                    <p style={styles.font}>
+                      จำนวนชั่วโมง <br />
+                      การทำงาน
+                      <br /> (ชั่วโมง/คน/สัปดาห์)
+                    </p>
+                  </th>
+                  <th style={{ ...styles.table, width: '75px' }}>
+                    <p style={styles.font}>
+                      อัตราจ้าง
+                      <br />
+                      ต่อชั่วโมง
+                      <br /> (บาท)
+                    </p>
+                  </th>
+                  <th style={{ ...styles.table, width: '70px' }}>
+                    <p style={styles.font}>
+                      รวม15ครั้ง
+                      <br />
+                      เป็นเงิน(บาท)
+                    </p>
+                  </th>
+                </thead>
+                <tbody style={styles.table}>{renderBody()}</tbody>
+              </table>
+            </div>
+          </div>
         </div>
-        </div>
-        
-        </div>
-        
       );
     }
   }
-
 
   // ------------------------------------------------------------ print document ----------------------------------------------
   //จำนวนที่ลงใส่หน้านี้
@@ -379,14 +371,14 @@ function officerApproveCost(props) {
     <div className="container">
       <h1>จัดทำเอกสารอนุมัติค่าใช้จ่าย (เจ้าหน้าที่)</h1>
       <h3>
-      ปี{" "}
+        ปี{' '}
         {yearNow != null && yearNow.length != 0
           ? yearNow[0].year
-          : "loading..."}{" "}
-        เทอม{" "}
+          : 'loading...'}{' '}
+        เทอม{' '}
         {yearNow != null && yearNow.length != 0
           ? yearNow[0].term
-          : "loading..."}
+          : 'loading...'}
       </h3>
       <div className="input-group mb-3">
         <input
@@ -395,56 +387,115 @@ function officerApproveCost(props) {
           placeholder="รหัสวิชา/ชื่อวิชา/อาจารย์"
           onChange={(e) => setSearch(e.target.value)}
         />
-        <SelectMajor onChange={async (e) => {
+        <SelectMajor
+          onChange={async (e) => {
             setMajor(e.target.value);
-        
-            const response = await Axios.get(`/document/getCSV/${e.target.value}`);
+
+            const response = await Axios.get(
+              `/document/getCSV/${e.target.value}`
+            );
             //console.log('data = ',response)
-            setData(response.data)
-           
-          }}/>
-          </div>
-       {(data?.length >0) ? (   <ReactToPrint
-        trigger={() => <button type="submit" className="btn btn-danger">
-        ดาวโหลดสารอนุมัติค่าใช้จ่าย(PDF)
-      </button>}
-        content={() => componentRef.current}
-      />):(<button className="btn btn-danger"  disabled onClick = {()=>{alert('กรุณาเลือกสาขา')}}>เลือกสาขาเพื่อดาวโหลดเอกสารค่าใช้จ่าย(PDF) </button>)}
-        
-        <div style={{ display: 'none' }}>
+            setData(response.data);
+          }}
+        />
+      </div>
+      {data?.length > 0 ? (
+        <ReactToPrint
+          trigger={() => (
+            <button type="submit" className="btn btn-danger">
+              ดาวโหลดสารอนุมัติค่าใช้จ่าย(PDF)
+            </button>
+          )}
+          content={() => componentRef.current}
+        />
+      ) : (
+        <button
+          className="btn btn-danger"
+          disabled
+          onClick={() => {
+            alert('กรุณาเลือกสาขา');
+          }}
+        >
+          เลือกสาขาเพื่อดาวโหลดเอกสารค่าใช้จ่าย(PDF){' '}
+        </button>
+      )}
+      <div style={{ display: 'none' }}>
         <ComponentToPrint ref={componentRef} />
-        </div>
-        {/* <br/> */}
-       
-        { (data?.length >0) ? (  <CSVLink filename = {'เอกสารอนุมัติค่าใช้จ่าย.csv'} headers = {header} data ={data} disabled onClick = {()=>{console.log('')}} className="btn btn-success">ดาวโหลดข้อมูลเอกสารค่าใช้จ่าย(EXCEL) </CSVLink>):(<button className="btn btn-success" disabled style={{margin:"0 50px"}} onClick = {()=>{alert('กรุณาเลือกสาขา')}}>เลือกสาขาเพื่อดาวโหลดเอกสารค่าใช้จ่าย(EXCEL) </button>)}
-      
-        
-        <p style={{color:"red"}} > *1.ยกเลิกคนที่ไม่ต้องการ 2.ปริ้นเอกสารอนุมัติค่าใช้จ่าย 3.กรอกจำนวนที่ลง 4.กดตรวจสอบ </p>
-        {/* <button type="submit" className="btn btn-success">
+      </div>
+      {/* <br/> */}
+      {data?.length > 0 ? (
+        <CSVLink
+          filename={'เอกสารอนุมัติค่าใช้จ่าย.csv'}
+          headers={header}
+          data={data}
+          disabled
+          onClick={() => {
+            console.log('');
+          }}
+          className="btn btn-success"
+        >
+          ดาวโหลดข้อมูลเอกสารค่าใช้จ่าย(EXCEL){' '}
+        </CSVLink>
+      ) : (
+        <button
+          className="btn btn-success"
+          disabled
+          style={{ margin: '0 50px' }}
+          onClick={() => {
+            alert('กรุณาเลือกสาขา');
+          }}
+        >
+          เลือกสาขาเพื่อดาวโหลดเอกสารค่าใช้จ่าย(EXCEL){' '}
+        </button>
+      )}
+      <p style={{ color: 'red' }}>
+        {' '}
+        *1.ยกเลิกคนที่ไม่ต้องการ 2.ปริ้นเอกสารอนุมัติค่าใช้จ่าย 3.กรอกจำนวนที่ลง
+        4.กดตรวจสอบ{' '}
+      </p>
+      {/* <button type="submit" className="btn btn-success">
           ตรวจสอบทั้งหมด
         </button> */}
-        {success && (
-            <div className="alert alert-success" role="alert">
-              {" "}
-              {success}{" "}
-            </div>
-        )}
-        {error && (
-            <div className="alert alert-danger" role="alert">
-              {" "}
-              {error}{" "}
-            </div>
-        )}
-        จำนวนคำร้อง: {courseList != null && courseList.length != 0 ? Filter(courseList).length : 0}
-      <div className="table-responsive" style={{maxHeight:"65vh",maxWidth:"75vw",marginTop:"1vh"}}>
-        <table className="table table-hover table-bordered" cellspacing="0" style={{textAlign:"center"}}>
-          <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
+      {success && (
+        <div className="alert alert-success" role="alert">
+          {' '}
+          {success}{' '}
+        </div>
+      )}
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {' '}
+          {error}{' '}
+        </div>
+      )}
+      จำนวนคำร้อง:{' '}
+      {courseList != null && courseList.length != 0
+        ? Filter(courseList).length
+        : 0}
+      <div
+        className="table-responsive"
+        style={{ maxHeight: '65vh', maxWidth: '75vw', marginTop: '1vh' }}
+      >
+        <table
+          className="table table-hover table-bordered"
+          cellspacing="0"
+          style={{ textAlign: 'center' }}
+        >
+          <thead
+            style={{
+              position: 'sticky',
+              top: 0,
+              background: '#7a0117',
+              color: '#fff',
+              fontWeight: '400',
+            }}
+          >
             <tr>
               <th rowSpan="2">ลำดับ</th>
               <th rowSpan="2">รหัสคำขอ</th>
               <th rowSpan="2">รหัสวิชา</th>
               <th rowSpan="2">ชื่อวิชา</th>
-              
+
               <th rowSpan="2">สาขาวิชา</th>
               <th rowSpan="2">จำนวนที่รับ</th>
               <th rowSpan="2">จำนวนที่ลง</th>
@@ -457,7 +508,6 @@ function officerApproveCost(props) {
               <th rowSpan="2">ตอบกลับ</th>
             </tr>
             <tr>
-              
               <th>ป.ตรี</th>
               <th>ป.โท</th>
             </tr>
@@ -469,23 +519,31 @@ function officerApproveCost(props) {
                   <td>{key + 1}</td>
                   <td>
                     <Link href="#">
-                      <a  data-bs-toggle="modal" data-bs-target="#ModalHistoryReply" onClick={()=>showModalHistory(val.AID)} >
+                      <a
+                        data-bs-toggle="modal"
+                        data-bs-target="#ModalHistoryReply"
+                        onClick={() => showModalHistory(val.AID)}
+                      >
                         {TeacherapplyID(val.AID)}
                       </a>
                     </Link>
                   </td>
                   <td>
                     <Link href="#">
-                      <a  data-bs-toggle="modal" data-bs-target="#ModalCourse"  onClick={()=>showModalCourse(val)}>
+                      <a
+                        data-bs-toggle="modal"
+                        data-bs-target="#ModalCourse"
+                        onClick={() => showModalCourse(val)}
+                      >
                         {val.courseID}
                       </a>
                     </Link>
                   </td>
                   <td>{val.title}</td>
-                  
+
                   <td>{val.major}</td>
                   <td>{val.number_D ? val.number_D : val.number_P}</td>
-                  <td>{val.numberReal ? val.numberReal : "ยังไม่กรอก"}</td>
+                  <td>{val.numberReal ? val.numberReal : 'ยังไม่กรอก'}</td>
                   <td>
                     <input
                       key={key}
@@ -503,7 +561,7 @@ function officerApproveCost(props) {
                       }}
                     />
                     <button
-                    key={key}
+                      key={key}
                       type="button"
                       className="btn btn-success"
                       onClick={() => updateNumberReal(val.CID)}
@@ -514,38 +572,30 @@ function officerApproveCost(props) {
                   <td>{val.teacher}</td>
                   <td>
                     <Link href="#">
-                      <a  data-bs-toggle="modal" data-bs-target="#ModalDetailTeacher"  onClick={()=>showModalTeacher(val)}>
+                      <a
+                        data-bs-toggle="modal"
+                        data-bs-target="#ModalDetailTeacher"
+                        onClick={() => showModalTeacher(val)}
+                      >
                         {val.name} {val.lastname}
                       </a>
                     </Link>
                   </td>
                   <td>{val.number1}</td>
                   <td>{val.number2}</td>
-                  {val.sec_D && val.sec_P && <td>5</td>}
-                  {val.sec_D && !val.sec_P && <td>2</td>}
-                  {!val.sec_D && val.sec_P && <td>3</td>}
-                  {val.sec_D && val.sec_P && (
-                    <td>
-                      {val.number1 * 5 * 30 * 15 + val.number2 * 5 * 40 * 15}
-                    </td>
-                  )}
-                  {val.sec_D && !val.sec_P && (
-                    <td>
-                      {val.number1 * 2 * 30 * 15 + val.number2 * 2 * 40 * 15}
-                    </td>
-                  )}
-                  {!val.sec_D && val.sec_P && (
-                    <td>
-                      {val.number1 * 3 * 30 * 15 + val.number2 * 3 * 40 * 15}
-                    </td>
-                  )}
+                  <td>{val.hrperweek}</td>
+
+                  <td>
+                    {val.number1 * val.hrperweek * 30 * 15 +
+                      val.number2 * 5 * 40 * 15}
+                  </td>
                   <td>
                     <button
                       type="button"
                       className="btn btn-success"
                       onClick={() => {
-                        if (window.confirm("ต้องการยืนยันวิชา: " + val.title))
-                          CheckCourseCondition(val.CID,val.AID);
+                        if (window.confirm('ต้องการยืนยันวิชา: ' + val.title))
+                          CheckCourseCondition(val.CID, val.AID);
                       }}
                     >
                       ตรวจสอบ
@@ -553,7 +603,7 @@ function officerApproveCost(props) {
                     <button
                       type="button"
                       className="btn btn-danger"
-                      onClick={() =>  replyTAfail(val.CID,val.AID,val.title) }
+                      onClick={() => replyTAfail(val.CID, val.AID, val.title)}
                     >
                       ยกเลิก
                     </button>
@@ -561,13 +611,17 @@ function officerApproveCost(props) {
                 </tr>
               );
             })}
-             {load  && <h2 style={{color:"red"}}>กำลังโหลด...</h2>}
-            {!load && courseList && !courseList.length && <h2 style={{textAlign:"center",margin:"auto",color:"red"}}>ไม่มีคำร้อง</h2>}
+            {load && <h2 style={{ color: 'red' }}>กำลังโหลด...</h2>}
+            {!load && courseList && !courseList.length && (
+              <h2 style={{ textAlign: 'center', margin: 'auto', color: 'red' }}>
+                ไม่มีคำร้อง
+              </h2>
+            )}
           </tbody>
         </table>
         <ModalCourse val={courseValue} />
-        <ModalDetailTeacher val={teacherValue}  />
-        <ModalHistoryReply AID={applyID} history={historyReply}  />
+        <ModalDetailTeacher val={teacherValue} />
+        <ModalHistoryReply AID={applyID} history={historyReply} />
       </div>
     </div>
   );
@@ -581,5 +635,3 @@ const mapDispatchToProps = {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(officerApproveCost);
-
-
