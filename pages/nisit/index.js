@@ -1,15 +1,15 @@
-import { signIn, signOut, useSession } from "next-auth/client";
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import ModalCourse from "../../components/ModalCourse";
-import SelectMajor from "../../components/SelectMajor";
-import Axios from "../../config/Axios";
-import { useRouter } from "next/router";
-import { connect } from "react-redux";
-import { getDetailNisit } from "../../redux/actions/nisitAction";
-import ApplicationNisitSA from "../../components/form/ApplicationNisitSA";
-import ReactToPrint from "react-to-print";
-import { useReactToPrint } from "react-to-print";
+import { signIn, signOut, useSession } from 'next-auth/client';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import ModalCourse from '../../components/ModalCourse';
+import SelectMajor from '../../components/SelectMajor';
+import Axios from '../../config/Axios';
+import { useRouter } from 'next/router';
+import { connect } from 'react-redux';
+import { getDetailNisit } from '../../redux/actions/nisitAction';
+import ApplicationNisitSA from '../../components/form/ApplicationNisitSA';
+import ReactToPrint from 'react-to-print';
+import { useReactToPrint } from 'react-to-print';
 
 function index(props) {
   const componentRef = React.useRef();
@@ -18,7 +18,7 @@ function index(props) {
   const [yearNow, setYearNow] = useState([]);
   const [session, loading] = useSession();
   const [search, setSearch] = useState(null);
-  const [major, setMajor] = useState("All");
+  const [major, setMajor] = useState('All');
   const [data, setData] = useState({});
   const [courseValue, setCourseValue] = useState([]);
   const router = useRouter();
@@ -33,7 +33,7 @@ function index(props) {
         }
       );
       async function getYear() {
-        const response = await Axios.get("/setdate/getNow");
+        const response = await Axios.get('/setdate/getNow');
         setYearNow(response.data);
       }
       getYear();
@@ -42,11 +42,9 @@ function index(props) {
     // getCourses();
   }, [loading]);
 
-  
-
   function Filter(courses) {
     return courses.filter((course) => {
-      if (major == "All") {
+      if (major == 'All') {
         if (!search) {
           return course;
         } else if (course.title.toLowerCase().includes(search.toLowerCase())) {
@@ -86,7 +84,7 @@ function index(props) {
   const sumHour = new Sumhour(...Filter(courseList));
 
   const showSec = (sec_P) => {
-    let arraySec = sec_P.split("_");
+    let arraySec = sec_P.split('_');
     return arraySec.map((val, index) => {
       if (arraySec.length == index + 1) {
         return <>{val}</>;
@@ -119,7 +117,7 @@ function index(props) {
 
   function CustomFilter(courses, major) {
     return courses.filter((course) => {
-      if (major == "All") {
+      if (major == 'All') {
         if (!search) {
           return course;
         } else if (course.title.toLowerCase().includes(search.toLowerCase())) {
@@ -151,7 +149,7 @@ function index(props) {
     });
   }
 
-  if (typeof window !== "undefined" && loading) return null;
+  if (typeof window !== 'undefined' && loading) return null;
 
   if (!session) {
     // console.log("in that case");
@@ -169,14 +167,14 @@ function index(props) {
     <div className="container">
       <h1>รายวิชาที่เป็น SA </h1>
       <h2>
-        ปี{" "}
+        ปี{' '}
         {yearNow != null && yearNow.length != 0
           ? yearNow[0].year
-          : "loading..."}{" "}
-        เทอม{" "}
+          : 'loading...'}{' '}
+        เทอม{' '}
         {yearNow != null && yearNow.length != 0
           ? yearNow[0].term
-          : "loading..."}{" "}
+          : 'loading...'}{' '}
       </h2>
       <div className="input-group mb-3">
         <input
@@ -185,22 +183,22 @@ function index(props) {
           placeholder="รหัสวิชา/ชื่อวิชา/อาจารย์"
           onChange={(e) => setSearch(e.target.value)}
         />
-        {console.log("year = ", yearNow)}
+        {console.log('year = ', yearNow)}
         <SelectMajor
           onChange={(e) => {
             // mark1
             setMajor(e.target.value);
-            console.log("set = ", e.target.value);
-            console.log("courseList = ", courseList);
+            console.log('set = ', e.target.value);
+            console.log('courseList = ', courseList);
             const listFilters = CustomFilter(courseList, e.target.value);
-            console.log("filter = ", listFilters);
+            console.log('filter = ', listFilters);
             let count = 1;
             const tableDatas = [];
 
             // secD
             listFilters.map((listFilter) => {
-              console.log("check1 = ", listFilter?.sec_D);
-              console.log("check2 = ", listFilter?.sec_P);
+              console.log('check1 = ', listFilter?.sec_D);
+              console.log('check2 = ', listFilter?.sec_P);
               if (
                 listFilter?.sec_D?.length !== 0 &&
                 listFilter?.sec_P?.length === 0
@@ -246,9 +244,9 @@ function index(props) {
                 });
 
                 tableDatas.push({
-                  number: "",
-                  courseId: "",
-                  subjectName: "",
+                  number: '',
+                  courseId: '',
+                  subjectName: '',
                   sec: listFilter.sec_P,
                   day: listFilter.day_P,
                   time: `${listFilter.start_P}-${listFilter.end_P}`,
@@ -258,7 +256,7 @@ function index(props) {
               count++;
             });
 
-            console.log("table = ", tableDatas);
+            console.log('table = ', tableDatas);
             setData({
               name: props.nisit.name,
               idStudent: props.nisit.idStudent,
@@ -279,8 +277,8 @@ function index(props) {
           }}
         />
       </div>
-      <div style={{ margin: "12px auto" }}>
-        {JSON.stringify(data) !== "{}" ? (
+      <div style={{ margin: '12px auto' }}>
+        {JSON.stringify(data) !== '{}' ? (
           <ReactToPrint
             trigger={() => (
               <button type="submit" className="btn btn-danger">
@@ -294,41 +292,41 @@ function index(props) {
             className="btn btn-danger"
             disabled
             onClick={() => {
-              alert("กรุณาเลือกสาขา");
+              alert('กรุณาเลือกสาขา');
             }}
           >
             เลือกสาขาเพื่อดาวโหลดใบสมัครนิสิตช่วยปฎิบัติงาน
           </button>
         )}
       </div>
-      <div style={{ display: "none" }}>
+      <div style={{ display: 'none' }}>
         <ApplicationNisitSA ref={componentRef} {...data} />
       </div>
       จำนวน:
       {courseList != null && courseList.length != 0
         ? Filter(courseList).length
-        : 0}{" "}
-      วิชา &emsp; เวลาทำงานรวม:{" "}
+        : 0}{' '}
+      วิชา &emsp; เวลาทำงานรวม:{' '}
       {courseList != null && courseList.length != 0
-        ? sumHour.sum("hrperweek")
-        : 0}{" "}
+        ? sumHour.sum('hrperweek')
+        : 0}{' '}
       ชั่วโมง
       <div
         className="table-responsive"
-        style={{ maxHeight: "65vh", maxWidth: "80vw", marginTop: "1vh" }}
+        style={{ maxHeight: '65vh', maxWidth: '80vw', marginTop: '1vh' }}
       >
         <table
           className="table table-hover table-bordered"
           cellspacing="0"
-          style={{ textAlign: "center" }}
+          style={{ textAlign: 'center' }}
         >
           <thead
             style={{
-              position: "sticky",
+              position: 'sticky',
               top: 0,
-              background: "#7a0117",
-              color: "#fff",
-              fontWeight: "400",
+              background: '#7a0117',
+              color: '#fff',
+              fontWeight: '400',
             }}
           >
             <tr>
@@ -366,8 +364,8 @@ function index(props) {
                     </Link>
                   </td>
                   <td>{val.title}</td>
-                  <td>{val.sec_D ? val.sec_D : "-"} </td>
-                  <td>{val.sec_P ? showSec(val.sec_P) : "-"}</td>
+                  <td>{val.sec_D ? val.sec_D : '-'} </td>
+                  <td>{val.sec_P ? showSec(val.sec_P) : '-'}</td>
 
                   <td>{val.level}</td>
                   <td>{val.major}</td>

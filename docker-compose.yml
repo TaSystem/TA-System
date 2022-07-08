@@ -14,15 +14,9 @@ services:
       MYSQL_ROOT_PASSWORD: admintasystem
       MYSQL_DATABASE: TASystem
       MYSQL_PASSWORD: admintasystem
-    # healthcheck:
-    #   healthcheck:
-    #     test:  mysql --user=root --password=admintasystem -e 'SHOW DATABASES;'
-    #   timeout: 3m
-    #   retries: 10
+      MYSQL_ROOT_HOST: '%'
     networks:
       - sanetwork
-      
-      
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -31,15 +25,14 @@ services:
       - 8081:80
     networks:
       - sanetwork
+
   tasystem-ui:
     build:
       context: .
-      # args:
-      #   REACT_APP_ENV: ${REACT_APP_ENV}
     environment:
       - NEXT_BACKEND_URL=http://tasystem-server:3001
     ports:
-      - "3000:3000"
+      - '3000:3000'
     container_name: TASystem-ui
     stdin_open: true
     volumes:
@@ -49,7 +42,7 @@ services:
       - tasystem-server
     networks:
       - sanetwork
-    
+
   tasystem-server:
     build:
       context: ./backend
@@ -61,17 +54,29 @@ services:
       - DB_PASS=admintasystem
       - DB_NAME=TASystem
     ports:
-      - "3001:3001"
+      - '3001:3001'
     container_name: TASystem-server
+    working_dir: /usr/src/app/TASystem/backend
     stdin_open: true
     volumes:
-      - .:/usr/src/app/TASystem/backend
+      - ./backend:/usr/src/app/TASystem/backend
       - /usr/src/app/TASystem/backend/node_modules
     depends_on:
       - db
-        # condition: service_healthy
+
     restart: on-failure
-    command: ["./wait-for-it.sh", "db:3306", "--timeout=300","--", "yarn", "dev"]
+    #command: ['/bin/sh', '-c', './wait.sh', '-t', '0', 'db:3306', '--', 'yarn dev']
+    command:
+      [
+        '/usr/src/app/TASystem/backend/wait.sh',
+        '-t',
+        '0',
+        'db:3306',
+        '--',
+        'yarn',
+        'start',
+      ]
+    # command: ['sh', '-c', './test.sh']
     networks:
       - sanetwork
 networks:
