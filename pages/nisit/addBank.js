@@ -11,7 +11,7 @@ import { setBankNisit ,getDetailNisit} from "../../redux/actions/nisitAction";
 import pwit from "../../img/pwit.png";
 import Redirect from '../../components/Redirect'
 
-function addBank(props) {
+function AddBank(props) {
   const [session, loading] = useSession();
   const [content, setContent] = useState();
 
@@ -41,7 +41,7 @@ function addBank(props) {
       props.getDetailNisit(session.user.email)
     }
 
-  }, [loading]);
+  }, [loading, props, session]);
 
   //   useEffect(() => {
   //     console.log("in useEffect level", level);
@@ -81,17 +81,17 @@ function addBank(props) {
     // console.log("in that case");
     return (
       <div>
-        <h2>You aren't signed in, please sign in first</h2>
+        <h2>You aren&apos;t signed in, please sign in first</h2>
       </div>
     );
   }
   return (
     <form>
-      <div class="container" style={{padding:"0 10vw"}}>
+      <div className="container" style={{padding:"0 10vw"}}>
           <h1>กรอกข้อมูลธนาคาร</h1>
-        <div class="row" style={{marginTop:"40px"}}>
-            <label for="bankName">ธนาคาร</label>
-            <select class="form-control custom-select" id="bankName">
+        <div className="row" style={{marginTop:"40px"}}>
+            <label htmlFor="bankName">ธนาคาร</label>
+            <select className="form-control custom-select" id="bankName">
               <option selected>เลือกธนาคาร</option>
               <option>ธนาคารกรุงเทพ</option>
               <option>ธนาคารกสิกรไทย</option>
@@ -100,18 +100,18 @@ function addBank(props) {
               <option>ธนาคารออมสิน</option>
             </select>
         </div>
-        <div class="row" style={{marginTop:"60px"}}>
-            <label for="bankNumber">เลขที่บัญชี</label>
-            <input type="text" class="form-control" id="bankNumber" />
+        <div className="row" style={{marginTop:"60px"}}>
+            <label htmlFor="bankNumber">เลขที่บัญชี</label>
+            <input type="text" className="form-control" id="bankNumber" />
         </div>
-        <div class="row" style={{marginTop:"60px"}}>
-          <div class="col">
+        <div className="row" style={{marginTop:"60px"}}>
+          <div className="col">
             <p >บัตรนิสิต(ยังไม่หมดอายุ)</p>
-            <input id="stucard" type="file" class="file" />
+            <input id="stucard" type="file" className="file" />
           </div>
-          <div class="col">
+          <div className="col">
             <p>หน้าสมุดบัญชี</p>
-            <input id="bankPic" type="file" class="file" />
+            <input id="bankPic" type="file" className="file" />
           </div>
         </div>
       <div style={{marginTop:"80px"}}>
@@ -141,4 +141,4 @@ const mapDispatchToProps = {
   setBankNisit: setBankNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(addBank);
+export default connect(mapStateToProps, mapDispatchToProps)(AddBank);

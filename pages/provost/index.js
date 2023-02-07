@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Axios from "../../config/Axios";
 import { signIn, signOut, useSession } from "next-auth/client";
 import { connect } from "react-redux";
@@ -6,7 +6,7 @@ import { getDetailNisit } from "../../redux/actions/nisitAction";
 import { useRouter } from "next/router";
 import Table from '../../components/TablePagination'
 
-function index(props) {
+function Index(props) {
   const [courses, setCourses] = useState([]);
   const [session, loading] = useSession();
   const [search, setSearch] = useState(null);
@@ -17,7 +17,7 @@ function index(props) {
   const [term, setTerm] = useState(null);
   const [major, setMajor] = useState(null);
   const router = useRouter();
-  const columns = React.useMemo(
+  const columns = useMemo(
     () => [
       {
         Header: "รหัสวิชา",
@@ -193,7 +193,7 @@ function index(props) {
       props.getDetailNisit(session.user.email)
     }
 
-  }, [loading]);
+  }, [loading, props, session]);
 
   const del = async (id) => {
     setSuccess(null);
@@ -306,7 +306,7 @@ function index(props) {
     //console.log("in that case");
     return (
       <div>
-        <h2>You aren't signed in, please sign in first</h2>
+        <h2>You aren&apos;t signed in, please sign in first</h2>
       </div>
     );
   }
@@ -337,7 +337,7 @@ function index(props) {
           </option>
 
           {yearSearch.map((val, key) => {
-            return <option value={val.year}>{val.year}</option>;
+            return <option value={val.year} key={key}>{val.year}</option>;
           })}
         </select>
 
@@ -424,4 +424,4 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(index);
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

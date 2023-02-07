@@ -23,7 +23,7 @@ function Courses(props) {
       props.getDetailNisit(session.user.email)
     }
 
-  }, [loading]);
+  }, [loading, props, session]);
 
   const download = async () =>{
     Axios({
@@ -99,7 +99,7 @@ function Courses(props) {
     // console.log("in that case");
     return (
       <div>
-        <h2>You aren't signed in, please sign in first</h2>
+        <h2>You aren&apos;t signed in, please sign in first</h2>
       </div>
     );
   }
@@ -110,7 +110,7 @@ function Courses(props) {
 
       <hr />
       
-      <button class="btn btn-secondary" onClick={download} >ดาวน์โหลดฟอร์ม</button>
+      <button className="btn btn-secondary" onClick={download} >ดาวน์โหลดฟอร์ม</button>
       <h2>อัพโหลดเอกสาร</h2>
       <div className="information">
         <form encType="multipart/form-data" onSubmit={submitHandler}>

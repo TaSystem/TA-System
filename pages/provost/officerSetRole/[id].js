@@ -6,7 +6,7 @@ import Link from "next/link";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../../redux/actions/nisitAction"; 
 
-const requestTAs = (props) => {
+const RequestTAs = (props) => {
 
   const [user, setUser] = useState([]);
   const [roles, setRoles] = useState([]);
@@ -47,7 +47,7 @@ const requestTAs = (props) => {
     }
     getRole();
     // getUser();
-  }, [loading]);
+  }, [loading, props, session]);
 
   const userUpdate = async (e) => {
     e.preventDefault()
@@ -104,7 +104,7 @@ const requestTAs = (props) => {
           <div className="row mb-4">
             <div className="col">
               <div className="form-outline">
-              <label className="form-label" for="form6Example1">
+              <label className="form-label" htmlFor="form6Example1">
                   ชื่อจริง
                 </label>
                 <input
@@ -122,7 +122,7 @@ const requestTAs = (props) => {
             </div>
             <div className="col">
               <div className="form-outline">
-              <label className="form-label" for="form6Example2">
+              <label className="form-label" htmlFor="form6Example2">
                   นามสกุล
                 </label>
                 <input
@@ -142,7 +142,7 @@ const requestTAs = (props) => {
           </div>
 
           <div className="form-outline mb-4">
-          <label className="form-label" for="form6Example4">
+          <label className="form-label" htmlFor="form6Example4">
               อาจารย์รับผิดชอบระดับการศึกษา
             </label>
             {/* <input
@@ -156,7 +156,7 @@ const requestTAs = (props) => {
               }}
             /> */}
             <select
-              class="form-select"
+              className="form-select"
               name="yearSelect"
               onChange={(e) => {
                 setLevel(e.target.value);
@@ -179,11 +179,11 @@ const requestTAs = (props) => {
           </div>
 
           <div className="form-outline mb-4">
-          <label className="form-label" for="form6Example3">
+          <label className="form-label" htmlFor="form6Example3">
               ภาควิชา
             </label>
             <select
-              class="form-select"
+              className="form-select"
               name="yearSelect"
               onChange={(e) => {
                 setMajor(e.target.value);
@@ -222,7 +222,7 @@ const requestTAs = (props) => {
           </div>
 
           <div className="form-outline mb-4">
-          <label className="form-label" for="form6Example4">
+          <label className="form-label" htmlFor="form6Example4">
               เบอร์โทร
             </label>
             <input
@@ -238,11 +238,11 @@ const requestTAs = (props) => {
           </div>
 
           <div className="form-outline mb-4">
-          <label className="form-label" for="form6Example5">
+          <label className="form-label" htmlFor="form6Example5">
               ตำแหน่ง
             </label>
             <select
-              class="form-select"
+              className="form-select"
               name="yearSelect"
               onChange={(e) => {
                 setRoleID(e.target.value);
@@ -258,7 +258,7 @@ const requestTAs = (props) => {
               </option>
 
               {roles.map((val, key) => {
-                return <option value={val.id}>{val.title}</option>;
+                return <option value={val.id} key={key}>{val.title}</option>;
               })}
             </select>
             
@@ -272,7 +272,7 @@ const requestTAs = (props) => {
             ย้อนกลับ
           </button> */}
 
-          <Link href="/provost/officerSetRole">
+          <Link href="/provost/officerSetRole" passHref>
             <button className="btn btn-primary btn-block mb-4">ย้อนกลับ</button>
           </Link>
 
@@ -307,4 +307,4 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(requestTAs);
+export default connect(mapStateToProps, mapDispatchToProps)(RequestTAs);

@@ -39,7 +39,7 @@ function HeadRequest(props) {
       getYear();
       getCourses();
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   async function replyTAsuccess(course, AID) {
     await Axios.put("/reply/teacher-reply", {
@@ -206,7 +206,7 @@ function HeadRequest(props) {
       >
         <table
           className="table table-hover table-bordered"
-          cellspacing="0"
+          cellSpacing="0"
           style={{ textAlign: "center" }}
         >
           <thead
@@ -277,7 +277,7 @@ function HeadRequest(props) {
                   <td>
                     <button
                       type="button"
-                      class="btn btn-success"
+                      className="btn btn-success"
                       onClick={() => {
                         if (window.confirm("ต้องการยืนยันวิชา: " + val.title))
                           replyTAsuccess(val.CID, val.AID);
@@ -287,7 +287,7 @@ function HeadRequest(props) {
                     </button>
                     <button
                       type="button"
-                      class="btn btn-danger"
+                      className="btn btn-danger"
                       onClick={() => replyTAfail(val.CID, val.AID, val.title)}
                     >
                       ยกเลิก

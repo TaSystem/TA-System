@@ -5,7 +5,7 @@ import { useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../../redux/actions/nisitAction";
 
-const setHourWorks = (props) => {
+const SetHourWorks = (props) => {
   const [workingHour, setWorkingHour] = useState(null);
   const [sec, setSec] = useState(null);
   const [day, setDay] = useState(null);
@@ -44,13 +44,13 @@ const setHourWorks = (props) => {
     getSecs();
     getCourse();
     getWorkingHour();
-  }, [router]);
+  }, [id, router]);
 
   useEffect(() => {
     if (session) {
       props.getDetailNisit(session.user.email);
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   const setHour = async () => {
     setErr(null);
@@ -157,7 +157,7 @@ const setHourWorks = (props) => {
     if (day && start && end) {
       return day.map((val, index) => {
         return (
-          <h4>
+          <h4 key={index}>
             เวลาเรียนปฎิบัติ วัน {day[index]} เวลา {start[index]} - {end[index]}{" "}
           </h4>
         );
@@ -218,7 +218,7 @@ const setHourWorks = (props) => {
       >
         <table
           className="table table-hover table-borderless"
-          cellspacing="0"
+          cellSpacing="0"
           style={{ textAlign: "center" }}
         >
           <thead
@@ -271,10 +271,10 @@ const setHourWorks = (props) => {
           </tbody>
         </table>
       </div>
-      <div class="information">
+      <div className="information">
         <form className="row gy-2 gx-3 ">
-          <div class="col-auto">
-            <label for="closeDate" class="form-label">
+          <div className="col-auto">
+            <label htmlFor="closeDate" className="form-label">
               หมู่เรียน
             </label>
             <select
@@ -288,14 +288,14 @@ const setHourWorks = (props) => {
                 เลือกหมู่เรียน
               </option>
 
-              {selectSecs.map((val) => {
-                return <option value={val}>{val}</option>;
+              {selectSecs.map((val, index) => {
+                return <option value={val} key={index}>{val}</option>;
               })}
             </select>
 
           </div>
-          <div class="col-auto">
-            <label for="closeDate" class="form-label">
+          <div className="col-auto">
+            <label htmlFor="closeDate" className="form-label">
               วันปฎิบัติงาน
             </label>
             <select
@@ -318,8 +318,8 @@ const setHourWorks = (props) => {
             </select>
           </div>
 
-          <div class="col-auto">
-            <label for="closeDate" class="form-label">
+          <div className="col-auto">
+            <label htmlFor="closeDate" className="form-label">
               เวลามา
             </label>
             <select
@@ -350,8 +350,8 @@ const setHourWorks = (props) => {
             </select>
           </div>
 
-          <div class="col-auto">
-            <label for="closeDate" class="form-label">
+          <div className="col-auto">
+            <label htmlFor="closeDate" className="form-label">
               เวลากลับ
             </label>
             <select
@@ -406,4 +406,4 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(setHourWorks);
+export default connect(mapStateToProps, mapDispatchToProps)(SetHourWorks);

@@ -11,7 +11,7 @@ import ModalHistoryReply from '../../components/ModalHistoryReply';
 import { CSVLink } from 'react-csv';
 import ReactToPrint from 'react-to-print';
 
-function officerApproveCost(props) {
+function OfficerApproveCost(props) {
   const componentRef = React.useRef();
   const [courseList, setCourseList] = useState([]);
   const [search, setSearch] = useState(null);
@@ -47,7 +47,7 @@ function officerApproveCost(props) {
     if (session) {
       props.getDetailNisit(session.user.email);
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   function Filter(courses) {
     return courses.filter((course) => {
@@ -226,10 +226,10 @@ function officerApproveCost(props) {
     { label: 'รวม15ครั้งเป็นเงิน(บาท)', key: 'รวม15ครั้งเป็นเงิน(บาท)' },
   ];
 
-  const renderBody = () => {
-    return data.map((item) => {
+  const RenderBody = () => {
+    return data.map((item, index) => {
       return (
-        <tr>
+        <tr key={index}>
           {header.map((h) => {
             let re = '';
             Object.keys(item).map((key) => {
@@ -355,7 +355,7 @@ function officerApproveCost(props) {
                     </p>
                   </th>
                 </thead>
-                <tbody style={styles.table}>{renderBody()}</tbody>
+                <tbody style={styles.table}>{RenderBody()}</tbody>
               </table>
             </div>
           </div>
@@ -478,7 +478,7 @@ function officerApproveCost(props) {
       >
         <table
           className="table table-hover table-bordered"
-          cellspacing="0"
+          cellSpacing="0"
           style={{ textAlign: 'center' }}
         >
           <thead
@@ -634,4 +634,4 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(officerApproveCost);
+export default connect(mapStateToProps, mapDispatchToProps)(OfficerApproveCost);

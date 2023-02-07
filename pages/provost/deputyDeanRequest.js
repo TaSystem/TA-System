@@ -24,7 +24,7 @@ function DeputyDeanRequest(props) {
     if (session) {
       props.getDetailNisit(session.user.email);
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   useEffect(() => {
     async function getCourses() {
@@ -198,7 +198,7 @@ function DeputyDeanRequest(props) {
       >
         <table
           className="table table-hover table-bordered"
-          cellspacing="0"
+          cellSpacing="0"
           style={{ textAlign: "center" }}
         >
           <thead
@@ -269,7 +269,7 @@ function DeputyDeanRequest(props) {
                   <td>
                     <button
                       type="button"
-                      class="btn btn-success"
+                      className="btn btn-success"
                       onClick={() => {
                         if (window.confirm("ต้องการยืนยันวิชา: " + val.title))
                           replyTAsuccess(val.CID, val.AID);
@@ -279,7 +279,7 @@ function DeputyDeanRequest(props) {
                     </button>
                     <button
                       type="button"
-                      class="btn btn-danger"
+                      className="btn btn-danger"
                       onClick={() => replyTAfail(val.CID, val.AID, val.title)}
                     >
                       ยกเลิก

@@ -32,10 +32,10 @@ export default function ModalDetailTeacher(props) {
             <p>ตำแหน่ง: {props.val.roleTitle}     &emsp; เบอร์โทรศัพท์: {props.val.tel}</p>
             
           </div>
-          <div class="modal-footer">
+          <div className="modal-footer">
             <button
               type="button"
-              class="btn btn-danger"
+              className="btn btn-danger"
               data-bs-dismiss="modal"
             >
               ปิด

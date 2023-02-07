@@ -7,7 +7,7 @@ import {
   getCoursesNisit,
 } from '../../redux/actions/nisitAction';
 
-function requestTA(props) {
+function RequestTA(props) {
   const [courseList, setCourseList] = useState([]);
   const [search, setSearch] = useState(null);
   const [note, setNote] = useState(null);
@@ -53,7 +53,7 @@ function requestTA(props) {
     // if (session && props.courses.length == 0){
     // console.log("useEffect get getCoursesNisit");
     // }
-  }, [loading]);
+  }, [loading, props, session]);
 
   function Filter(courses) {
     return courses.filter((course) => {
@@ -114,7 +114,7 @@ function requestTA(props) {
       let endArray = end.split('_');
       return dayArray.map((val, index) => {
         return (
-          <p>
+          <p key={index}>
             เวลาเรียนปฎิบัติ วัน {dayArray[index]} เวลา {startArray[index]} -{' '}
             {endArray[index]}{' '}
           </p>
@@ -131,7 +131,7 @@ function requestTA(props) {
     console.log('in that case');
     return (
       <div>
-        <h2>You aren't signed in, please sign in first</h2>
+        <h2>You aren&apos;t signed in, please sign in first</h2>
       </div>
     );
   } else if (!syStatus) {
@@ -190,30 +190,30 @@ function requestTA(props) {
       <div className="information">
         {Filter(courseList).map((val, key) => {
           return (
-            <div class="card text-center mb-2">
-              <div class="card-header">{val.courseID}</div>
-              <div class="card-body">
-                <h5 class="card-title">
+            <div className="card text-center mb-2" key={key}>
+              <div className="card-header">{val.courseID}</div>
+              <div className="card-body">
+                <h5 className="card-title">
                   {val.title} หมู่เรียน {val.sec_D}
                   {val.sec_D && val.sec_P ? ',' : ''}
                   {showSec(val.sec_P)}{' '}
                 </h5>
-                <p class="card-text">
+                <p className="card-text">
                   เวลาเรียนบรรยาย {val.day_D ? val.day_D : ''}{' '}
                   {val.start_D ? val.start_D + ' - ' + val.end_D : '-'}
                 </p>
 
                 {hourP(val.day_P, val.start_P, val.end_P)}
 
-                <p class="card-text">
+                <p className="card-text">
                   คณะ:{val.major} อาจารย์:{val.teacher}
                 </p>
 
                 <form>
-                  <div class="input-group mb-3">
+                  <div className="input-group mb-3">
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       name={key}
                       id={key}
                       placeholder="หมายเหตุ(ไม่กรอกก็ได้)"
@@ -222,7 +222,7 @@ function requestTA(props) {
                     />
                     <button
                       type="button"
-                      class="btn btn-success"
+                      className="btn btn-success"
                       aria-label="Example text with button addon"
                       aria-describedby="button-addon1"
                       onClick={() => {
@@ -260,4 +260,4 @@ const mapDispatchToProps = {
   getCoursesNisit: getCoursesNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(requestTA);
+export default connect(mapStateToProps, mapDispatchToProps)(RequestTA);

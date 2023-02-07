@@ -96,11 +96,11 @@ const header = [
   { label: 'เบอร์โทรศัพท์', key: 'เบอร์โทรศัพท์' },
 ];
 
-const renderBody = (data) => {
-  return data.map((item) => {
+const RenderBody = (data) => {
+  return data.map((item, index) => {
     console.log('item = ', item);
     return (
-      <tr style={{ border: '1px solid black' }}>
+      <tr style={{ border: '1px solid black' }} key={index}>
         {header2.map((h, idx) => {
           let re = '';
           Object.keys(item).map((key, index) => {
@@ -123,7 +123,7 @@ const renderBody = (data) => {
   });
 };
 
-const ComponentToPrint = React.forwardRef((props, ref) => {
+const ComponentToPrint = ((props, ref) => {
   return (
     <div style={styles.root} ref={ref}>
       <p style={{ ...styles.font }}>
@@ -135,19 +135,20 @@ const ComponentToPrint = React.forwardRef((props, ref) => {
 
       <table style={{ ...styles.table, width: '100%' }}>
         <thead style={{ ...styles.table, height: '45px' }}>
-          {header2.map((h) => (
-            <th style={{ ...styles.table, width: h.width }}>
+          {header2.map((h, index) => (
+            <th style={{ ...styles.table, width: h.width }} key={index}>
               <p style={styles.font}>{h.label}</p>
             </th>
           ))}
         </thead>
-        <tbody style={styles.table}>{renderBody(props.data)}</tbody>
+        <tbody style={styles.table}>{RenderBody(props.data)}</tbody>
       </table>
     </div>
   );
 });
+export const ExportComponentToPrint = React.forwardRef(ComponentToPrint);
 
-function officerNisitRequest(props) {
+function OfficerNisitRequest(props) {
   const [courses, setCourses] = useState([]);
   const [success, setSuccess] = useState(null);
   const [owner, setOwner] = useState([]);
@@ -181,7 +182,7 @@ function officerNisitRequest(props) {
     if (session) {
       props.getDetailNisit(session.user.email);
     }
-  }, [loading]);
+  }, [loading, props, session]);
   function Filter(courses) {
     return courses.filter((course) => {
       if (major == 'All') {
@@ -332,7 +333,7 @@ function officerNisitRequest(props) {
     //console.log("in that case");
     return (
       <div>
-        <h2>You aren't signed in, please sign in first</h2>
+        <h2>You aren&apos;t signed in, please sign in first</h2>
       </div>
     );
   }
@@ -375,7 +376,7 @@ function officerNisitRequest(props) {
           />
         </div>
         <div style={{ display: 'none' }}>
-          <ComponentToPrint data={data} ref={componentRef} />
+          <ExportComponentToPrint data={data} ref={componentRef} />
         </div>
 
         {/* <button type="submit" className="btn btn-success">
@@ -432,7 +433,7 @@ function officerNisitRequest(props) {
           2.พิมพ์เอกสารตามภาควิชานั้นๆโดยการเลือก
           3.หลังพิมเอกสารยืนยันคำร้องนิสิตคนนั้นจะเป็น SA
         </samll>
-        <p for="table" style={{ marginTop: '10px' }}>
+        <p htmlFor="table" style={{ marginTop: '10px' }}>
           จำนวนคำร้อง:
           {courses != null && courses.length != 0 ? Filter(courses).length : 0}
         </p>
@@ -455,7 +456,7 @@ function officerNisitRequest(props) {
           <table
             id="table"
             className="table table-hover table-bordered"
-            cellspacing="0"
+            cellSpacing="0"
             style={{ textAlign: 'center' }}
           >
             <thead
@@ -469,7 +470,7 @@ function officerNisitRequest(props) {
             >
               <tr>
                 <th rowSpan="2">ลำดับ</th>
-                <th rowSpan="2" class="text-nowrap">
+                <th rowSpan="2" className="text-nowrap">
                   รหัสคำขอ
                 </th>
                 <th rowSpan="2">รหัสวิชา</th>
@@ -477,10 +478,10 @@ function officerNisitRequest(props) {
 
                 <th rowSpan="2">สาขาวิชา</th>
                 <th rowSpan="2">อาจารย์</th>
-                <th rowSpan="2" class="text-nowrap">
+                <th rowSpan="2" className="text-nowrap">
                   อาจารย์เจ้าของวิชา
                 </th>
-                <th rowSpan="2" class="text-nowrap">
+                <th rowSpan="2" className="text-nowrap">
                   ชื่อผู้ยื่น
                 </th>
                 <th rowSpan="2">เหตุผล</th>
@@ -490,7 +491,7 @@ function officerNisitRequest(props) {
             <tbody>
               {Filter(courses).map((val, key) => {
                 return (
-                  <tr>
+                  <tr key={key}>
                     <td>{key + 1}</td>
                     <td>{NisitapplyID(val.AID)}</td>
                     <td>
@@ -509,7 +510,7 @@ function officerNisitRequest(props) {
                     <td>{val.major}</td>
                     <td>{val.teacher}</td>
                     <td>
-                      <td class="text-nowrap">
+                      <td className="text-nowrap">
                         <Link href="#">
                           <a
                             data-bs-toggle="modal"
@@ -521,7 +522,7 @@ function officerNisitRequest(props) {
                         </Link>
                       </td>
                     </td>
-                    <td class="text-nowrap">
+                    <td className="text-nowrap">
                       <Link href="#">
                         <a
                           data-bs-toggle="modal"
@@ -532,11 +533,11 @@ function officerNisitRequest(props) {
                         </a>
                       </Link>
                     </td>
-                    <td class="text-nowrap">{val.noteapply}</td>
-                    <td class="text-nowrap">
+                    <td className="text-nowrap">{val.noteapply}</td>
+                    <td className="text-nowrap">
                       <button
                         type="button"
-                        class="btn btn-success"
+                        className="btn btn-success"
                         key={key}
                         onClick={() => {
                           if (window.confirm('ต้องการยืนยันวิชา: ' + val.title))
@@ -553,7 +554,7 @@ function officerNisitRequest(props) {
                       </button>
                       <button
                         type="button"
-                        class="btn btn-danger"
+                        className="btn btn-danger"
                         key={key}
                         onClick={() => {
                           replyTAfail(val.AID, val.CID, val.name);
@@ -592,4 +593,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(officerNisitRequest);
+)(OfficerNisitRequest);

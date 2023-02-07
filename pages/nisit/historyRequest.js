@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import Axios from '../../config/Axios';
-import { signIn, signOut, useSession } from 'next-auth/client';
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import Axios from "../../config/Axios";
+import { signIn, signOut, useSession } from "next-auth/client";
+import { connect } from "react-redux";
 import {
   getDetailNisit,
   getCoursesNisit,
-} from '../../redux/actions/nisitAction';
-import { useRouter } from 'next/router';
-import ModalCourse from '../../components/ModalCourse';
-import Link from 'next/link';
+} from "../../redux/actions/nisitAction";
+import { useRouter } from "next/router";
+import ModalCourse from "../../components/ModalCourse";
+import Link from "next/link";
 
-function historyReqest(props) {
+function HistoryReqest(props) {
   const [courses, setCourses] = useState([]);
   const [search, setSearch] = useState(null);
   const [yearSearch, setYearSearch] = useState([]);
@@ -25,20 +25,20 @@ function historyReqest(props) {
     if (session) {
       // console.log("useEffect 1");
       async function getCourses() {
-        const response = await Axios.post('/courses/student-apply', {
+        const response = await Axios.post("/courses/student-apply", {
           email: session.user.email,
         });
         setCourses(response.data);
         session ? props.getCoursesNisit(session.user.email) : null;
       }
       async function getYear() {
-        const response = await Axios.get('/courses/year');
+        const response = await Axios.get("/courses/year");
         setYearSearch(response.data);
       }
       getYear();
       getCourses();
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   useEffect(() => {
     // console.log("useEffect 2");
@@ -50,19 +50,19 @@ function historyReqest(props) {
       // console.log("useEffect get getCoursesNisit");
       props.getCoursesNisit(session.user.email);
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   const condition = (status) => {
     if (status === 1) {
       return (
         <>
           <p
-            class="text-nowrap"
+            className="text-nowrap"
             style={{
-              backgroundColor: '#E3E726',
-              color: 'white',
-              borderRadius: '6px',
-              padding: '3px',
+              backgroundColor: "#E3E726",
+              color: "white",
+              borderRadius: "6px",
+              padding: "3px",
             }}
           >
             รอดำเนินการจากอาจารย์
@@ -73,12 +73,12 @@ function historyReqest(props) {
       return (
         <>
           <p
-            class="text-nowrap"
+            className="text-nowrap"
             style={{
-              backgroundColor: '#E3E726',
-              color: 'white',
-              borderRadius: '6px',
-              padding: '3px',
+              backgroundColor: "#E3E726",
+              color: "white",
+              borderRadius: "6px",
+              padding: "3px",
             }}
           >
             รอดำเนินการจากเจ้าหน้าที่
@@ -89,12 +89,12 @@ function historyReqest(props) {
       return (
         <>
           <p
-            class="text-nowrap"
+            className="text-nowrap"
             style={{
-              backgroundColor: '#32CD32',
-              color: 'white',
-              borderRadius: '6px',
-              padding: '3px',
+              backgroundColor: "#32CD32",
+              color: "white",
+              borderRadius: "6px",
+              padding: "3px",
             }}
           >
             ขอTAสำเร็จ
@@ -105,16 +105,16 @@ function historyReqest(props) {
       return (
         <>
           <p
-            class="text-nowrap"
+            className="text-nowrap"
             style={{
-              backgroundColor: '#DD0E0E',
-              color: 'white',
-              borderRadius: '6px',
-              padding: '3px',
+              backgroundColor: "#DD0E0E",
+              color: "white",
+              borderRadius: "6px",
+              padding: "3px",
             }}
           >
             ขอTAไม่ผ่าน
-          </p>{' '}
+          </p>{" "}
         </>
       );
     }
@@ -142,21 +142,21 @@ function historyReqest(props) {
   };
   const NisitapplyID = (id) => {
     let l = id.toString().length;
-    if (l == 1) return 'SR00000' + id;
-    else if (l == 2) return 'SR0000' + id;
-    else if (l == 3) return 'SR000' + id;
-    else if (l == 4) return 'SR00' + id;
-    else if (l == 5) return 'SR0' + id;
-    else if (l == 6) return 'SR' + id;
+    if (l == 1) return "SR00000" + id;
+    else if (l == 2) return "SR0000" + id;
+    else if (l == 3) return "SR000" + id;
+    else if (l == 4) return "SR00" + id;
+    else if (l == 5) return "SR0" + id;
+    else if (l == 6) return "SR" + id;
   };
 
-  if (typeof window !== 'undefined' && loading) return null;
+  if (typeof window !== "undefined" && loading) return null;
 
   if (!session) {
     // console.log("in that case");
     return (
       <div>
-        <h2>You aren't signed in, please sign in first</h2>
+        <h2>You aren&apos;t signed in, please sign in first</h2>
       </div>
     );
   }
@@ -264,7 +264,7 @@ function historyReqest(props) {
   }
 
   const showSec = (sec_P) => {
-    let arraySec = sec_P.split('_');
+    let arraySec = sec_P.split("_");
     return arraySec.map((val, index) => {
       if (arraySec.length == index + 1) {
         return <>{val}</>;
@@ -297,7 +297,7 @@ function historyReqest(props) {
             </option>
 
             {yearSearch.map((val, key) => {
-              return <option value={val.year}>{val.year}</option>;
+              return <option value={val.year} key={key}>{val.year}</option>;
             })}
           </select>
 
@@ -308,7 +308,7 @@ function historyReqest(props) {
             }}
           >
             <option value="All" disabled selected hidden>
-              {year ? 'ภาคเรียน' : 'เลือกปีการศึกษาก่อน'}
+              {year ? "ภาคเรียน" : "เลือกปีการศึกษาก่อน"}
             </option>
 
             {year && <option value="ต้น">ต้น</option>}
@@ -322,7 +322,7 @@ function historyReqest(props) {
             }}
           >
             <option value="All" disabled selected hidden>
-              {term ? 'สาขาของวิชา' : 'เลือกภาคเรียนก่อน'}
+              {term ? "สาขาของวิชา" : "เลือกภาคเรียนก่อน"}
             </option>
 
             {term && (
@@ -365,20 +365,20 @@ function historyReqest(props) {
         {courses != null && courses.length != 0 ? Filter(courses).length : 0}
         <div
           className="table-responsive"
-          style={{ maxHeight: '70vh', maxWidth: '80vw', marginTop: '1vh' }}
+          style={{ maxHeight: "70vh", maxWidth: "80vw", marginTop: "1vh" }}
         >
           <table
             className="table table-hover table-bordered"
-            cellspacing="0"
-            style={{ textAlign: 'center' }}
+            cellSpacing="0"
+            style={{ textAlign: "center" }}
           >
             <thead
               style={{
-                position: 'sticky',
+                position: "sticky",
                 top: 0,
-                background: '#7a0117',
-                color: '#fff',
-                fontWeight: '400',
+                background: "#7a0117",
+                color: "#fff",
+                fontWeight: "400",
               }}
             >
               <tr>
@@ -398,7 +398,7 @@ function historyReqest(props) {
             <tbody>
               {Filter(courses).map((val, key) => {
                 return (
-                  <tr>
+                  <tr key={key}>
                     <td>{key + 1}</td>
                     <td>{NisitapplyID(val.AID)}</td>
                     <td>
@@ -443,4 +443,4 @@ const mapDispatchToProps = {
   getCoursesNisit: getCoursesNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(historyReqest);
+export default connect(mapStateToProps, mapDispatchToProps)(HistoryReqest);

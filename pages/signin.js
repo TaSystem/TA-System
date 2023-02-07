@@ -18,6 +18,7 @@ import { setDetailNisit } from '../redux/actions/nisitAction';
 import { useRouter } from 'next/router';
 import { TrainOutlined, TrendingUpTwoTone } from '@material-ui/icons';
 
+
 const useStyles = makeStyles({
   root: {
     width: '20%',
@@ -68,13 +69,13 @@ function SignIn({ providers, csrfToken, data, setDetailNisit }) {
     } else {
       //console.log("data = ", data);
     }
-  }, [data]);
+  }, [data, router, setDetailNisit]);
 
   const classes = useStyles();
   return (
     <Container maxWidth='100vh' disableGutters style={{ paddingTop: '10vh' }}>
       <Box style={{ textAlign: 'center' }}>
-        <img
+        <Image
           src='https://www.eng.src.ku.ac.th/wp-content/uploads/2021/01/ENG_th-flat_transparent_1.png?x31307'
           style={{ width: '10%', height: '10%', margin: '10px auto' }}
           alt='Logo'
@@ -122,13 +123,14 @@ function SignIn({ providers, csrfToken, data, setDetailNisit }) {
                   variant='outline'
                   onClick={() => signIn(provider.id)}
                 >
-                  <img
+                  <Image
                     style={{
                       width: '3vh',
                       marginRight: 4,
                       backgroundClip: 'text',
                       color: 'transparent',
                     }}
+                    alt="signIn"
                     src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAACvUlEQVRoQ+2ZjW0UMRCFXyqADoAKAhVAB0AFgQoIFQAVkFQAVABUEFIB6SCkgiQVBH3SGq2CPT/2bo5DN9LqpDvv+L2Z8fjZt6ctt70tx68dgU1ncJeB/y0DzyU9lvRsIvZQ0tX08NUPSd8lnS1FfIkSAuwbSS8SoCD1TdIHSb8S7/01dIQAkf44i3Yvjs8jRHoJAPywF3HlPTLyespKym2WwH1Jn5LlkgH0MksiQwDwJ9MizYCKjv0i6VV0cBmXIfB1xch3gYdElMDR1GmiAaq1SrrV04qDbvBRAkxM6Xh2Iem9JLpKyyhDFj/PPUlD4KMEAF82phawLBA2OOodwkPmlVAk+rQ/K+pDAL2XPQLslsiDpSLv4Un/bhGgXi8Nj9Q8pbBRswigbWidLdto6RRQFgHq+qCB/loSGYpYrXVG3itjyHRT8FkEkL6tyTNd5yaDtjL21OqCvQSQwdEWOEqAs8OTVhAsAtbEbyWxO0dslABzNHFaBJC47JY12woC1hq4yxJaZQ0g1qJHyNES6ibgKVBvFy+lF1nsLaWKDzNY/8pG9tM4KJnrzYuilX4W+aPZlUmkI9XGIEfOjZeZo2sjw6cn5titkRQjZp30XL3lZSAip0dIcLDhhqNlx97th0cAx1Y7LROTKTJBWUXNu5pBb5WbvabPCAGvRotzwNO50EmtmkUAcr6gM3lSPLTXRAgAkAnfRUM73X2iYQoRgM/vTD1XoeibGqMygyWvPUCZ3wHP2gtdAEczAACiyHrYz6DpGJs6KGUIFCxrZYLI05VSFwQ9BCDitb9s4On3aKtQ2cyd9xLAB12Exd06dkZIEHU6F0+mBf/xPUKgOGHBcUnF54MIaklEnFLpBl7mWYLAHDOtssjs27d5NIDyz8zQvzJLlVAw2OsOWzoD66KteN8RuPOQ35pwl4FNZ+A3V5WAMeOcSTIAAAAASUVORK5CYII='
                   />
                   <Typography

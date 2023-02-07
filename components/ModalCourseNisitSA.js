@@ -46,7 +46,7 @@ export default function ModalCoursesSA(props) {
             </p>
             <table
               className="table table-bordered table-striped"
-              cellspacing="0"
+              cellSpacing="0"
               style={{ textAlign: "center" }}
             >
               <thead
@@ -84,7 +84,7 @@ export default function ModalCoursesSA(props) {
                       <td>{val.email}</td>
                       <td>{val.tel}</td>
                       <td>
-                        <button type="button" class="btn btn-secondary">
+                        <button type="button" className="btn btn-secondary">
                           ปริ้นใบเช็คชื่อ
                         </button>
                       </td>
@@ -94,10 +94,10 @@ export default function ModalCoursesSA(props) {
               </tbody>
             </table>
           </div>
-          <div class="modal-footer">
+          <div className="modal-footer">
             <button
               type="button"
-              class="btn btn-danger"
+              className="btn btn-danger"
               data-bs-dismiss="modal"
             >
               ปิด

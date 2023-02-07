@@ -6,7 +6,7 @@ import Link from "next/link";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction"; 
 
-const profileProvost = (props) => {
+const ProfileProvost = (props) => {
 
   const [user, setUser] = useState([]);
   const [name, setName] = useState(null);
@@ -36,7 +36,7 @@ const profileProvost = (props) => {
       }
       getUser();
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   const userUpdate = async (e) => {
     e.preventDefault()
@@ -84,7 +84,7 @@ const profileProvost = (props) => {
           <div className="row mb-4" style={{marginTop:"40px"}}>
             <div className="col col-md-5">
               <div className="form-outline">
-              <label className="form-label" for="form6Example1">
+              <label className="form-label" htmlFor="form6Example1">
                   ชื่อจริง
                 </label>
                 <input
@@ -102,7 +102,7 @@ const profileProvost = (props) => {
             </div>
             <div className="col col-md-5">
               <div className="form-outline">
-              <label className="form-label" for="form6Example2">
+              <label className="form-label" htmlFor="form6Example2">
                   นามสกุล
                 </label>
                 <input
@@ -120,7 +120,7 @@ const profileProvost = (props) => {
             </div>
             <div className="col col-md-2">
             <div className="form-outline mb-4">
-          <label className="form-label" for="form6Example4">
+          <label className="form-label" htmlFor="form6Example4">
               เบอร์โทร
             </label>
             <input
@@ -139,11 +139,11 @@ const profileProvost = (props) => {
           <div className="row mb-4" style={{marginTop:"50px"}}>
           <div className="col col-md-6">    
           <div className="form-outline mb-4">
-          <label className="form-label" for="form6Example4">
+          <label className="form-label" htmlFor="form6Example4">
               อาจารย์รับผิดชอบระดับการศึกษา
             </label>
             <select
-              class="form-select"
+              className="form-select"
               name="yearSelect"
               onChange={(e) => {
                 setLevel(e.target.value);
@@ -167,11 +167,11 @@ const profileProvost = (props) => {
           </div>
           <div className="col col-md-6">
           <div className="form-outline mb-4">
-          <label className="form-label" for="form6Example3">
+          <label className="form-label" htmlFor="form6Example3">
               ภาควิชา
             </label>
             <select
-              class="form-select"
+              className="form-select"
               name="yearSelect"
               onChange={(e) => {
                 setMajor(e.target.value);
@@ -236,4 +236,4 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(profileProvost);
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileProvost);

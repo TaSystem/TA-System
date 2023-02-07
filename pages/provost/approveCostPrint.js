@@ -37,11 +37,11 @@ const header = [
     { label: 'รวม15ครั้งเป็นเงิน(บาท)', key: 'รวม15ครั้งเป็นเงิน(บาท)' },
   ];
 
-  const renderBody = () => {
-    return csv1.map((item) => {
+  const RenderBody = () => {
+    return csv1.map((item, index) => {
       // console.log('item = ', item);
       return (
-        <tr>
+        <tr key={index}>
           {header.map((h) => {
             let re = '';
             Object.keys(item).map((key) => {
@@ -132,7 +132,7 @@ const header = [
                 </p>
               </th>
             </thead>
-            <tbody style={styles.table}>{renderBody()}</tbody>
+            <tbody style={styles.table}>{RenderBody()}</tbody>
           </table>
         </div>
 
@@ -140,7 +140,7 @@ const header = [
     }
   }
   
-  const approveCostPrint = () => {
+  const ApproveCostPrint = () => {
     const componentRef = useRef();
     return (
       <div>
@@ -154,4 +154,4 @@ const header = [
       </div>
     );
   };
-export default approveCostPrint;
+export default ApproveCostPrint;

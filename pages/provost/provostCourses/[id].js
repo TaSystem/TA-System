@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/client';
 import { connect } from 'react-redux';
 import { getDetailNisit } from '../../../redux/actions/nisitAction';
 
-const requestTAs = (props) => {
+const RequestTAs = (props) => {
   const [number1, setNumber1] = useState(0);
   const [number2, setNumber2] = useState(0);
   const [note, setNote] = useState(null);
@@ -23,13 +23,13 @@ const requestTAs = (props) => {
       setCourse(response.data);
     }
     getCourse();
-  }, [router]);
+  }, [id, router]);
 
   useEffect(() => {
     if (session) {
       props.getDetailNisit(session.user.email);
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   const hourTA = (d, p, CID) => {
     if (CID == '03602312') return 2;
@@ -95,7 +95,7 @@ const requestTAs = (props) => {
             : 'loading...'}{' '}
         </h3>
         <div className="row align-items-center">
-          <div class="col">
+          <div className="col">
             <h4>
               รหัสวิชา:{' '}
               {course != null && course.length != 0
@@ -103,7 +103,7 @@ const requestTAs = (props) => {
                 : 'loading...'}{' '}
             </h4>
           </div>
-          <div class="col">
+          <div className="col">
             <h4>
               หมู่เรียน:{' '}
               {course != null && course.length != 0
@@ -122,7 +122,7 @@ const requestTAs = (props) => {
           </div>
         </div>
         <div className="row align-items-center">
-          <div class="col">
+          <div className="col">
             <h4>
               สาขาวิชา:{' '}
               {course != null && course.length != 0
@@ -130,7 +130,7 @@ const requestTAs = (props) => {
                 : 'loading...'}{' '}
             </h4>
           </div>
-          <div class="col">
+          <div className="col">
             <h4>
               จำนวนที่ขอได้ :{' '}
               {course != null && course.length != 0
@@ -153,7 +153,7 @@ const requestTAs = (props) => {
           </div>
         )}
         <div className="row align-items-center">
-          <div class="col">
+          <div className="col">
             <input
               className="form-control"
               type="number"
@@ -163,7 +163,7 @@ const requestTAs = (props) => {
               }}
             />
           </div>
-          <div class="col">
+          <div className="col">
             <input
               className="form-control"
               type="number"
@@ -173,7 +173,7 @@ const requestTAs = (props) => {
               }}
             />
           </div>
-          <div class="col">
+          <div className="col">
             <input
               className="form-control"
               type="text"
@@ -215,4 +215,4 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(requestTAs);
+export default connect(mapStateToProps, mapDispatchToProps)(RequestTAs);

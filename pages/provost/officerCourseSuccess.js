@@ -10,7 +10,7 @@ import { useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
 
-function officerCourseSuccess(props) {
+function OfficerCourseSuccess(props) {
   const [courseList, setCourseList] = useState([]);
   const [users, setUsers] = useState([]);
   const [course, setCourse] = useState([]);
@@ -44,7 +44,7 @@ function officerCourseSuccess(props) {
     if (session) {
       props.getDetailNisit(session.user.email);
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   function Filter(courses) {
     return courses.filter((course) => {
@@ -178,7 +178,7 @@ function officerCourseSuccess(props) {
       >
         <table
           className="table table-hover table-bordered"
-          cellspacing="0"
+          cellSpacing="0"
           style={{ textAlign: "center" }}
         >
           <thead
@@ -315,4 +315,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(officerCourseSuccess);
+)(OfficerCourseSuccess);

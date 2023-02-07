@@ -38,7 +38,7 @@ function OfficerRequest(props) {
     if (session) {
       props.getDetailNisit(session.user.email);
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   const TeacherapplyID = (id) => {
     let l = id.toString().length;
@@ -198,7 +198,7 @@ function OfficerRequest(props) {
       >
         <table
           className="table table-hover table-bordered"
-          cellspacing="0"
+          cellSpacing="0"
           style={{ textAlign: 'center' }}
         >
           <thead

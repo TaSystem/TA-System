@@ -55,7 +55,7 @@ export default function Table({ columns, data,del }) {
       <table
         {...getTableProps()}
         className="table table-hover table-bordered"
-        cellspacing="0"
+        cellSpacing="0"
         style={{ textAlign: "center" }}
       >
         <thead
@@ -67,11 +67,11 @@ export default function Table({ columns, data,del }) {
             fontWeight: "400",
           }}
         >
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
+          {headerGroups.map((headerGroup, index) => (
+            <tr {...headerGroup.getHeaderGroupProps()} key={index}>
               <th>#</th>
               {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>{column.render("Header")}</th>
+                <th {...column.getHeaderProps()} key={index}>{column.render("Header")} </th>
               ))}
             </tr>
           ))}
@@ -81,12 +81,12 @@ export default function Table({ columns, data,del }) {
             prepareRow(row);
             // console.log("i:", row.original.id);
             return (
-              <tr {...row.getRowProps()}>
+              <tr {...row.getRowProps()} key={i}>
                 <td>
                   {i + 1}
                   <button
                     type="button"
-                    class="btn btn-danger"
+                    className="btn btn-danger"
                     onClick={() => {
                       if (window.confirm("ยืนยันการลบบุคลากร")) del(row.original.id);
                     }}
@@ -94,9 +94,9 @@ export default function Table({ columns, data,del }) {
                     ลบ
                   </button>
                 </td>
-                {row.cells.map((cell) => {
+                {row.cells.map((cell, id) => {
                   return (
-                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                    <td {...cell.getCellProps()} key={index}>{cell.render("Cell")}</td>
                   );
                 })}
               </tr>

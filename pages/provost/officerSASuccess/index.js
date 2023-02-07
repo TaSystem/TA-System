@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import { getDetailNisit } from "../../../redux/actions/nisitAction";
 import { useRouter } from "next/router";
 
-function officerSASuccess(props) {
+function OfficerSASuccess(props) {
   const [users, setUsers] = useState([]);
   const [courses, setCourses] = useState([]);
   const [nameModal, setNameModal] = useState([]);
@@ -41,7 +41,7 @@ function officerSASuccess(props) {
     if (session) {
       props.getDetailNisit(session.user.email);
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   function Filter(users) {
     return users.filter((user) => {
@@ -113,7 +113,7 @@ function officerSASuccess(props) {
     //console.log("in that case");
     return (
       <div>
-        <h2>You aren't signed in, please sign in first</h2>
+        <h2>You aren&apos;t signed in, please sign in first</h2>
       </div>
     );
   }
@@ -150,7 +150,7 @@ function officerSASuccess(props) {
         {users != null && users.length != 0 ? Filter(users).length : 0}
         <table
           className="table table-hover table-bordered"
-          cellspacing="0"
+          cellSpacing="0"
           style={{ textAlign: "center" }}
         >
           <thead
@@ -177,7 +177,7 @@ function officerSASuccess(props) {
           <tbody>
             {Filter(users).map((val, key) => {
               return (
-                <tr>
+                <tr key={key}>
                   <td>{key + 1}</td>
                   <td>
                     <Link href={`/provost/officerSASuccess/${val.UID}`}>
@@ -240,4 +240,4 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(officerSASuccess);
+export default connect(mapStateToProps, mapDispatchToProps)(OfficerSASuccess);

@@ -9,7 +9,7 @@ import { getDetailNisit } from '../../redux/actions/nisitAction';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const profileNisit = (props) => {
+const ProfileNisit = (props) => {
   const [user, setUser] = useState([]);
   const [name, setName] = useState(null);
   const [lastname, setLastname] = useState(null);
@@ -55,7 +55,7 @@ const profileNisit = (props) => {
       }
       getUser();
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   const clearFileCard = async () => {
     await Axios.put(`/clear-file`, {
@@ -122,7 +122,7 @@ const profileNisit = (props) => {
 
   return (
     <form>
-      <div class="container">
+      <div className="container">
         <h2>
           {' '}
           ข้อมูลนิสิต {user && user.length != 0 ? user[0].email : 'loading...'}
@@ -140,18 +140,18 @@ const profileNisit = (props) => {
             {error}{' '}
           </div>
         )}
-        <div class="information">
-          <div class="row mb-4">
-            <div class="col">
-              <div class="form-outline">
-                <label class="form-label" for="form6Example1">
+        <div className="information">
+          <div className="row mb-4">
+            <div className="col">
+              <div className="form-outline">
+                <label className="form-label" htmlFor="form6Example1">
                   ชื่อจริง
                 </label>
                 <input
                   type="text"
                   id="form6Example1"
                   name="name"
-                  class="form-control"
+                  className="form-control"
                   defaultValue={
                     // user.length != 0 ? user[0].name : "loading..."
                     name
@@ -164,16 +164,16 @@ const profileNisit = (props) => {
                 />
               </div>
             </div>
-            <div class="col">
-              <div class="form-outline">
-                <label class="form-label" for="form6Example2">
+            <div className="col">
+              <div className="form-outline">
+                <label className="form-label" htmlFor="form6Example2">
                   นามสกุล
                 </label>
                 <input
                   type="text"
                   name="lastname"
                   id="form6Example2"
-                  class="form-control"
+                  className="form-control"
                   defaultValue={
                     // user && user.length != 0 ? user[0].lastname : "loading..."
                     lastname
@@ -188,17 +188,17 @@ const profileNisit = (props) => {
             </div>
           </div>
 
-          <div class="row mb-4">
-            <div class="col">
-              <div class="form-outline">
-                <label class="form-label" for="form6Example1">
+          <div className="row mb-4">
+            <div className="col">
+              <div className="form-outline">
+                <label className="form-label" htmlFor="form6Example1">
                   รหัสนิสิต
                 </label>
                 <input
                   type="number"
                   name="idStudent"
                   id="form6Example1"
-                  class="form-control"
+                  className="form-control"
                   defaultValue={
                     // user && user.length != 0 ? user[0].idStudent : "loading..."
                     idStudent
@@ -211,16 +211,16 @@ const profileNisit = (props) => {
                 />
               </div>
             </div>
-            <div class="col">
-              <div class="form-outline">
-                <label class="form-label" for="form6Example4">
+            <div className="col">
+              <div className="form-outline">
+                <label className="form-label" htmlFor="form6Example4">
                   เบอร์โทร
                 </label>
                 <input
                   type="number"
                   name="tel"
                   id="form6Example4"
-                  class="form-control"
+                  className="form-control"
                   defaultValue={
                     // user && user.length != 0 ? user[0].tel : "loading..."
                     tel
@@ -233,12 +233,12 @@ const profileNisit = (props) => {
             </div>
           </div>
 
-          <div class="row mb-4">
-            <div class="col">
-              <div class="form-outline">
-                <label class="form-label">ระดับการศึกษา</label>
+          <div className="row mb-4">
+            <div className="col">
+              <div className="form-outline">
+                <label className="form-label">ระดับการศึกษา</label>
                 <select
-                  class="form-select"
+                  className="form-select"
                   name="level"
                   onChange={(e) => {
                     setLevel(e.target.value);
@@ -262,11 +262,11 @@ const profileNisit = (props) => {
                 </select>
               </div>
             </div>
-            <div class="col">
-              <div class="form-outline">
-                <label class="form-label">ภาควิชา</label>
+            <div className="col">
+              <div className="form-outline">
+                <label className="form-label">ภาควิชา</label>
                 <select
-                  class="form-select"
+                  className="form-select"
                   name="major"
                   onChange={(e) => {
                     setDepartment(e.target.value);
@@ -320,10 +320,10 @@ const profileNisit = (props) => {
 
           <h2>ข้อมูลบัญชีธนาคาร</h2>
 
-          <div class="row mb-4">
-            <div class="col">
-              <div class="form-outline">
-                <label class="form-label">ชื่อธนาคาร</label>
+          <div className="row mb-4">
+            <div className="col">
+              <div className="form-outline">
+                <label className="form-label">ชื่อธนาคาร</label>
                 <SelectNameBank
                   nameBank={
                     // user && user.length != 0 ? user[0].nameBank : "loading..."
@@ -335,16 +335,16 @@ const profileNisit = (props) => {
                 />
               </div>
             </div>
-            <div class="col">
-              <div class="form-outline">
-                <label class="form-label" for="form6Example7">
+            <div className="col">
+              <div className="form-outline">
+                <label className="form-label" htmlFor="form6Example7">
                   เลขที่บัญชี
                 </label>
                 <input
                   type="text"
                   name="idBank"
                   id="form6Example7"
-                  class="form-control"
+                  className="form-control"
                   defaultValue={
                     // user && user.length != 0 ? user[0].idBank : "loading..."
                     idBank
@@ -355,16 +355,16 @@ const profileNisit = (props) => {
                 />
               </div>
             </div>
-            <div class="col">
-              <div class="form-outline">
-                <label class="form-label" for="form6Example8">
+            <div className="col">
+              <div className="form-outline">
+                <label className="form-label" htmlFor="form6Example8">
                   สาขาธนาคาร
                 </label>
                 <input
                   type="text"
                   name="branch"
                   id="form6Example8"
-                  class="form-control"
+                  className="form-control"
                   defaultValue={
                     // user && user.length != 0 ? user[0].Branch : "loading..."
                     branch
@@ -376,18 +376,18 @@ const profileNisit = (props) => {
               </div>
             </div>
           </div>
-          <div class="row mb-4">
-            <div class="col">
-              <div class="form-outline">
+          <div className="row mb-4">
+            <div className="col">
+              <div className="form-outline">
                 {!fileCardStudent && (
                   <div>
-                    <label class="form-label" for="form6Example9">
+                    <label className="form-label" htmlFor="form6Example9">
                       รูปบัตรนิสิตที่ยังไม่หมดอายุ(pdfเท่านั้น)
                     </label>
                     <input
                       type="file"
                       id="form6Example9"
-                      class="form-control"
+                      className="form-control"
                       // defaultValue={path}
                       accept="application/pdf"
                       onChange={(e) => {
@@ -401,7 +401,7 @@ const profileNisit = (props) => {
                     {fileCardStudent}
                     <button
                       type="button"
-                      class="btn btn-danger btn-block mb-4"
+                      className="btn btn-danger btn-block mb-4"
                       onClick={clearFileCard}
                     >
                       นำออก
@@ -411,17 +411,17 @@ const profileNisit = (props) => {
                 {/* <Image src={tempCard} alt="fileCardStudent" width={220} height={220} /> */}
               </div>
             </div>
-            <div class="col">
-              <div class="form-outline">
+            <div className="col">
+              <div className="form-outline">
                 {!fileBookBank && (
                   <div>
-                    <label class="form-label" for="form6Example10">
+                    <label className="form-label" htmlFor="form6Example10">
                       รูปสมุดบัญชีธนาคาร(pdfเท่านั้น)
                     </label>
                     <input
                       type="file"
                       id="form6Example10"
-                      class="form-control"
+                      className="form-control"
                       accept="application/pdf"
                       //   defaultValue={
                       //     user && user.length != 0 ? `../../img/timer.png` : "loading..."
@@ -439,7 +439,7 @@ const profileNisit = (props) => {
                     {fileBookBank}{' '}
                     <button
                       type="button"
-                      class="btn btn-danger btn-block mb-4"
+                      className="btn btn-danger btn-block mb-4"
                       onClick={clearFileBank}
                     >
                       นำออก
@@ -452,7 +452,7 @@ const profileNisit = (props) => {
 
           <button
             type="button"
-            class="btn btn-success btn-block mb-4"
+            className="btn btn-success btn-block mb-4"
             onClick={userUpdate}
           >
             บันทึก
@@ -471,4 +471,4 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(profileNisit);
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileNisit);

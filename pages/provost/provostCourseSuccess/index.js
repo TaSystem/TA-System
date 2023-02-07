@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import { getDetailNisit } from '../../../redux/actions/nisitAction';
 import { useRouter } from 'next/router';
 
-function provostCourseSuccess(props) {
+function ProvostCourseSuccess(props) {
   const [courseList, setCourseList] = useState([]);
   const [users, setUsers] = useState([]);
   const [course, setCourse] = useState([]);
@@ -55,7 +55,7 @@ function provostCourseSuccess(props) {
       getYear();
       getCourses();
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   function Filter(courses) {
     return courses.filter((course) => {
@@ -207,7 +207,7 @@ function provostCourseSuccess(props) {
       >
         <table
           className="table table-hover table-bordered"
-          cellspacing="0"
+          cellSpacing="0"
           style={{ textAlign: 'center' }}
         >
           <thead
@@ -346,4 +346,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(provostCourseSuccess);
+)(ProvostCourseSuccess);

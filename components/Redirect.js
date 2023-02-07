@@ -5,7 +5,7 @@ export default function Redirect({ to }) {
   //console.log("in useEffect");
   useEffect(() => {
     router.push(to);
-  }, [to]);
+  }, [router, to]);
 
   return null;
 }

@@ -8,7 +8,7 @@ import ModalCourse from "../../components/ModalCourse";
 import ModalDetailTeacher from "../../components/ModalDetailTeacher";
 import ModalHistoryReply from "../../components/ModalHistoryReply";
 
-function provostHItoryApply(props) {
+function ProvostHItoryApply(props) {
   const [session, loading] = useSession();
   const [courses, setCourses] = useState([]);
   const [search, setSearch] = useState(null);
@@ -39,7 +39,7 @@ function provostHItoryApply(props) {
       getYear();
       getCourses();
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   const condition = (status) => {
     if (status === 1) {
@@ -326,7 +326,7 @@ function provostHItoryApply(props) {
             </option>
 
             {yearSearch.map((val, key) => {
-              return <option value={val.year}>{val.year}</option>;
+              return <option value={val.year} key={key}>{val.year}</option>;
             })}
           </select>
 
@@ -410,7 +410,7 @@ function provostHItoryApply(props) {
         >
           <table
             className="table table-hover table-bordered"
-            cellspacing="0"
+            cellSpacing="0"
             style={{ textAlign: "center" }}
           >
             <thead
@@ -441,7 +441,7 @@ function provostHItoryApply(props) {
             <tbody>
               {Filter(courses).map((val, key) => {
                 return (
-                  <tr>
+                  <tr key={key}>
                     <td> {key + 1}</td>
                     {props.nisit.roleID == 1 ? (
                       <td>
@@ -531,4 +531,4 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(provostHItoryApply);
+export default connect(mapStateToProps, mapDispatchToProps)(ProvostHItoryApply);

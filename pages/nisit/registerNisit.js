@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { setRegisterNisit ,getDetailNisit } from "../../redux/actions/nisitAction";
 
-function registerNisit(props) {
+function RegisterNisit(props) {
   const [session, loading] = useSession();
   const [content, setContent] = useState();
   // const [path, setPath] = useState(0)
@@ -32,7 +32,7 @@ function registerNisit(props) {
       props.getDetailNisit(session.user.email)
     }
 
-  }, [loading]);
+  }, [loading, props, session]);
 
 
   const handleSubmit = (event) => {
@@ -56,7 +56,7 @@ function registerNisit(props) {
     // console.log("in that case");
     return (
       <div>
-        <h2>You aren't signed in, please sign in first</h2>
+        <h2>You aren&apos;t signed in, please sign in first</h2>
       </div>
     );
   }
@@ -64,49 +64,49 @@ function registerNisit(props) {
 
   return (
     <form>
-      <div class="container" style={{padding:"0 4vw"}}>
+      <div className="container" style={{padding:"0 4vw"}}>
           <h1>กรอกข้อมูลนิสิต</h1>
-      <div class="row" style={{marginTop:"40px"}}>
-      <div class="col col-md-1">
-            <label for="sex">คำนำหน้า</label>
-            <select class="form-control custom-select" id="sex">
+      <div className="row" style={{marginTop:"40px"}}>
+      <div className="col col-md-1">
+            <label htmlFor="sex">คำนำหน้า</label>
+            <select className="form-control custom-select" id="sex">
               <option selected>เลือก</option>
               <option>นาย</option>
               <option>นาง</option>
               <option>นางสาว</option>
             </select>
         </div>
-        <div class="col col-md-4">
-            <label for="firstName">ชื่อ</label>
-            <input type="text" class="form-control" id="firstName" />
+        <div className="col col-md-4">
+            <label htmlFor="firstName">ชื่อ</label>
+            <input type="text" className="form-control" id="firstName" />
         </div>
-        <div class="col col-md-5">
-            <label for="lastName">นามสกุล</label>
-            <input type="text" class="form-control" id="lastName" />
-        </div>
-      </div>
-      <div class="row" style={{marginTop:"50px"}}>
-        <div class="col col-md-5">
-            <label for="stuid">รหัสนิสิต</label>
-            <input type="text" class="form-control" id="stuid" />
-        </div>
-        <div class="col col-md-5">
-            <label for="tel">เบอร์โทรศัพท์</label>
-            <input type="text" class="form-control" id="tel"/>
+        <div className="col col-md-5">
+            <label htmlFor="lastName">นามสกุล</label>
+            <input type="text" className="form-control" id="lastName" />
         </div>
       </div>
-      <div class="row" style={{marginTop:"50px"}}>
-        <div class="col col-md-5">
-            <label for="degree">ระดับการศึกษา</label>
-            <select class="form-control custom-select" id="degree">
+      <div className="row" style={{marginTop:"50px"}}>
+        <div className="col col-md-5">
+            <label htmlFor="stuid">รหัสนิสิต</label>
+            <input type="text" className="form-control" id="stuid" />
+        </div>
+        <div className="col col-md-5">
+            <label htmlFor="tel">เบอร์โทรศัพท์</label>
+            <input type="text" className="form-control" id="tel"/>
+        </div>
+      </div>
+      <div className="row" style={{marginTop:"50px"}}>
+        <div className="col col-md-5">
+            <label htmlFor="degree">ระดับการศึกษา</label>
+            <select className="form-control custom-select" id="degree">
               <option selected>เลือกระดับการศึกษา</option>
               <option>ปริญญาตรี</option>
               <option>ปริญญาโท</option>
             </select>
         </div>
-        <div class="col col-md-5">
-            <label for="major">ภาควิชา</label>
-            <select class="form-control custom-select" id="major">
+        <div className="col col-md-5">
+            <label htmlFor="major">ภาควิชา</label>
+            <select className="form-control custom-select" id="major">
               <option selected>เลือกภาควิชา</option>
               <option>วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์</option>
               <option>วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ</option>
@@ -340,4 +340,4 @@ const mapDispatchToProps  = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps )(registerNisit);
+export default connect(mapStateToProps, mapDispatchToProps )(RegisterNisit);

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
 import { useSession } from "next-auth/client";
-import ApplicationNisitSA from '../../components/form/ApplicationNisitSA'
+import ExportNisitSA from '../../components/form/ApplicationNisitSA'
 
-function testcss(props) {
+function Testcss(props) {
   const data = {
     name: "ปิยวงศ์ มหัทธนสวัสดิ์",
     nisitId: "6130300557",
@@ -20,13 +20,13 @@ function testcss(props) {
         props.getDetailNisit(session.user.email)
       }
   
-    }, [loading]);
+    }, [loading, props, session]);
     
     
     return (
         <div style={{display:'flex'}}>
 
-          <ApplicationNisitSA {...data}/>
+          <ExportNisitSA {...data}/>
 
 
           
@@ -42,5 +42,5 @@ const mapStateToProps = (state) => ({
     getDetailNisit: getDetailNisit,
   };
   
-  export default connect(mapStateToProps, mapDispatchToProps)(testcss);
+  export default connect(mapStateToProps, mapDispatchToProps)(Testcss);
   

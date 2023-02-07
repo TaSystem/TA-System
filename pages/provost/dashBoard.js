@@ -346,7 +346,7 @@ const dataBar = [
   },
 ];
 
-function dashboard(props) {
+function Dashboard(props) {
   const [session, loading] = useSession();
   const [dataChart, setDataChart] = useState([]);
   // const [onData, setOndata] = useState([]);
@@ -580,7 +580,7 @@ function dashboard(props) {
       //console.log("Year is ", response.data);
     }
     getYear();
-  }, [loading]);
+  }, [dataChart, loading, numberOfYear, numberOfYearTrue, props, session]);
 
   // const haddleChangeA = () => {
   //   setOndata(datas);
@@ -860,7 +860,7 @@ function dashboard(props) {
                   </option>
                   {yearSearch != null
                     ? yearSearch.map((data, index) => {
-                        return <option value={data.year}>{data.year}</option>;
+                        return <option value={data.year} key={index}>{data.year}</option>;
                       })
                     : loading}
                 </select>
@@ -984,7 +984,7 @@ function dashboard(props) {
                   </option>
                   {yearSearch != null
                     ? yearSearch.map((data, index) => {
-                        return <option value={data.year}>{data.year}</option>;
+                        return <option value={data.year} key={index}>{data.year}</option>;
                       })
                     : loading}
                 </select>
@@ -1071,7 +1071,7 @@ function dashboard(props) {
                     ปีการศึกษา
                   </option>
                   {yearSearch.map((val, key) => {
-                    return <option value={val.year}>{val.year}</option>;
+                    return <option value={val.year} key={key}>{val.year}</option>;
                   })}
                 </select>
                 <select
@@ -1291,4 +1291,4 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

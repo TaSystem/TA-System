@@ -50,21 +50,21 @@ export default function ModalDetailNisit(props) {
           </p>
           {/* <p>ชิ่อธนาคาร: {props.val.fileCardStudent}     &emsp; เลขบัญชี: {props.val.fileBookBank}</p> */}
           {props.val.fileCardStudent ? (
-            <button class="btn btn-secondary" onClick={downloadCard}>
+            <button className="btn btn-secondary" onClick={downloadCard}>
               ดาวน์โหลดไฟล์บัตรนิสิต{' '}
             </button>
           ) : (
-            <button class="btn btn-secondary" disabled>
+            <button className="btn btn-secondary" disabled>
               ไม่มีไฟล์บัตรนิสิต{' '}
             </button>
           )}
           &emsp;
           {props.val.fileBookBank ? (
-            <button class="btn btn-secondary" onClick={downloadBookBank}>
+            <button className="btn btn-secondary" onClick={downloadBookBank}>
               ดาวน์โหลดไฟล์หน้าสมุดธนาคาร{' '}
             </button>
           ) : (
-            <button class="btn btn-secondary" disabled>
+            <button className="btn btn-secondary" disabled>
               ไม่มีไฟล์หน้าสมุดธนาคาร{' '}
             </button>
           )}
@@ -108,10 +108,10 @@ export default function ModalDetailNisit(props) {
             </p>
             {bankData()}
           </div>
-          <div class="modal-footer">
+          <div className="modal-footer">
             <button
               type="button"
-              class="btn btn-danger"
+              className="btn btn-danger"
               data-bs-dismiss="modal"
             >
               ปิด

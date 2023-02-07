@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../redux/actions/nisitAction";
-function officerSystem(props) {
+function OfficerSystem(props) {
   const [systemTeacher, setSystemTeacher] = useState(null);
   const [systemStudent, setSystemStudent] = useState(null);
   const [session, loading] = useSession();
@@ -23,7 +23,7 @@ function officerSystem(props) {
       props.getDetailNisit(session.user.email)
     }
 
-  }, [loading]);
+  }, [loading, props, session]);
   
 
   
@@ -68,12 +68,12 @@ function officerSystem(props) {
     <div className="container">
       <h2>Systems</h2>
       <h3>ระบบอาจารย์: {systemTeacher?"เปิด":"ปิด"}</h3>
-      <div class="information">
-        <button type="button" class={systemTeacher?"btn btn-danger":"btn btn-success"} onClick={()=>{if (window.confirm(systemTeacher?"ต้องการปิดระบบใช่หรือไม่":"ต้องการเปิดระบบใช่หรือไม่")) handleTeacherSystem()}}>
+      <div className="information">
+        <button type="button" className={systemTeacher?"btn btn-danger":"btn btn-success"} onClick={()=>{if (window.confirm(systemTeacher?"ต้องการปิดระบบใช่หรือไม่":"ต้องการเปิดระบบใช่หรือไม่")) handleTeacherSystem()}}>
           {systemTeacher?"ปิดระบบรับสมัครอารจารย์":"เปิดระบบรับสมัครอารจารย์"}
         </button>
         <h3> ระบบนิสิต: {systemStudent?"เปิด":"ปิด"}</h3>
-        <button type="button" class={systemStudent?"btn btn-danger":"btn btn-success"} onClick={()=>{if (window.confirm(systemTeacher?"ต้องการปิดระบบใช่หรือไม่":"ต้องการเปิดระบบใช่หรือไม่")) handleStudentSystem()}}>
+        <button type="button" className={systemStudent?"btn btn-danger":"btn btn-success"} onClick={()=>{if (window.confirm(systemTeacher?"ต้องการปิดระบบใช่หรือไม่":"ต้องการเปิดระบบใช่หรือไม่")) handleStudentSystem()}}>
           {systemStudent?"ปิดระบบรับสมัครนักเรียน":"เปิดระบบรับสมัครนักเรียน"}
         </button>
       </div>
@@ -88,5 +88,5 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(officerSystem);
+export default connect(mapStateToProps, mapDispatchToProps)(OfficerSystem);
 

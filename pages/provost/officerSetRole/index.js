@@ -5,7 +5,7 @@ import { useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../../redux/actions/nisitAction";
 
-function officerSetRole(props) {
+function OfficerSetRole(props) {
   const [userList, setUserList] = useState([]);
   const [roles, setRoles] = useState([]);
   const [email, setEmail] = useState(null);
@@ -37,7 +37,7 @@ function officerSetRole(props) {
     if (session) {
       props.getDetailNisit(session.user.email);
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   function Filter(userList) {
     return userList?.filter((user) => {
@@ -84,9 +84,9 @@ function officerSetRole(props) {
       tel: tel,
       roleID: roleID,
     }).then((res) => {
-        setSuccess(res.data.message);
-        setUserList(res.data.data);
-      
+      setSuccess(res.data.message);
+      setUserList(res.data.data);
+
     });
   };
 
@@ -110,11 +110,11 @@ function officerSetRole(props) {
         </div>
       )}
       {err && (
-            <div className="alert alert-danger" role="alert">
-              {" "}
-              {err}
-              {" "}
-            </div>
+        <div className="alert alert-danger" role="alert">
+          {" "}
+          {err}
+          {" "}
+        </div>
       )}
       <div
         className="table-responsive"
@@ -122,7 +122,7 @@ function officerSetRole(props) {
       >
         <table
           className="table table-hover table-bordered"
-          cellspacing="0"
+          cellSpacing="0"
           style={{ textAlign: "center" }}
         >
           <thead
@@ -151,13 +151,13 @@ function officerSetRole(props) {
                   <td>{key + 1}</td>
                   <td>{val.email}</td>
 
-                  <td class="text-nowrap">
+                  <td className="text-nowrap">
                     {val.name} {val.lastname}
                   </td>
-                  <td class="text-nowrap">{val.department}</td>
+                  <td className="text-nowrap">{val.department}</td>
                   <td>{val.tel}</td>
                   <td>{val.title}</td>
-                  <td class="text-nowrap">
+                  <td className="text-nowrap">
                     <button
                       type="button"
                       className="btn btn-primary"
@@ -180,117 +180,117 @@ function officerSetRole(props) {
                 </tr>
               );
             })}
-            
+
           </tbody>
         </table>
       </div>
-      <div class="row" style={{marginTop:"40px"}}>
-        <div class="col" >
-      <input
-                  type="text"
-                  className="form-control"
-                  placeholder="อีเมลล์"
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                  }}
-                />
-                </div>
-                <div class="col">
-      <div class="input-group">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="ชื่อจริง"
-                    onChange={(e) => {
-                      setName(e.target.value);
-                    }}
-                  />
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="นามสกุล"
-                    onChange={(e) => {
-                      setLastname(e.target.value);
-                    }}
-                  />
-                </div>
-                </div>
-                <div class="col">
-      <select
-                  class="form-select"
-                  name="departmentSelect"
-                  onChange={(e) => {
-                    setDepartment(e.target.value);
-                  }}
-                >
-                  <option value={null} disabled selected hidden>
-                    เลือกสาขาวิชา
-                  </option>
+      <div className="row" style={{ marginTop: "40px" }}>
+        <div className="col" >
+          <input
+            type="text"
+            className="form-control"
+            placeholder="อีเมลล์"
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+          />
+        </div>
+        <div className="col">
+          <div className="input-group">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="ชื่อจริง"
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
+            />
+            <input
+              type="text"
+              className="form-control"
+              placeholder="นามสกุล"
+              onChange={(e) => {
+                setLastname(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col">
+          <select
+            className="form-select"
+            name="departmentSelect"
+            onChange={(e) => {
+              setDepartment(e.target.value);
+            }}
+          >
+            <option value={null} disabled selected hidden>
+              เลือกสาขาวิชา
+            </option>
 
-                  <option value="วิศวกรรมอุตสาหการและระบบ">
-                    วิศวกรรมอุตสาหการและระบบ(ป.ตรี)
-                  </option>
+            <option value="วิศวกรรมอุตสาหการและระบบ">
+              วิศวกรรมอุตสาหการและระบบ(ป.ตรี)
+            </option>
 
-                  <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์">
-                    วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)
-                  </option>
+            <option value="วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์">
+              วิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์(ป.ตรี)
+            </option>
 
-                  <option value="วิศวกรรมโยธา">วิศวกรรมโยธา(ป.ตรี)</option>
+            <option value="วิศวกรรมโยธา">วิศวกรรมโยธา(ป.ตรี)</option>
 
-                  <option value="วิศวกรรมเครื่องกลและการออกแบบ">
-                    วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)
-                  </option>
+            <option value="วิศวกรรมเครื่องกลและการออกแบบ">
+              วิศวกรรมเครื่องกลและการออกแบบ(ป.ตรี)
+            </option>
 
-                  <option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์">
-                    วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)
-                  </option>
+            <option value="วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์">
+              วิศวกรรมคอมพิวเตอร์และสารสนเทศศาสตร์(ป.ตรี)
+            </option>
 
-                  <option value="วิศวกรรมเครื่องกลและระบบการผลิต">
-                    วิศวกรรมเครื่องกลและระบบการผลิต(ป.ตรี)
-                  </option>
-                  <option value="วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ">
-                    วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ(ป.ตรี)
-                  </option>
-                </select>
-                </div>
-                <div class="col">
-      <input
-                  type="text"
-                  className="form-control"
-                  placeholder="เบอร์โทรศัพท์"
-                  onChange={(e) => {
-                    setTel(e.target.value);
-                  }}
-                />
-                </div>
-                <div class="col">
-                  
-      <select
-                  class="form-select"
-                  name="yearSelect"
-                  onChange={(e) => {
-                    setRoleID(e.target.value);
-                  }}
-                >
-                  <option value={null} disabled selected hidden>
-                    เลือกตำแหน่ง
-                  </option>
+            <option value="วิศวกรรมเครื่องกลและระบบการผลิต">
+              วิศวกรรมเครื่องกลและระบบการผลิต(ป.ตรี)
+            </option>
+            <option value="วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ">
+              วิศวกรรมหุ่นยนต์และระบบอัตโนมัติ(ป.ตรี)
+            </option>
+          </select>
+        </div>
+        <div className="col">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="เบอร์โทรศัพท์"
+            onChange={(e) => {
+              setTel(e.target.value);
+            }}
+          />
+        </div>
+        <div className="col">
 
-                  {roles.map((val, key) => {
-                    return <option value={val.id}>{val.title}</option>;
-                  })}
-                </select>
-                </div>
-                <div class="col">
-      <button
-                  type="button"
-                  className="btn btn-success"
-                  onClick={setRole}
-                >
-                  เพิ่ม
-                </button>
-                </div>
-                </div>
+          <select
+            className="form-select"
+            name="yearSelect"
+            onChange={(e) => {
+              setRoleID(e.target.value);
+            }}
+          >
+            <option value={null} disabled selected hidden>
+              เลือกตำแหน่ง
+            </option>
+
+            {roles.map((val, key) => {
+              return <option value={val.id} key={key}>{val.title}</option>;
+            })}
+          </select>
+        </div>
+        <div className="col">
+          <button
+            type="button"
+            className="btn btn-success"
+            onClick={setRole}
+          >
+            เพิ่ม
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -303,4 +303,4 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(officerSetRole);
+export default connect(mapStateToProps, mapDispatchToProps)(OfficerSetRole);

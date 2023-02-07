@@ -1,19 +1,19 @@
 import React from "react";
 import styles from "./form.style.module.css";
-const ApplicationNisitSA = React.forwardRef((props,ref)=> {
-  console.log('props123 = ',props)
+const ApplicationNisitSA = ((props, ref) => {
+  console.log('props123 = ', props)
   const {
     name = "",
     idStudent = "",
     departmentNisit = "",
     year = "",
-    term ="",
-    department="",
-    nisitYear='',
+    term = "",
+    department = "",
+    nisitYear = '',
     tel = "",
     bank = "",
     accountNumber = "",
-    tableDatas=[]
+    tableDatas = []
   } = props;
   const header = [
     { text: "ลำดับที่", key: "number" },
@@ -45,7 +45,7 @@ const ApplicationNisitSA = React.forwardRef((props,ref)=> {
         flexDirection: "column"
         // justifyContent: "space-between"
       }}
-      ref = {ref}
+      ref={ref}
     >
       {" "}
       <div>
@@ -78,22 +78,22 @@ const ApplicationNisitSA = React.forwardRef((props,ref)=> {
       </div>
       <table className={styles.tableConatiner}>
         <tr className={styles.borderTable}>
-          {header.map((h) => (
-            <th className={styles.headerCell}>
-              {h.text.split("/n").map((t) => (
-                <p className={styles.headerTd}>{t}</p>
+          {header.map((h, index) => (
+            <th className={styles.headerCell} key={index}>
+              {h.text.split("/n").map((t, index) => (
+                <p className={styles.headerTd} key={index}>{t}</p>
               ))}
             </th>
           ))}
         </tr>
-        
 
-        {tableDatas?.map((d) => (
+
+        {tableDatas?.map((d,index) => (
           // arr[0] = key
           // arr[1] = val
-          <tr className={styles.trStyle}>
+          <tr className={styles.trStyle} key={index}>
             {Object.entries(d).map((arr, idx) => (
-              <td className={styles.bodyCell}><p style = {{textAlign:'center'}}>{arr[1]}</p></td>
+              <td className={styles.bodyCell} key={idx}><p style={{ textAlign: 'center' }}>{arr[1]}</p></td>
             ))}
           </tr>
         ))}
@@ -101,7 +101,7 @@ const ApplicationNisitSA = React.forwardRef((props,ref)=> {
       <div className={styles.bottom}>
         <div className={styles.bottomLeft}>
           <p style={{ fontWeight: "bold" }}>
-            <span style={{ textDecoration: "underline" ,lineHeight:'a' }}>
+            <span style={{ textDecoration: "underline", lineHeight: 'a' }}>
               เอกสารแนบพร้อมกับใบสมัคร
             </span>{" "}
             (เอกสาร 1 ชุด/คน)
@@ -147,4 +147,4 @@ const ApplicationNisitSA = React.forwardRef((props,ref)=> {
   );
 })
 
-export default ApplicationNisitSA;
+export const ExportNisitSA = React.forwardRef(ApplicationNisitSA);

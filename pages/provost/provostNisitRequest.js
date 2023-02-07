@@ -9,7 +9,7 @@ import { signIn, signOut, useSession } from 'next-auth/client';
 import { connect } from 'react-redux';
 import { getDetailNisit } from '../../redux/actions/nisitAction';
 
-function provostNisitRequest(props) {
+function ProvostNisitRequest(props) {
   const [courses, setCourses] = useState([]);
   const [owner, setOwner] = useState([]);
   const [success, setSuccess] = useState(null);
@@ -50,7 +50,7 @@ function provostNisitRequest(props) {
       getYear();
       getCourses();
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   function Filter(courses) {
     return courses.filter((course) => {
@@ -221,7 +221,7 @@ function provostNisitRequest(props) {
     //console.log("in that case");
     return (
       <div>
-        <h2>You aren't signed in, please sign in first</h2>
+        <h2>You aren&apos;t signed in, please sign in first</h2>
       </div>
     );
   }
@@ -257,7 +257,7 @@ function provostNisitRequest(props) {
         {courses != null && courses.length != 0 ? Filter(courses).length : 0}
         <table
           className="table table-hover table-bordered"
-          cellspacing="0"
+          cellSpacing="0"
           style={{ textAlign: 'center' }}
         >
           <thead
@@ -286,7 +286,7 @@ function provostNisitRequest(props) {
           <tbody>
             {Filter(courses).map((val, key) => {
               return (
-                <tr>
+                <tr key={index}>
                   <td>{key + 1}</td>
                   <td>{NisitapplyID(val.AID)}</td>
                   <td>
@@ -330,7 +330,7 @@ function provostNisitRequest(props) {
                   <td>
                     <button
                       type="button"
-                      class="btn btn-success"
+                      className="btn btn-success"
                       key={key}
                       onClick={() => {
                         if (window.confirm('ต้องการยืนยันวิชา: ' + val.title))
@@ -341,7 +341,7 @@ function provostNisitRequest(props) {
                     </button>
                     <button
                       type="button"
-                      class="btn btn-danger"
+                      className="btn btn-danger"
                       key={key}
                       onClick={() => {
                         replyTAfail(val.AID, val.CID, val.name);
@@ -378,4 +378,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(provostNisitRequest);
+)(ProvostNisitRequest);

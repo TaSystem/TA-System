@@ -7,7 +7,7 @@ import Axios from "../../../config/Axios";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../../redux/actions/nisitAction";
-import ApplicationNisitSA from "../../../components/form/ApplicationNisitSA";
+import ExportNisitSA from "../../../components/form/ApplicationNisitSA";
 import ReactToPrint from "react-to-print";
 import { useReactToPrint } from "react-to-print";
 
@@ -22,7 +22,7 @@ const SASuccess = (props) => {
   const [courseValue, setCourseValue] = useState([]);
   const router = useRouter();
   const { id } = router.query;
-  
+
 
   useEffect(() => {
     if (session) {
@@ -38,12 +38,12 @@ const SASuccess = (props) => {
     }
     // }
     // getCourses();
-  }, [loading]);
+  }, [id, loading, session]);
   useEffect(() => {
     if (session) {
       props.getDetailNisit(session.user.email);
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   function Filter(courses) {
     return courses.filter((course) => {
@@ -159,7 +159,7 @@ const SASuccess = (props) => {
     // router.push('/')
     return (
       <div>
-        <h2>You aren't signed in, please sign in firstsss</h2>
+        <h2>You aren&apos;t signed in, please sign in firstsss</h2>
       </div>
     );
   }
@@ -303,7 +303,7 @@ const SASuccess = (props) => {
         )}
       </div>
       <div style={{ display: "none" }}>
-        <ApplicationNisitSA ref={componentRef} {...data} />
+        <ExportNisitSA ref={componentRef} {...data} />
       </div>
       จำนวน:
       {courseList != null && courseList.length != 0
@@ -320,7 +320,7 @@ const SASuccess = (props) => {
       >
         <table
           className="table table-hover table-bordered"
-          cellspacing="0"
+          cellSpacing="0"
           style={{ textAlign: "center" }}
         >
           <thead
@@ -375,7 +375,7 @@ const SASuccess = (props) => {
                   <td>{val.teacher}</td>
                   <td>{val.hrperweek}</td>
                   <td>
-                    <button type="button" class="btn btn-secondary">
+                    <button type="button" className="btn btn-secondary">
                       ปริ้นใบเช็คชื่อ
                     </button>
                   </td>

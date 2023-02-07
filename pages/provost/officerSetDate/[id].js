@@ -8,7 +8,7 @@ import { red } from "@material-ui/core/colors";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../../redux/actions/nisitAction"; 
 
-const setDatestop = (props) => {
+const SetDateStop = (props) => {
   
   const [dates,setDate] = useState(null);
   const [titleDay, setTitleDay] = useState(null);
@@ -35,13 +35,13 @@ const setDatestop = (props) => {
     }
     getDate(); 
     
-  },[router]);
+  },[id, router]);
 
   useEffect(() => {
     if (session) {
       props.getDetailNisit(session.user.email)
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   const setDateStop = async () => {
     if (!titleDay) {
@@ -88,8 +88,8 @@ const setDatestop = (props) => {
               {success}{" "}
             </div>
         )}
-      <div className="table-responsive" className="table-responsive" style={{maxHeight:"65vh",marginTop:"1vh"}}>
-      <table className="table table-hover table-borderless" cellspacing="0" style={{textAlign:"center"}} >
+      <div className="table-responsive" style={{maxHeight:"65vh",marginTop:"1vh"}}>
+      <table className="table table-hover table-borderless" cellSpacing="0" style={{textAlign:"center"}} >
           <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
             <tr>
               <th rowSpan="2">#</th>
@@ -122,13 +122,13 @@ const setDatestop = (props) => {
           </tbody>
         </table>
         </div>
-        <div class="information">
+        <div className="information">
         <form
-          class="row gy-2 gx-3 align-items-center"
+          className="row gy-2 gx-3 align-items-center"
           encType="multipart/form-data"
         >
-          <div class="col-auto">
-            <label for="closeDate" class="form-label">
+          <div className="col-auto">
+            <label htmlFor="closeDate" className="form-label">
               หัวข้อวันหยุด
             </label>
             <input
@@ -142,8 +142,8 @@ const setDatestop = (props) => {
             />
           </div>
 
-          <div class="col-auto">
-            <label for="startDate" class="form-label">
+          <div className="col-auto">
+            <label htmlFor="startDate" className="form-label">
               ตั้งแต่
             </label>
             
@@ -152,8 +152,8 @@ const setDatestop = (props) => {
               } date={startDate}/>
             
           </div>
-          <div class="col-auto">
-            <label for="endDate" class="form-label">
+          <div className="col-auto">
+            <label htmlFor="endDate" className="form-label">
               ถึง
             </label>
             <DatePicker onChange={(date) => 
@@ -196,4 +196,4 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(setDatestop);
+export default connect(mapStateToProps, mapDispatchToProps)(SetDateStop);

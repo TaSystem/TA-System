@@ -12,7 +12,7 @@ import ModalHistoryReplyNisit from "../../components/ModalHistoryReplyNisit";
 import ModalDetailNisit from "../../components/ModalDetailNisit";
 import Link from "next/link";
 
-function historyReqest(props) {
+function HistoryReqest(props) {
   const [courses, setCourses] = useState([]);
   const [search, setSearch] = useState(null);
   const [yearSearch, setYearSearch] = useState([]);
@@ -43,7 +43,7 @@ function historyReqest(props) {
       getYear();
       getCourses();
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   useEffect(() => {
     // console.log("useEffect 2");
@@ -55,14 +55,14 @@ function historyReqest(props) {
       // console.log("useEffect get getCoursesNisit");
       props.getCoursesNisit(session.user.email);
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   const condition = (status) => {
     if (status === 1) {
       return (
         <>
           <p
-            class="text-nowrap"
+            className="text-nowrap"
             style={{
               backgroundColor: "#E3E726",
               color: "white",
@@ -78,7 +78,7 @@ function historyReqest(props) {
       return (
         <>
           <p
-            class="text-nowrap"
+            className="text-nowrap"
             style={{
               backgroundColor: "#E3E726",
               color: "white",
@@ -94,7 +94,7 @@ function historyReqest(props) {
       return (
         <>
           <p
-            class="text-nowrap"
+            className="text-nowrap"
             style={{
               backgroundColor: "#32CD32",
               color: "white",
@@ -110,7 +110,7 @@ function historyReqest(props) {
       return (
         <>
           <p
-            class="text-nowrap"
+            className="text-nowrap"
             style={{
               backgroundColor: "#DD0E0E",
               color: "white",
@@ -195,7 +195,7 @@ function historyReqest(props) {
     // console.log("in that case");
     return (
       <div>
-        <h2>You aren't signed in, please sign in first</h2>
+        <h2>You aren&apos;t signed in, please sign in first</h2>
       </div>
     );
   }
@@ -342,7 +342,7 @@ function historyReqest(props) {
             </option>
 
             {yearSearch.map((val, key) => {
-              return <option value={val.year}>{val.year}</option>;
+              return <option value={val.year} key={key}>{val.year}</option>;
             })}
           </select>
 
@@ -426,7 +426,7 @@ function historyReqest(props) {
         >
           <table
             className="table table-hover table-bordered"
-            cellspacing="0"
+            cellSpacing="0"
             style={{ textAlign: "center" }}
           >
             <thead
@@ -457,7 +457,7 @@ function historyReqest(props) {
             <tbody>
               {Filter(courses).map((val, key) => {
                 return (
-                  <tr>
+                  <tr key={key}>
                     <td>{key + 1}</td>
                     <td>
                       <Link href="#">
@@ -537,4 +537,4 @@ const mapDispatchToProps = {
   getCoursesNisit: getCoursesNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(historyReqest);
+export default connect(mapStateToProps, mapDispatchToProps)(HistoryReqest);

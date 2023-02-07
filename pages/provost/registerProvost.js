@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import { setRegisterNisit ,getDetailNisit} from "../../redux/actions/nisitAction";
 import styles from "../../styles/registerProvost.module.css";
 
-function registerProvost(props) {
+function RegisterProvost(props) {
   const [session, loading] = useSession();
   const [content, setContent] = useState();
 
@@ -44,7 +44,7 @@ function registerProvost(props) {
       props.getDetailNisit(session.user.email)
     }
 
-  }, [loading]);
+  }, [loading, props, session]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -67,7 +67,7 @@ function registerProvost(props) {
     //console.log("in that case");
     return (
       <div>
-        <h2>You aren't signed in, please sign in first</h2>
+        <h2>You aren&apos;t signed in, please sign in first</h2>
       </div>
     );
   }
@@ -124,7 +124,7 @@ function registerProvost(props) {
           <h3 className={styles.h3}>อาจารย์รับผิดชอบระดับการศึกษา</h3>
         </figure>
         <figure className={`${styles.col8__item} ${styles.col8__item12}`}>
-          <div className={styles.selectBox__current} tabindex="1">
+          <div className={styles.selectBox__current} tabIndex="1">
             <div className={styles.selectBox__value}>
               <input
                 className={styles.selectBox__input}
@@ -167,7 +167,7 @@ function registerProvost(props) {
             <li>
               <label
                 className={styles.selectBox__option}
-                for="k1"
+                htmlFor="k1"
                 aria-hidden="aria-hidden"
               >
                 ปริญญาตรี
@@ -176,7 +176,7 @@ function registerProvost(props) {
             <li>
               <label
                 className={styles.selectBox__option}
-                for="k2"
+                htmlFor="k2"
                 aria-hidden="aria-hidden"
               >
                 ปริญญาโท

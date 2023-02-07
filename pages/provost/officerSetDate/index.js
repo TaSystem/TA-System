@@ -7,7 +7,7 @@ import { useSession } from "next-auth/client";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../../../redux/actions/nisitAction";
 
-function officerSetDate(props) {
+function OfficerSetDate(props) {
   const [dates, setDate] = useState([]);
   const router = useRouter();
   const [session, loading] = useSession();
@@ -35,7 +35,7 @@ function officerSetDate(props) {
     if (session) {
       props.getDetailNisit(session.user.email);
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   const setDateStudy = async () => {
     // console.log("category: ", category);
@@ -118,7 +118,7 @@ function officerSetDate(props) {
       >
         <table
           className="table table-hover table-bordered"
-          cellspacing="0"
+          cellSpacing="0"
           style={{ textAlign: "center" }}
         >
           <thead
@@ -207,10 +207,10 @@ function officerSetDate(props) {
           </tbody>
         </table>
       </div>
-      <div class="information">
+      <div className="information">
         <form className="row gy-2 gx-3 ">
-          <div class="col-auto">
-            <label for="closeDate" class="form-label">
+          <div className="col-auto">
+            <label htmlFor="closeDate" className="form-label">
               ปีการศึกษา
             </label>
             <input
@@ -224,13 +224,13 @@ function officerSetDate(props) {
               }}
             />
           </div>
-          <div class="col-auto">
-            <label for="closeDate" class="form-label">
+          <div className="col-auto">
+            <label htmlFor="closeDate" className="form-label">
               ภาคเรียน
             </label>
             <select
               name="term"
-              class="form-select"
+              className="form-select"
               onChange={(e) => {
                 setTerm(e.target.value);
               }}
@@ -243,8 +243,8 @@ function officerSetDate(props) {
               <option value="ปลาย">ปลาย</option>
             </select>
           </div>
-          <div class="col-auto">
-            <label for="openDate" class="form-label">
+          <div className="col-auto">
+            <label htmlFor="openDate" className="form-label">
               เริ่ม
             </label>
             <div>
@@ -254,8 +254,8 @@ function officerSetDate(props) {
               />
             </div>
           </div>
-          <div class="col-auto">
-            <label for="closeDate" class="form-label">
+          <div className="col-auto">
+            <label htmlFor="closeDate" className="form-label">
               สุดท้าย
             </label>
             <div>
@@ -265,13 +265,13 @@ function officerSetDate(props) {
               />
             </div>
           </div>
-          <div class="col-auto">
-            <label for="closeDate" class="form-label">
+          <div className="col-auto">
+            <label htmlFor="closeDate" className="form-label">
               ประเภท
             </label>
             <select
               name="term"
-              class="form-select"
+              className="form-select"
               onChange={(e) => {
                 setCategory(e.target.value);
               }}
@@ -314,4 +314,4 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(officerSetDate);
+export default connect(mapStateToProps, mapDispatchToProps)(OfficerSetDate);

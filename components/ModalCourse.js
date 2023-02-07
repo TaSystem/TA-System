@@ -20,7 +20,7 @@ export default function ModalCourse(props) {
       let endArray = end.split("_");
       return dayArray.map((val, index) => {
         return (
-          <p>
+          <p key={index}>
             เวลาเรียนปฎิบัติ วัน {dayArray[index]} เวลา {startArray[index]} -{" "}
             {endArray[index]}{" "}
           </p>
@@ -78,10 +78,10 @@ export default function ModalCourse(props) {
             
             
           </div>
-          <div class="modal-footer">
+          <div className="modal-footer">
             <button
               type="button"
-              class="btn btn-danger"
+              className="btn btn-danger"
               data-bs-dismiss="modal"
             >
               ปิด

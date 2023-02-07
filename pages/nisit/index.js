@@ -1,5 +1,5 @@
 import { signIn, signOut, useSession } from 'next-auth/client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import ModalCourse from '../../components/ModalCourse';
 import SelectMajor from '../../components/SelectMajor';
@@ -7,12 +7,12 @@ import Axios from '../../config/Axios';
 import { useRouter } from 'next/router';
 import { connect } from 'react-redux';
 import { getDetailNisit } from '../../redux/actions/nisitAction';
-import ApplicationNisitSA from '../../components/form/ApplicationNisitSA';
+import ExportNisitSA from '../../components/form/ApplicationNisitSA';
 import ReactToPrint from 'react-to-print';
 import { useReactToPrint } from 'react-to-print';
 
-function index(props) {
-  const componentRef = React.useRef();
+function Index(props) {
+  const componentRef = useRef();
   const [courseList, setCourseList] = useState([]);
 
   const [yearNow, setYearNow] = useState([]);
@@ -40,7 +40,7 @@ function index(props) {
     }
     // }
     // getCourses();
-  }, [loading]);
+  }, [loading, session]);
 
   function Filter(courses) {
     return courses.filter((course) => {
@@ -156,7 +156,7 @@ function index(props) {
     // router.push('/')
     return (
       <div>
-        <h2>You aren't signed in, please sign in firstsss</h2>
+        <h2>You aren&apos;t signed in, please sign in firstsss</h2>
       </div>
     );
   }
@@ -300,7 +300,7 @@ function index(props) {
         )}
       </div>
       <div style={{ display: 'none' }}>
-        <ApplicationNisitSA ref={componentRef} {...data} />
+        <ExportNisitSA ref={componentRef} {...data} />
       </div>
       จำนวน:
       {courseList != null && courseList.length != 0
@@ -317,7 +317,7 @@ function index(props) {
       >
         <table
           className="table table-hover table-bordered"
-          cellspacing="0"
+          cellSpacing="0"
           style={{ textAlign: 'center' }}
         >
           <thead
@@ -372,7 +372,7 @@ function index(props) {
                   <td>{val.teacher}</td>
                   <td>{val.hrperweek}</td>
                   <td>
-                    <button type="button" class="btn btn-secondary">
+                    <button type="button" className="btn btn-secondary">
                       ปริ้นใบเช็คชื่อ
                     </button>
                   </td>
@@ -394,4 +394,4 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(index);
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

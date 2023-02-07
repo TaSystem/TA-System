@@ -52,7 +52,7 @@ const Layout = ({ children }) => {
       }
       
     }
-  }, [session, loading])
+  }, [session, loading, router])
 
 if (String(router.pathname) == "/signin") {
     return (
@@ -64,7 +64,7 @@ if (String(router.pathname) == "/signin") {
   else if(session){
     //console.log('firsttttt')
     return (
-    <div class="d-flex">
+    <div className="d-flex">
        <Navbar/>
        {/* <Navbar2/> */}
        <div style={{margin:"40px 0 10px 320px",width:"100%"}}>{children}</div>
@@ -72,7 +72,7 @@ if (String(router.pathname) == "/signin") {
  ) 
   }else{
     return (
-      <div class="d-flex">
+      <div className="d-flex">
          {/* <Navbar/> */}
          {/* <Navbar2/> */}
          {/* <div style={{margin:"40px 0 10px 320px",width:"100%"}}>{children}</div> */}

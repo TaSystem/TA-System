@@ -15,7 +15,7 @@ export default function ModalHistoryReplyNisit(props) {
           return (
             <>
               <p
-                class="text-nowrap"
+                className="text-nowrap"
                 style={{
                   backgroundColor: "#E3E726",
                   color: "white",
@@ -31,7 +31,7 @@ export default function ModalHistoryReplyNisit(props) {
           return (
             <>
               <p
-                class="text-nowrap"
+                className="text-nowrap"
                 style={{
                   backgroundColor: "#E3E726",
                   color: "white",
@@ -47,7 +47,7 @@ export default function ModalHistoryReplyNisit(props) {
           return (
             <>
               <p
-                class="text-nowrap"
+                className="text-nowrap"
                 style={{
                   backgroundColor: "#32CD32",
                   color: "white",
@@ -63,7 +63,7 @@ export default function ModalHistoryReplyNisit(props) {
           return (
             <>
               <p
-                class="text-nowrap"
+                className="text-nowrap"
                 style={{
                   backgroundColor: "#DD0E0E",
                   color: "white",
@@ -102,7 +102,7 @@ export default function ModalHistoryReplyNisit(props) {
           </div>
           <div className="modal-body">
             <p>รหัสคำขอ: {NisitapplyID()} </p>
-            <table className="table table-hover table-bordered" cellspacing="0" style={{textAlign:"center"}}>
+            <table className="table table-hover table-bordered" cellSpacing="0" style={{textAlign:"center"}}>
               <thead style={{position:"sticky",top:0,background:"#7a0117",color:"#fff",fontWeight:"400"}}>
                 <tr>
                   <th rowSpan="2">ขั้นตอน</th>
@@ -134,10 +134,10 @@ export default function ModalHistoryReplyNisit(props) {
               </tbody>
             </table>
           </div>
-          <div class="modal-footer">
+          <div className="modal-footer">
             <button
               type="button"
-              class="btn btn-danger"
+              className="btn btn-danger"
               data-bs-dismiss="modal"
             >
               ปิด

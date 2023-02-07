@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 import { getDetailNisit } from '../../../redux/actions/nisitAction';
 import { useRouter } from 'next/router';
 
-function coursesTeacher(props) {
+function CoursesTeacher(props) {
   //ขอเลือกระดับได้
   const [courseList, setCourseList] = useState([]);
   const [system, setSystem] = useState([]);
@@ -46,7 +46,7 @@ function coursesTeacher(props) {
     if (session) {
       props.getDetailNisit(session.user.email);
     }
-  }, [loading]);
+  }, [loading, props, session]);
 
   function Filter(courses) {
     return courses.filter((course) => {
@@ -106,7 +106,7 @@ function coursesTeacher(props) {
     // console.log("in that case");
     return (
       <div>
-        <h2>You aren't signed in, please sign in first</h2>
+        <h2>You aren&apos;t signed in, please sign in first</h2>
       </div>
     );
   } else if (!syStatus) {
@@ -148,7 +148,7 @@ function coursesTeacher(props) {
       >
         <table
           className="table table-hover table-borderless"
-          cellspacing="0"
+          cellSpacing="0"
           style={{ textAlign: 'center' }}
         >
           <thead
@@ -168,7 +168,7 @@ function coursesTeacher(props) {
               <th rowSpan="2">ระดับ</th>
               <th rowSpan="2">สาขาวิชา</th>
               <th rowSpan="2">อาจารย์ผู้สอน</th>
-              <th colSpan="2" class="text-nowrap">
+              <th colSpan="2" className="text-nowrap">
                 จำนวนนิสิต
               </th>
               <th rowSpan="2">ข้อมูล/ขอนิสิตช่วยงาน</th>
@@ -200,7 +200,7 @@ function coursesTeacher(props) {
                   <td>{val.title}</td>
                   <td>{val.sec_D ? val.sec_D : '-'}</td>
                   <td>{val.sec_P ? showSec(val.sec_P) : '-'}</td>
-                  <td class="text-nowrap">{val.level}</td>
+                  <td className="text-nowrap">{val.level}</td>
                   <td>{val.major}</td>
                   <td>{val.teacher}</td>
                   <td>{val.number_D ? val.number_D : val.number_P}</td>
@@ -249,4 +249,4 @@ const mapDispatchToProps = {
   getDetailNisit: getDetailNisit,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(coursesTeacher);
+export default connect(mapStateToProps, mapDispatchToProps)(CoursesTeacher);
