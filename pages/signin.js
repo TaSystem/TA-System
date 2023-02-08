@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { providers, signIn, getSession, csrfToken } from 'next-auth/client';
-import logo from '../img/unnamed.jpg';
+// import logo from '../img/unnamed.jpg';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 

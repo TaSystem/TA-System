@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { getDetailNisit } from "../redux/actions/nisitAction";
-import ENGBadge from '../img/unnamed.jpg';
+// import ENGBadge from '../img/unnamed.jpg';
 import Image from "next/image";
 const Navbar = (props) => {
   const [session, loading] = useSession();

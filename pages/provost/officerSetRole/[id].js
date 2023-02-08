@@ -289,7 +289,7 @@ const RequestTAs = (props) => {
   );
 };
 
-requestTAs.getInitialProps = async ({query}) => {
+RequestTAs.getInitialProps = async ({query}) => {
   // console.log('query is ',query.id)
   const response = await Axios.get(`/users/${query.id}`);
   // await console.log('response is ',response.data)

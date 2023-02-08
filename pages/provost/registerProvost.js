@@ -212,4 +212,4 @@ const mapDispatchToProps = {
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(registerProvost);
+export default connect(mapStateToProps, mapDispatchToProps)(RegisterProvost);

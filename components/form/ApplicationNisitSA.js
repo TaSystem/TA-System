@@ -147,4 +147,4 @@ const ApplicationNisitSA = ((props, ref) => {
   );
 })
 
-export const ExportNisitSA = React.forwardRef(ApplicationNisitSA);
+export default React.forwardRef(ApplicationNisitSA);
